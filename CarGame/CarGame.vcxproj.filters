@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="CarGameApp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dApp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectRenderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGameObjects.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStructure.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="LightingStructures.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CarGameApp.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dApp.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectRenderer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGameObjects.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStructure.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="LightingStructures.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="IO">
+      <UniqueIdentifier>{099e625a-adbe-4ed4-a115-0a6e6f0a3149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{2476f6a7-c1ae-413b-9002-01c0ad747b2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{657f8544-b88c-4753-999a-17963ccc6dac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{e99cae70-0641-4aac-b1cc-19f89dd50c4e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
