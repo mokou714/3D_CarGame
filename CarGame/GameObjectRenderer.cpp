@@ -4,12 +4,27 @@ using namespace CarGame;
 
 GameObjectRenderer::GameObjectRenderer(std::shared_ptr<GameObject> gameObject, Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> cam) :
-	gameObject(gameObject),m_d3dDevice(m_d3dDevice),m_d3dImmediateContext(m_d3dImmediateContext), m_Camera(cam),
-	m_VSConstantBufferData(), m_PSConstantBufferData()
+	gameObject(gameObject), m_d3dDevice(m_d3dDevice), m_d3dImmediateContext(m_d3dImmediateContext), m_Camera(cam)
+	//m_VSConstantBufferData(), m_PSConstantBufferData()
 {
 	LoadResources();
 	UpdateVertexShaderConstantBuffer();
 	UpdatePixelShaderConstantBuffer();
+
+	//init light and material
+	m_DirLight.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	m_DirLight.diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	m_DirLight.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_DirLight.direction = XMFLOAT3(-0.577f, -0.577f, 0.577f);
+	m_PSConstantBufferData.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_PSConstantBufferData.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_PSConstantBufferData.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 5.0f);
+	m_PSConstantBufferData.dirLight = m_DirLight;
+	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
+
+	
+
+	
 }
 
 GameObjectRenderer::~GameObjectRenderer() {
@@ -47,21 +62,16 @@ void GameObjectRenderer::LoadResources() {
 	vcbd.Usage = D3D11_USAGE_DYNAMIC;
 	vcbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	//create VS cbuffer
-	CheckIfFailed(
-		m_d3dDevice->CreateBuffer(&vcbd, nullptr, m_ConstantBuffer[0].GetAddressOf())
-	);
+	CheckIfFailed(m_d3dDevice->CreateBuffer(&vcbd, nullptr, m_ConstantBuffer[0].GetAddressOf()));
 
 	//init PS cbuffer desc
 	D3D11_BUFFER_DESC pcbd;
 	ZeroMemory(&pcbd, sizeof(pcbd));
 	pcbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	pcbd.ByteWidth = sizeof(PSConstantBuffer);
+	pcbd.ByteWidth = sizeof(PSConstantBuffer); //must be a multiple of 16
 	pcbd.Usage = D3D11_USAGE_DYNAMIC;
 	pcbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//init pixel data (do lighting here)
-	/*
-			TO DO!!!
-	*/
+	//create PS cbuffer
 	CheckIfFailed(m_d3dDevice->CreateBuffer(&pcbd, nullptr, m_ConstantBuffer[1].GetAddressOf()));
 
 	//init vertex buffer
@@ -78,9 +88,7 @@ void GameObjectRenderer::LoadResources() {
 	vinitdata.SysMemPitch = 0;
 	vinitdata.SysMemSlicePitch = 0;
 	//create vertex buffer
-	CheckIfFailed(
-		m_d3dDevice->CreateBuffer(&vbd, &vinitdata, &m_VertexBuffer)
-	);
+	CheckIfFailed(m_d3dDevice->CreateBuffer(&vbd, &vinitdata, &m_VertexBuffer));
 
 	//init index buffer
 	D3D11_BUFFER_DESC ibd;
@@ -96,9 +104,8 @@ void GameObjectRenderer::LoadResources() {
 	iinitdata.SysMemPitch = 0;
 	iinitdata.SysMemSlicePitch = 0;
 	//create index buffer
-	CheckIfFailed(
-		m_d3dDevice->CreateBuffer(&ibd, &iinitdata, &m_IndexBuffer)
-	);
+	CheckIfFailed(m_d3dDevice->CreateBuffer(&ibd, &iinitdata, &m_IndexBuffer));
+	
 	//store index size for drawing
 	m_IndexCount = gameObject->getIndicesCount();
 }
@@ -114,23 +121,26 @@ void GameObjectRenderer::UpdateVertexShaderConstantBuffer() {
 		)
 	);
 	m_VSConstantBufferData.projection = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, m_Camera->getAspectRatio(), 1.0f, 1000.0f));
-	
-	//using map() to update vertex buffer and pixel buffer
+	//update inverse world view for normal calculation
+	m_VSConstantBufferData.inv_world_view = XMMatrixInverse(nullptr,gameObject->getTransformMatrix());
+
+	//use map() to update vertex buffer
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[0].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
 	memcpy_s(mappedData.pData, sizeof(VSConstantBuffer), &m_VSConstantBufferData, sizeof(VSConstantBuffer));
 	m_d3dImmediateContext->Unmap(m_ConstantBuffer[0].Get(), 0);
-
-	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
-	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_VSConstantBufferData, sizeof(PSConstantBuffer));
-	m_d3dImmediateContext->Unmap(m_ConstantBuffer[1].Get(), 0);
+	
 }
 
 void GameObjectRenderer::UpdatePixelShaderConstantBuffer() {
-	/*
-		TO DO!!!!!!!!!
-		Calculate lighting here.
-	*/
+	//update eyePos
+	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
+	//use map() to update pixel buffer
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(PSConstantBuffer), &m_PSConstantBufferData, sizeof(PSConstantBuffer));
+	m_d3dImmediateContext->Unmap(m_ConstantBuffer[1].Get(), 0);
+	
 }
 
 //called per frame

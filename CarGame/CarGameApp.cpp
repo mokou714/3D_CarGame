@@ -117,4 +117,5 @@ void CarGameApp::updateMouseControl(){
 	cam->updateHorizontal((mouseState.x - lastMouseState.x) * 0.005f);
 	//vertical movement rotates camera around x axis
 	cam->updateVertical((mouseState.y - lastMouseState.y) * 0.005f);
+	
 }

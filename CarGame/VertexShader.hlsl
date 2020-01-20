@@ -1,44 +1,21 @@
-cbuffer VSConstantBuffer : register(b0) {
-	matrix world;
-	matrix view;
-	matrix projection;
-};
-
-cbuffer PSConstantBuffer : register(b1) {
-	//matrix world;
-	//matrix view;
-	//matrix projection;
-};
-
-struct VertexShaderInput {
-	float3 pos : POSITION;
-	float4 color : COLOR;
-	float3 normal: NORMAL;
-};
-
-struct VertexShaderOutput {
-	float4 pos : SV_POSITION;
-	float4 color : COLOR;
-	float3 normal : NORMAL;
-};
+#include "Structures.hlsli"
 
 VertexShaderOutput main(VertexShaderInput vertexInput) {
 	VertexShaderOutput output;
-	float4 pos = float4(vertexInput.pos, 1.0f);
+	float4 pos_H = float4(vertexInput.pos, 1.0f);
 
-	//Transform the vertex position into projected space.
-	pos = mul(pos, world);
-	pos = mul(pos, view);
-	pos = mul(pos, projection);
+	pos_H = mul(pos_H, world);
+	pos_H = mul(pos_H, view);
+	pos_H = mul(pos_H, projection);
 
-	output.pos = pos;
+	output.pos_H = pos_H; //transformed homogenuous position
+	output.pos_W = pos_H.xyz; //transoformed position
 
-	//Pass the color through without modification.
+	//pass the same color
 	output.color = vertexInput.color;
 	
-	//Pass normal as it is, for now
-	output.normal = vertexInput.normal;
-	
+	//transform normal
+	output.normal_world = normalize(mul(vertexInput.normal_local, (float3x3)inv_world_view));
 
 	return output;
 }

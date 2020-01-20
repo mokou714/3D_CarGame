@@ -7,5 +7,5 @@
 
 namespace CarGame {
 	std::vector<std::shared_ptr<CarGame::GameObject>> LoadGameObjects();
-	static myVertex* calculate_normal(const VertexPosColor vertices[], const unsigned short indices[], unsigned int i_size);
+	static myVertex* calculate_normal(const VertexPosColor* vertices, const unsigned short* indices, unsigned int i_size);
 }

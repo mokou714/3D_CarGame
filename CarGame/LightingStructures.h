@@ -3,10 +3,11 @@
 
 using namespace DirectX;
 
+//using default for initialization, no .cpp file
+
 //parallel light
 struct DirectionalLight {
-	DirectionalLight();
-	DirectionalLight(const XMFLOAT4& ambient, const XMFLOAT4 diffuse, const XMFLOAT4 specular, const XMFLOAT3 direction);
+	DirectionalLight() = default;
 	XMFLOAT4 ambient;
 	XMFLOAT4 diffuse;
 	XMFLOAT4 specular;
@@ -14,12 +15,11 @@ struct DirectionalLight {
 };
 
 struct Material {
-	Material();
-	Material(const XMFLOAT4& ambient, const XMFLOAT4 diffuse, const XMFLOAT4 specular, const XMFLOAT3 direction);
+	Material() = default;
 	XMFLOAT4 ambient;
 	XMFLOAT4 diffuse;
 	XMFLOAT4 specular;
-	XMFLOAT3 direction;
+	XMFLOAT3 reflect;
 };
 
 

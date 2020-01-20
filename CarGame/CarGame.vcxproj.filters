@@ -99,4 +99,9 @@
       <UniqueIdentifier>{e99cae70-0641-4aac-b1cc-19f89dd50c4e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Structures.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
 </Project>

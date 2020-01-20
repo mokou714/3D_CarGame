@@ -9,7 +9,7 @@ namespace CarGame {
 	class GameObjectRenderer {
 	public:
 		GameObjectRenderer(std::shared_ptr<GameObject> gameObject, Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice,
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera);
+			Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera);
 		~GameObjectRenderer();
 		std::shared_ptr<GameObject> gameObject;
 		std::shared_ptr<Camera> m_Camera;
@@ -31,14 +31,8 @@ namespace CarGame {
 		PSConstantBuffer m_PSConstantBufferData;
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VertexShader;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PixelShader;
-		//light
-		//DirectionalLight m_DirLight;
-
 		unsigned int m_IndexCount; //draw
-
-		
+		//light
+		DirectionalLight m_DirLight;
 	};
-
-
-
 }
