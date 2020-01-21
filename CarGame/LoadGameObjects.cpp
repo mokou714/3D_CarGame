@@ -76,13 +76,22 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 
 	//cube
 	static const VertexPosColor cube_pos_color[] = {
-		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)},
+		/*{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)},
 		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f)},
 		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
 		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f)},
 		{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},
 		{XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f)},
 		{XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f)},
+		{XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},*/
+
+		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 		{XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 	};
 	static const unsigned short cube_indices[] = {
@@ -165,11 +174,11 @@ static myVertex* CarGame::calculate_normal(const VertexPosColor* vertices, const
 		XMFLOAT3 pos2 = vertices[indices[i+1]].pos;
 		XMFLOAT3 pos3 = vertices[indices[i+2]].pos;
 
-		XMVECTOR vec1 = XMVectorSet(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z, 0.0f);
-		XMVECTOR vec2 = XMVectorSet(pos3.x - pos1.x, pos3.y - pos1.y, pos3.z - pos1.z, 0.0f);
+		XMVECTOR vec1 = XMVectorSet(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z, 0.0f); //1->2
+		XMVECTOR vec2 = XMVectorSet(pos3.x - pos1.x, pos3.y - pos1.y, pos3.z - pos1.z, 0.0f); //1->3
 
 		XMFLOAT3 normal;
-		XMStoreFloat3(&normal,XMVector3Cross(vec2, vec1));
+		XMStoreFloat3(&normal, XMVector3Normalize(XMVector3Cross(vec2, vec1)));
 		
 		myVertices[indices[i]] = {pos1,vertices[indices[i]].color,normal};
 		myVertices[indices[i+1]] = {pos2,vertices[indices[i+1]].color,normal };

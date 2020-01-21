@@ -15,7 +15,7 @@ VertexShaderOutput main(VertexShaderInput vertexInput) {
 	output.color = vertexInput.color;
 	
 	//transform normal
-	output.normal_world = normalize(mul(vertexInput.normal_local, (float3x3)inv_world_view));
+	output.normal_world = normalize(mul(vertexInput.normal_local, inv_world_view));
 
 	return output;
 }
