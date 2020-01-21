@@ -169,20 +169,34 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 //Flat shading normals
 static myVertex* CarGame::calculate_normal(const VertexPosColor* vertices, const unsigned short* indices, unsigned int i_size) {
 	myVertex* myVertices = new myVertex[i_size];
-	for (int i = 0; i < i_size; i+=3) {
+	//init normals
+	for (int i = 0; i < i_size;++i) {
+		myVertices[i].normal = { 0.0f,0.0f,0.0f };
+	}
+	//calculate and add normals
+	for (int i = 0; i < i_size; i += 3) {
 		XMFLOAT3 pos1 = vertices[indices[i]].pos;
-		XMFLOAT3 pos2 = vertices[indices[i+1]].pos;
-		XMFLOAT3 pos3 = vertices[indices[i+2]].pos;
+		XMFLOAT3 pos2 = vertices[indices[i + 1]].pos;
+		XMFLOAT3 pos3 = vertices[indices[i + 2]].pos;
 
 		XMVECTOR vec1 = XMVectorSet(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z, 0.0f); //1->2
 		XMVECTOR vec2 = XMVectorSet(pos3.x - pos1.x, pos3.y - pos1.y, pos3.z - pos1.z, 0.0f); //1->3
 
 		XMFLOAT3 normal;
 		XMStoreFloat3(&normal, XMVector3Normalize(XMVector3Cross(vec2, vec1)));
-		
-		myVertices[indices[i]] = {pos1,vertices[indices[i]].color,normal};
-		myVertices[indices[i+1]] = {pos2,vertices[indices[i+1]].color,normal };
-		myVertices[indices[i+2]] = {pos3,vertices[indices[i+2]].color,normal };
+
+		for (int j = 0; j < 3; ++j) {
+			myVertices[indices[i + j]].pos = vertices[indices[i + j]].pos;
+			myVertices[indices[i + j]].color = vertices[indices[i + j]].color;
+			myVertices[indices[i + j]].normal.x += normal.x;
+			myVertices[indices[i + j]].normal.y += normal.y;
+			myVertices[indices[i + j]].normal.z += normal.z;
+		}
+	}
+	//average normals
+	for (int i = 0; i < i_size; ++i) {
+		XMVECTOR nor = XMVector3Normalize(XMLoadFloat3(&myVertices[i].normal));
+		XMStoreFloat3(&myVertices[i].normal, nor);
 	}
 	return myVertices;
 }
