@@ -135,7 +135,6 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		std::shared_ptr<GameObject>(new GameObject("Car", car_vertices, sizeof(car_pos_color) / sizeof(VertexPosColor), car_indices, sizeof(car_indices) / sizeof(unsigned short)))
 	);
 
-
 	//vec.emplace_back(
 	//	std::shared_ptr<GameObject>(new GameObject("Cube2", cube_vertices, sizeof(cube_vertices) / sizeof(mVertex), cube_indices, sizeof(cube_indices) / sizeof(unsigned short)))
 	//);
@@ -166,7 +165,7 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	return vec;
 }
 
-//Flat shading normals
+//Smooth shading normals
 static myVertex* CarGame::calculate_normal(const VertexPosColor* vertices, const unsigned short* indices, unsigned int i_size) {
 	myVertex* myVertices = new myVertex[i_size];
 	//init normals

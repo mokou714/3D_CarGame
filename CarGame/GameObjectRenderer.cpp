@@ -10,7 +10,6 @@ GameObjectRenderer::GameObjectRenderer(std::shared_ptr<GameObject> gameObject, M
 	LoadResources();
 	UpdateVertexShaderConstantBuffer();
 	
-
 	//init light and material
 	m_DirLight.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	m_DirLight.diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
@@ -23,11 +22,7 @@ GameObjectRenderer::GameObjectRenderer(std::shared_ptr<GameObject> gameObject, M
 	m_PSConstantBufferData.dirLight = m_DirLight;
 	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
 
-	UpdatePixelShaderConstantBuffer();
-
-	
-
-	
+	UpdatePixelShaderConstantBuffer();	
 }
 
 GameObjectRenderer::~GameObjectRenderer() {
@@ -126,8 +121,6 @@ void GameObjectRenderer::UpdateVertexShaderConstantBuffer() {
 	m_VSConstantBufferData.projection = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, m_Camera->getAspectRatio(), 1.0f, 1000.0f));
 	//update inverse world view for normal calculation
 	m_VSConstantBufferData.inv_world_view = XMMatrixInverse(nullptr,gameObject->getTransformMatrix());
-	//m_VSConstantBufferData.inv_world_view = XMMatrixInverse(nullptr, XMMatrixIdentity());
-	//m_VSConstantBufferData.inv_world_view = gameObject->getTransformMatrix();
 
 	//use map() to update vertex buffer
 	D3D11_MAPPED_SUBRESOURCE mappedData;
