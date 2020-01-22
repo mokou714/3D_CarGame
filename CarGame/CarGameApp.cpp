@@ -28,6 +28,9 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	m_pMouse->SetWindow(m_MainWindow);
 	m_pMouse->SetMode(Mouse::MODE_ABSOLUTE);
 
+	//debug
+	gameObjects[2]->setRotation(1.0f,1.0f,1.0f);
+
 }
 
 CarGameApp::~CarGameApp(){}

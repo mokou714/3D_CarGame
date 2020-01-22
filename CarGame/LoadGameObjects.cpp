@@ -71,47 +71,38 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		12,5,6
 
 	};
-
 	myVertex* car_vertices = calculate_normal(car_pos_color, car_indices, ARRAYSIZE(car_indices));
 
 	//cube
 	static const VertexPosColor cube_pos_color[] = {
-		/*{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)},
-		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},
-		{XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f)},
-		{XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},*/
-
-		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(0.5f,   0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(0.5f,   0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(0.5f,  -0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(0.5f,  -0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
 	};
 	static const unsigned short cube_indices[] = {
-		0,2,1, // -x
-		1,2,3,
-
-		4,5,6, // +x
-		5,7,6,
-
-		0,1,5, // -y
-		0,5,4,
-
-		2,6,7, // +y
-		2,7,3,
-
-		0,4,6, // -z
-		0,6,2,
-
-		1,3,7, // +z
-		1,7,5,
+		//left
+		0,3,1,
+		1,3,2,
+		//front
+		4,0,5,
+		5,0,1,
+		//right
+		7,4,6,
+		6,4,5,
+		//back
+		3,7,2,
+		2,7,6,
+		//top
+		0,4,3,
+		3,4,7,
+		//bottom
+		5,1,6,
+		6,1,2
 	};
 
 	myVertex* cube_vertices = calculate_normal(cube_pos_color, cube_indices, ARRAYSIZE(cube_indices));
@@ -128,16 +119,11 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		0,1,2,
 		2,1,3
 	};
-
 	myVertex* ground_vertices = calculate_normal(ground_pos_color, ground_indices, ARRAYSIZE(ground_indices));
 
 	vec.emplace_back(
 		std::shared_ptr<GameObject>(new GameObject("Car", car_vertices, sizeof(car_pos_color) / sizeof(VertexPosColor), car_indices, sizeof(car_indices) / sizeof(unsigned short)))
 	);
-
-	//vec.emplace_back(
-	//	std::shared_ptr<GameObject>(new GameObject("Cube2", cube_vertices, sizeof(cube_vertices) / sizeof(mVertex), cube_indices, sizeof(cube_indices) / sizeof(unsigned short)))
-	//);
 
 	vec.emplace_back(
 		std::shared_ptr<GameObject>(new GameObject("Ground", ground_vertices, sizeof(ground_pos_color) / sizeof(VertexPosColor), ground_indices, sizeof(ground_indices) / sizeof(unsigned short)))
@@ -160,7 +146,6 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	//vec.emplace_back(
 	//	std::shared_ptr<GameObject>(new GameObject("Tree", &obj_vertices[0], v_size, &indices[0], i_size))
 	//);
-
 
 	return vec;
 }

@@ -23,7 +23,6 @@ float4 main(PixelShaderInput input) : SV_TARGET
 	// D = (N.L)
 	float diffuseFactor = saturate(dot(input.normal_world, _lightDir));
 	
-	[flatten]
 	if (diffuseFactor > 0.0f) {
 		_diffuse = diffuseFactor * material.diffuse * dirLight.diffuse;
 		// R = 2 * (N.L) * N - L
