@@ -21,7 +21,7 @@ float4 main(PixelShaderInput input) : SV_TARGET
 	// A = A
 	_ambient = material.ambient * dirLight.ambient;
 	// D = (N.L)
-	float diffuseFactor = saturate(dot(input.normal_world, _lightDir));
+	float diffuseFactor = dot(input.normal_world, _lightDir);
 	
 	if (diffuseFactor > 0.0f) {
 		_diffuse = diffuseFactor * material.diffuse * dirLight.diffuse;
@@ -32,7 +32,7 @@ float4 main(PixelShaderInput input) : SV_TARGET
 		_specular = specularFactor * material.specular * dirLight.specular;
 	}
 	// I = A + D * N.L + (R.V)^n
-	float4 I = input.color + _ambient + _diffuse + _specular;
+	float4 I = input.color * (_ambient + _diffuse) + _specular;
 	I.a = material.diffuse.a * input.color.a;
 	return I;
 }

@@ -75,14 +75,14 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 
 	//cube
 	static const VertexPosColor cube_pos_color[] = {
-		{XMFLOAT3(0.5f,   0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.5f,   0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.5f,  -0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.5f,  -0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(0.5f,   0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(0.5f,   0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(0.5f,  -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(0.5f,  -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 	};
 	static const unsigned short cube_indices[] = {
 		//left

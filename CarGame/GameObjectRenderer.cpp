@@ -11,14 +11,14 @@ GameObjectRenderer::GameObjectRenderer(std::shared_ptr<GameObject> gameObject, M
 	UpdateVertexShaderConstantBuffer();
 	
 	//init light and material
-	m_DirLight.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	m_DirLight.diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	m_DirLight.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_DirLight.ambient = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	m_DirLight.diffuse = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	m_DirLight.specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	m_DirLight.direction = XMFLOAT3(-0.577f, -0.577f, 0.577f);
 	
-	m_PSConstantBufferData.material.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_PSConstantBufferData.material.ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_PSConstantBufferData.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBufferData.material.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 5.0f);
+	m_PSConstantBufferData.material.specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_PSConstantBufferData.dirLight = m_DirLight;
 	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
 
