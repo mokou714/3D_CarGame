@@ -1,7 +1,7 @@
 #include "Structures.hlsli"
 
-VertexShaderOutput main(VertexShaderInput vertexInput) {
-	VertexShaderOutput output;
+ColorVertexOutput main(ColorVertexInput vertexInput) {
+	ColorVertexOutput output;
 	float4 pos_H = float4(vertexInput.pos, 1.0f);
 
 	pos_H = mul(pos_H, world);

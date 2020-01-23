@@ -3,6 +3,7 @@
 #include "d3dApp.h"
 #include "GameObject.h"
 #include "GameObjectRenderer.h"
+#include "GameObjectRendererWithTex.h"
 #include "Camera.h"
 
 
@@ -17,7 +18,7 @@ namespace CarGame {
 
 	private:
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
-		std::vector<std::unique_ptr<GameObjectRenderer>> Renderers;
+		std::vector<std::shared_ptr<GameObjectRenderer>> Renderers;
 		bool renderObjects();
 		std::shared_ptr<Camera> cam;
 

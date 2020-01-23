@@ -5,6 +5,7 @@
 #include "Utilities.h"
 #include "LightingStructures.h"
 
+
 namespace CarGame {
 	class GameObjectRenderer {
 	public:
@@ -13,12 +14,13 @@ namespace CarGame {
 		~GameObjectRenderer();
 		std::shared_ptr<GameObject> gameObject;
 		std::shared_ptr<Camera> m_Camera;
-		void LoadResources();
+		virtual void init();
+		virtual void LoadResources();
+		virtual bool Render();
 		void UpdateVertexShaderConstantBuffer();
 		void UpdatePixelShaderConstantBuffer();
-		bool Render();
 		void ReleaseResources();
-	private:
+	protected:
 		//app resources
 		Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext;
@@ -32,7 +34,7 @@ namespace CarGame {
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VertexShader;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PixelShader;
 		unsigned int m_IndexCount; //draw
-		//light
-		DirectionalLight m_DirLight;
+		DirectionalLight m_DirLight; //light
+		
 	};
 }

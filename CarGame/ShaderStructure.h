@@ -4,13 +4,25 @@
 
 struct myVertex {
 	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT4 color;
 	DirectX::XMFLOAT3 normal;
+};
+
+struct myColorVertex : myVertex{
+	DirectX::XMFLOAT4 color;
+};
+
+struct myTexVertex : myVertex{
+	DirectX::XMFLOAT2 texcoord;
 };
 
 struct VertexPosColor {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT4 color;
+};
+
+struct VertexPosTex {
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 texcoord;
 };
 
 struct VSConstantBuffer {

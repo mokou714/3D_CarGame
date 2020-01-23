@@ -27,15 +27,28 @@ cbuffer PSConstantBuffer : register(b1) {
 	float3 eyePos;
 };
 
-struct VertexShaderInput {
+struct ColorVertexInput {
 	float3 pos : POSITION;
 	float4 color : COLOR;
 	float3 normal_local: NORMAL;
 };
 
-struct VertexShaderOutput {
+struct ColorVertexOutput {
 	float4 pos_H : SV_POSITION;
 	float3 pos_W : POSITION;
 	float4 color : COLOR;
 	float3 normal_world : NORMAL;
+};
+
+struct TexVertexInput {
+	float3 pos : POSITION;
+	float3 normal_local: NORMAL;
+	float2 tex : TEXCOORD;
+};
+
+struct TexVertexOutput {
+	float4 pos_H : SV_POSITION;
+	float3 pos_W : POSITION;
+	float3 normal_world : NORMAL;
+	float2 tex : TEXCOORD;
 };

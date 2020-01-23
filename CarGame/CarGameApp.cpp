@@ -18,11 +18,20 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	//init camera, set first game object as target
 	cam = std::shared_ptr<Camera>(new Camera(m_WindowWidth, m_WindowHeight, gameObjects[0]));
 	cam->setPosition(0.0f, 1.5f, -1.0f);
-
+	
 	//init game object renderers
 	for (auto obj_ptr:gameObjects) {
-		Renderers.emplace_back(std::unique_ptr<GameObjectRenderer>(new GameObjectRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam)));
-	}
+		if (obj_ptr->getName() == "Ground") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/Ground.jpg"));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else {
+			auto renderer_ptr = std::shared_ptr<GameObjectRenderer>(new GameObjectRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+	}	
 
 	//only init mouse
 	m_pMouse->SetWindow(m_MainWindow);

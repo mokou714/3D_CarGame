@@ -1,6 +1,6 @@
 #include "Structures.hlsli"
 
-struct PixelShaderInput
+struct ColorPixelInput
 {
 	float4 pos_H : SV_POSITION;
 	float3 pos_W : POSITION;
@@ -8,7 +8,7 @@ struct PixelShaderInput
 	float3 normal_world : NORMAL;
 };
 
-float4 main(PixelShaderInput input) : SV_TARGET
+float4 main(ColorPixelInput input) : SV_TARGET
 {
 	//init varibles
 	float4 _ambient = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -31,6 +31,7 @@ float4 main(PixelShaderInput input) : SV_TARGET
 		float specularFactor = pow(dot(R, _viewDir), material.specular.w);
 		_specular = specularFactor * material.specular * dirLight.specular;
 	}
+
 	// I = A + D * N.L + (R.V)^n
 	float4 I = input.color * (_ambient + _diffuse) + _specular;
 	I.a = material.diffuse.a * input.color.a;
