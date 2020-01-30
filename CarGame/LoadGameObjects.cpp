@@ -85,46 +85,50 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 	};
 
-	//static const VertexPosTex skybox_pos_tex[] = {
-	//	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.0f, 0.33333f)}, //0,0.33
-	//	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(0.0f, 0.66666f)}, //0,0.66
-	//	
-	//	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.25f, 0.0f)},//0.25,0
-	//	{XMFLOAT3(-0.5f,   -0.5f,  0.5f), XMFLOAT2(0.25f, 0.33333f)}, //0.25,0.33
-	//	{XMFLOAT3(-0.5f,   0.5f,   0.5f), XMFLOAT2(0.25f, 0.66666f)}, //0.25,0.66
-	//	{XMFLOAT3(-0.5f,   0.5f,  -0.5f), XMFLOAT2(0.25f, 1.0f)}, //0.25, 1.0
+	static const unsigned short cube_indices[] = {
+		//left
+		0,3,1,
+		1,3,2,
+		//front
+		4,0,5,
+		5,0,1,
+		//right
+		7,4,6,
+		6,4,5,
+		//back
+		3,7,2,
+		2,7,6,
+		//top
+		0,4,3,
+		3,4,7,
+		//bottom
+		5,1,6,
+		6,1,2
+	};
 
-	//	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.5f, 0.0f)},//0.5,0
-	//	{XMFLOAT3(0.5f,    -0.5f,  0.5f), XMFLOAT2(0.50f, 0.33333f)}, //0.5,0.33
-	//	{XMFLOAT3(0.5f,    0.5f,   0.5f), XMFLOAT2(0.5f, 0.66666f)},//0.5,0.66
-	//	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.5f, 1.0f)},//0.5,1.0
+	myVertex* cube_vertices = calculate_normal_from_pos_color(cube_pos_color, cube_indices, ARRAYSIZE(cube_indices));
 
-	//	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.75f, 0.33333f)},//0.75,0.33
-	//	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.75f, 0.66666f)},//0.75,0.66
-
-	//	{XMFLOAT3(-0.5f,    -0.5f,  -0.5f), XMFLOAT2(1.0f, 0.33333f)},//1.0,0.33
-	//	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(1.0f, 0.66666f)},//1.0,0.66
-	//};
-
+	//skybox
+	static float edge_offset = 0.0005; 
 	static const VertexPosTex skybox_pos_tex[] = {
-	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.0f, 2/3.0f)}, //0,0.33
-	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(0.0f, 1/3.0f)}, //0,0.66
+	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.0f + edge_offset, 2/3.0f - edge_offset)}, //0,0.33
+	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(0.0f + edge_offset, 1/3.0f + edge_offset)}, //0,0.66
 
-	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.25f, 1.0f)},//0.25,0
-	{XMFLOAT3(-0.5f,   -0.5f,  0.5f), XMFLOAT2(0.25f, 2/3.0f)}, //0.25,0.33
-	{XMFLOAT3(-0.5f,   0.5f,   0.5f), XMFLOAT2(0.25f, 1/3.0f)}, //0.25,0.66
-	{XMFLOAT3(-0.5f,   0.5f,  -0.5f), XMFLOAT2(0.25f, 0.0f)}, //0.25, 1.0
+	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.25f + edge_offset, 1.0f)},//0.25,0
+	{XMFLOAT3(-0.5f,   -0.5f,  0.5f), XMFLOAT2(0.25f + edge_offset, 2/3.0f - edge_offset)}, //0.25,0.33
+	{XMFLOAT3(-0.5f,   0.5f,   0.5f), XMFLOAT2(0.25f + edge_offset, 1/3.0f + edge_offset)}, //0.25,0.66
+	{XMFLOAT3(-0.5f,   0.5f,  -0.5f), XMFLOAT2(0.25f + edge_offset, 0.0f)}, //0.25, 1.0
 
-	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.50f, 1.0f)},//0.5,0
-	{XMFLOAT3(0.5f,    -0.5f,  0.5f), XMFLOAT2(0.50f, 2/3.0f)}, //0.5,0.33
-	{XMFLOAT3(0.5f,    0.5f,   0.5f), XMFLOAT2(0.50f, 1/3.0f)},//0.5,0.66
-	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.50f, 0.0f)},//0.5,1.0
+	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.50f - edge_offset, 1.0f)},//0.5,0
+	{XMFLOAT3(0.5f,    -0.5f,  0.5f), XMFLOAT2(0.50f - edge_offset, 2/3.0f - edge_offset)}, //0.5,0.33
+	{XMFLOAT3(0.5f,    0.5f,   0.5f), XMFLOAT2(0.50f - edge_offset, 1/3.0f + edge_offset)},//0.5,0.66
+	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.50f - edge_offset, 0.0f)},//0.5,1.0
 
-	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.75f, 2/3.0f)},//0.75,0.33
-	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.75f, 1/3.0f)},//0.75,0.66
+	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.75f, 2/3.0f - edge_offset)},//0.75,0.33
+	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.75f, 1/3.0f + edge_offset)},//0.75,0.66
 
-	{XMFLOAT3(-0.5f,    -0.5f,  -0.5f), XMFLOAT2(1.0f, 2/3.0f)},//1.0,0.33
-	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(1.0f, 1/3.0f)},//1.0,0.66
+	{XMFLOAT3(-0.5f,    -0.5f,  -0.5f), XMFLOAT2(1.0f - edge_offset, 2/3.0f - edge_offset)},//1.0,0.33
+	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(1.0f - edge_offset, 1/3.0f + edge_offset)},//1.0,0.66
 	};
 
 	static const unsigned short skybox_indices[] = {
@@ -149,31 +153,7 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 
 	};
 
-
-	static const unsigned short cube_indices[] = {
-		//left
-		0,3,1,
-		1,3,2,
-		//front
-		4,0,5,
-		5,0,1,
-		//right
-		7,4,6,
-		6,4,5,
-		//back
-		3,7,2,
-		2,7,6,
-		//top
-		0,4,3,
-		3,4,7,
-		//bottom
-		5,1,6,
-		6,1,2
-	};
-
-	myVertex* cube_vertices = calculate_normal_from_pos_color(cube_pos_color, cube_indices, ARRAYSIZE(cube_indices));
 	myVertex* skybox_vertices = calculate_normal_from_pos_tex(skybox_pos_tex, skybox_indices, ARRAYSIZE(skybox_indices));
-
 
 	//ground
 	static const XMFLOAT4 groundColor(16 / 255.f, 111 / 255.f, 156 / 255.f, 1.0f);
@@ -189,6 +169,8 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		2,1,3
 	};
 	myVertex* ground_vertices = calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
+
+
 
 	vec.emplace_back(
 		std::shared_ptr<GameObject>(new GameObject("Car", car_vertices, sizeof(car_pos_color) / sizeof(VertexPosColor), car_indices, sizeof(car_indices) / sizeof(unsigned short)))

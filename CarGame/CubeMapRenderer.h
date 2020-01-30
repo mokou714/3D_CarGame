@@ -10,7 +10,6 @@ namespace CarGame {
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera, const wchar_t* tex_file);
 		bool Render();
 		void LoadResources();
-		void updateDistance();
 	private:
 		const wchar_t* tex_file;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Texture; //texture

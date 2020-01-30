@@ -12,7 +12,6 @@ bool CubeMapRenderer::Render() {
 	//update Vertex and Pixel cbuffer
 	UpdateVertexShaderConstantBuffer();
 	UpdatePixelShaderConstantBuffer();
-	updateDistance();
 
 	/******************************************
 		bind resources to rendering pipeline
@@ -181,9 +180,3 @@ void CubeMapRenderer::LoadResources() {
 	CheckIfFailed(m_d3dDevice->CreateSamplerState(&sampDesc, m_SamplerState.GetAddressOf()));
 }
 
-void CubeMapRenderer::updateDistance() {
-
-	gameObject->setScale(1000.0f, 1000.0f, 1000.0f);
-	gameObject->setPosition(0.0f, 0.0f, 0.0f);
-	
-}
