@@ -1,4 +1,5 @@
 ﻿#include "Utilities.h"
+#include <comdef.h>
 
 HRESULT CompileShader(
 	const WCHAR* hlslFileName,
@@ -30,6 +31,9 @@ void CheckIfFailed(HRESULT hr)
 	if (FAILED(hr))
 	{
 		// Set a breakpoint on this line to catch Win32 API errors.
+		/*_com_error err(hr);
+		LPCTSTR errMsg = err.ErrorMessage();
+		OutputDebugStringW(errMsg);*/
 		throw (hr);
 	}
 }

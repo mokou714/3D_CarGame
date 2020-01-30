@@ -26,6 +26,12 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}
+		else if (obj_ptr->getName() == "Skybox") {
+			obj_ptr->setScale(10, 10, 10);
+			auto renderer_ptr = std::shared_ptr<CubeMapRenderer>(new CubeMapRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/skybox.png"));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
 		else {
 			auto renderer_ptr = std::shared_ptr<GameObjectRenderer>(new GameObjectRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam));
 			renderer_ptr->init();

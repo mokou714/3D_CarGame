@@ -3,14 +3,10 @@
 using namespace CarGame;
 
 GameObjectRendererWithTex::GameObjectRendererWithTex(std::shared_ptr<GameObject> gameObject, Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice,
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera, const wchar_t* tex_file) : GameObjectRenderer(gameObject, m_d3dDevice,
-		m_d3dImmediateContext, camera), tex_file(tex_file)
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera, const wchar_t* tex_file) 
+	: GameObjectRenderer(gameObject, m_d3dDevice,m_d3dImmediateContext, camera), tex_file(tex_file)
 {
 }
-
-//void GameObjectRendererWithTex::init() {
-//	
-//}
 
 void GameObjectRendererWithTex::LoadResources(){
 	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
@@ -23,7 +19,6 @@ void GameObjectRendererWithTex::LoadResources(){
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] = {
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//{"Color", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		{"Texcoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	CheckIfFailed(
@@ -93,6 +88,7 @@ void GameObjectRendererWithTex::LoadResources(){
 
 	//init texture
 	CheckIfFailed(DirectX::CreateWICTextureFromFile(m_d3dDevice.Get(), tex_file, nullptr, m_Texture.GetAddressOf()));
+	
 	//init sampler state
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));

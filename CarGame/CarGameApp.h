@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "GameObjectRenderer.h"
 #include "GameObjectRendererWithTex.h"
+#include "CubeMapRenderer.h"
 #include "Camera.h"
 
 

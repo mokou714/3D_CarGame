@@ -47,6 +47,9 @@
     <ClCompile Include="GameObjectRendererWithTex.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="CubeMapRenderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -94,6 +97,9 @@
     <ClInclude Include="GameObjectRendererWithTex.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="CubeMapRenderer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorPixelShader.hlsl">
@@ -106,6 +112,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="ColorVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyVertex.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyPixel.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
@@ -133,5 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\Ground.jpg" />
+    <Image Include="Textures\skybox.png" />
+    <Image Include="Textures\cubemap.dds" />
   </ItemGroup>
 </Project>

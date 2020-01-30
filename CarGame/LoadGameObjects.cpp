@@ -84,6 +84,72 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 	};
+
+	//static const VertexPosTex skybox_pos_tex[] = {
+	//	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.0f, 0.33333f)}, //0,0.33
+	//	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(0.0f, 0.66666f)}, //0,0.66
+	//	
+	//	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.25f, 0.0f)},//0.25,0
+	//	{XMFLOAT3(-0.5f,   -0.5f,  0.5f), XMFLOAT2(0.25f, 0.33333f)}, //0.25,0.33
+	//	{XMFLOAT3(-0.5f,   0.5f,   0.5f), XMFLOAT2(0.25f, 0.66666f)}, //0.25,0.66
+	//	{XMFLOAT3(-0.5f,   0.5f,  -0.5f), XMFLOAT2(0.25f, 1.0f)}, //0.25, 1.0
+
+	//	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.5f, 0.0f)},//0.5,0
+	//	{XMFLOAT3(0.5f,    -0.5f,  0.5f), XMFLOAT2(0.50f, 0.33333f)}, //0.5,0.33
+	//	{XMFLOAT3(0.5f,    0.5f,   0.5f), XMFLOAT2(0.5f, 0.66666f)},//0.5,0.66
+	//	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.5f, 1.0f)},//0.5,1.0
+
+	//	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.75f, 0.33333f)},//0.75,0.33
+	//	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.75f, 0.66666f)},//0.75,0.66
+
+	//	{XMFLOAT3(-0.5f,    -0.5f,  -0.5f), XMFLOAT2(1.0f, 0.33333f)},//1.0,0.33
+	//	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(1.0f, 0.66666f)},//1.0,0.66
+	//};
+
+	static const VertexPosTex skybox_pos_tex[] = {
+	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.0f, 2/3.0f)}, //0,0.33
+	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(0.0f, 1/3.0f)}, //0,0.66
+
+	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.25f, 1.0f)},//0.25,0
+	{XMFLOAT3(-0.5f,   -0.5f,  0.5f), XMFLOAT2(0.25f, 2/3.0f)}, //0.25,0.33
+	{XMFLOAT3(-0.5f,   0.5f,   0.5f), XMFLOAT2(0.25f, 1/3.0f)}, //0.25,0.66
+	{XMFLOAT3(-0.5f,   0.5f,  -0.5f), XMFLOAT2(0.25f, 0.0f)}, //0.25, 1.0
+
+	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.50f, 1.0f)},//0.5,0
+	{XMFLOAT3(0.5f,    -0.5f,  0.5f), XMFLOAT2(0.50f, 2/3.0f)}, //0.5,0.33
+	{XMFLOAT3(0.5f,    0.5f,   0.5f), XMFLOAT2(0.50f, 1/3.0f)},//0.5,0.66
+	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.50f, 0.0f)},//0.5,1.0
+
+	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.75f, 2/3.0f)},//0.75,0.33
+	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.75f, 1/3.0f)},//0.75,0.66
+
+	{XMFLOAT3(-0.5f,    -0.5f,  -0.5f), XMFLOAT2(1.0f, 2/3.0f)},//1.0,0.33
+	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(1.0f, 1/3.0f)},//1.0,0.66
+	};
+
+	static const unsigned short skybox_indices[] = {
+		//left
+		4,1,0,
+		4,0,3,
+		//top
+		4,5,9,
+		4,9,8,
+		//bottom
+		2,3,7,
+		2,7,6,
+		//right
+		7,10,11,
+		7,11,8,
+		//back
+		10,12,13,
+		10,13,11,
+		//front
+		7,8,4,
+		7,4,3,
+
+	};
+
+
 	static const unsigned short cube_indices[] = {
 		//left
 		0,3,1,
@@ -106,15 +172,17 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	};
 
 	myVertex* cube_vertices = calculate_normal_from_pos_color(cube_pos_color, cube_indices, ARRAYSIZE(cube_indices));
+	myVertex* skybox_vertices = calculate_normal_from_pos_tex(skybox_pos_tex, skybox_indices, ARRAYSIZE(skybox_indices));
+
 
 	//ground
 	static const XMFLOAT4 groundColor(16 / 255.f, 111 / 255.f, 156 / 255.f, 1.0f);
 	static const VertexPosTex ground_pos_tex[] = {
 		//left bottom is origin
-		{XMFLOAT3(-10.0f, -1.f, 10.0f), XMFLOAT2(1.0f,0.0f)}, //left top
-		{XMFLOAT3(10.0f, -1.f,  10.0f), XMFLOAT2(1.0f,1.0f)}, //right top
-		{XMFLOAT3(-10.0f, -1.f, -10.0f), XMFLOAT2(0.0f,0.0f)}, //left bottom
-		{XMFLOAT3(10.0f,  -1.f,  -10.0f), XMFLOAT2(0.0f,1.0f)} //right bottom
+		{XMFLOAT3(-100.0f, -1.f, 100.0f), XMFLOAT2(1.0f,0.0f)}, //left top
+		{XMFLOAT3(100.0f, -1.f,  100.0f), XMFLOAT2(1.0f,1.0f)}, //right top
+		{XMFLOAT3(-100.0f, -1.f, -100.0f), XMFLOAT2(0.0f,0.0f)}, //left bottom
+		{XMFLOAT3(100.0f,  -1.f,  -100.0f), XMFLOAT2(0.0f,1.0f)} //right bottom
 	};
 	static const unsigned short ground_indices[] = {
 		0,1,2,
@@ -131,7 +199,11 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	);
 
 	vec.emplace_back(
-		std::shared_ptr<GameObject>(new GameObject("cube", cube_vertices, sizeof(cube_pos_color) / sizeof(VertexPosColor), cube_indices, sizeof(cube_indices) / sizeof(unsigned short)))
+		std::shared_ptr<GameObject>(new GameObject("Cube", cube_vertices, sizeof(cube_pos_color) / sizeof(VertexPosColor), cube_indices, sizeof(cube_indices) / sizeof(unsigned short)))
+	);
+
+	vec.emplace_back(
+		std::shared_ptr<GameObject>(new GameObject("Skybox", skybox_vertices, sizeof(skybox_pos_tex) / sizeof(VertexPosTex), skybox_indices, sizeof(skybox_indices) / sizeof(unsigned short)))
 	);
 
 	//load outside models
