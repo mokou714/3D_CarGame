@@ -47,9 +47,6 @@
     <ClCompile Include="GameObjectRendererWithTex.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="CubeMapRenderer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -95,9 +92,6 @@
       <Filter>TextureLoader</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectRendererWithTex.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeMapRenderer.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

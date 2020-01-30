@@ -3,15 +3,18 @@
 using namespace CarGame;
 
 GameObjectRendererWithTex::GameObjectRendererWithTex(std::shared_ptr<GameObject> gameObject, Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice,
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera, const wchar_t* tex_file) 
-	: GameObjectRenderer(gameObject, m_d3dDevice,m_d3dImmediateContext, camera), tex_file(tex_file)
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera, const wchar_t* tex_file, bool isSkybox) 
+	: GameObjectRenderer(gameObject, m_d3dDevice,m_d3dImmediateContext, camera), tex_file(tex_file), isSkybox(isSkybox)
 {
 }
 
 void GameObjectRendererWithTex::LoadResources(){
 	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
+	const wchar_t* VSFile = isSkybox? L"SkyVertex.hlsl" : L"TexVertexShader.hlsl";
+	const wchar_t* PSFile = isSkybox? L"SkyPixel.hlsl": L"TexPixelShader.hlsl";
+
 	// Compile vertex shader shader
-	CheckIfFailed(CompileShader(L"TexVertexShader.hlsl", "main", "vs_5_0", Blob.ReleaseAndGetAddressOf()));
+	CheckIfFailed(CompileShader(VSFile, "main", "vs_5_0", Blob.ReleaseAndGetAddressOf()));
 	//load vertex shader
 	CheckIfFailed(m_d3dDevice->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_VertexShader.GetAddressOf()));
 
@@ -25,7 +28,7 @@ void GameObjectRendererWithTex::LoadResources(){
 		m_d3dDevice->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), Blob->GetBufferPointer(), Blob->GetBufferSize(), &m_VertexLayout)
 	);
 	//Compile pixel shader shader
-	CheckIfFailed(CompileShader(L"TexPixelShader.hlsl", "main", "ps_5_0", Blob.ReleaseAndGetAddressOf()));
+	CheckIfFailed(CompileShader(PSFile, "main", "ps_5_0", Blob.ReleaseAndGetAddressOf()));
 	//load pixel shader
 	CheckIfFailed(m_d3dDevice->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_PixelShader.GetAddressOf()));
 	Blob.Reset();
@@ -101,6 +104,20 @@ void GameObjectRendererWithTex::LoadResources(){
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	CheckIfFailed(m_d3dDevice->CreateSamplerState(&sampDesc, m_SamplerState.GetAddressOf()));
 
+	D3D11_RASTERIZER_DESC R_desc;
+	ZeroMemory(&R_desc, sizeof(D3D11_RASTERIZER_DESC));
+	R_desc.FillMode = D3D11_FILL_SOLID;
+	R_desc.CullMode = D3D11_CULL_NONE;
+	R_desc.FrontCounterClockwise = true;
+	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&R_desc, &m_ResterizerState));
+
+	D3D11_DEPTH_STENCIL_DESC DS_Desc;
+	ZeroMemory(&DS_Desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	DS_Desc.DepthEnable = true;
+	DS_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	DS_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_DepthStencilState));
+
 }
 
 bool GameObjectRendererWithTex::Render() {
@@ -121,6 +138,11 @@ bool GameObjectRendererWithTex::Render() {
 	//bind sampler
 	m_d3dImmediateContext->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
 	m_d3dImmediateContext->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
+	//resterization & depthstencil, only for skybox
+	if (isSkybox) {
+		m_d3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState.Get(), 0);
+		m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
+	}
 	//bind vertex buffer
 	UINT stride = sizeof(myTexVertex);
 	UINT offset = 0;

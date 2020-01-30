@@ -22,13 +22,13 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	//init game object renderers
 	for (auto obj_ptr:gameObjects) {
 		if (obj_ptr->getName() == "Ground") {
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/Ground.jpg"));
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/Ground.jpg", false));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}
 		else if (obj_ptr->getName() == "Skybox") {
 			obj_ptr->setScale(1000, 1000, 1000);
-			auto renderer_ptr = std::shared_ptr<CubeMapRenderer>(new CubeMapRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/skybox.png"));
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/skybox.png", true));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}

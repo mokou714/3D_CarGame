@@ -84,7 +84,6 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
 	};
-
 	static const unsigned short cube_indices[] = {
 		//left
 		0,3,1,
@@ -105,7 +104,6 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		5,1,6,
 		6,1,2
 	};
-
 	myVertex* cube_vertices = calculate_normal_from_pos_color(cube_pos_color, cube_indices, ARRAYSIZE(cube_indices));
 
 	//skybox
@@ -130,7 +128,6 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	{XMFLOAT3(-0.5f,    -0.5f,  -0.5f), XMFLOAT2(1.0f - edge_offset, 2/3.0f - edge_offset)},//1.0,0.33
 	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(1.0f - edge_offset, 1/3.0f + edge_offset)},//1.0,0.66
 	};
-
 	static const unsigned short skybox_indices[] = {
 		//left
 		4,1,0,
@@ -152,7 +149,6 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		7,4,3,
 
 	};
-
 	myVertex* skybox_vertices = calculate_normal_from_pos_tex(skybox_pos_tex, skybox_indices, ARRAYSIZE(skybox_indices));
 
 	//ground
