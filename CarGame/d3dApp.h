@@ -47,9 +47,7 @@ protected:
 	bool      m_AppPaused;       
 	bool      m_Minimized;      
 	bool      m_Maximized;      
-	bool      m_Resizing;       
-	bool	  m_Enable4xMsaa;	 
-	UINT      m_4xMsaaQuality;   
+	bool      m_Resizing;
 
 	timer m_timer;
 

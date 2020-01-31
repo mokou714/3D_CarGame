@@ -47,6 +47,15 @@
     <ClCompile Include="GameObjectRendererWithTex.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MouseController.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyboardController.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -94,6 +103,15 @@
     <ClInclude Include="GameObjectRendererWithTex.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="MouseController.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardController.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorPixelShader.hlsl">
@@ -131,6 +149,9 @@
     <Filter Include="TextureLoader">
       <UniqueIdentifier>{9cdcf40a-d701-43b8-97f2-4e7fc545b4ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{3a265c0b-140c-450c-9ffc-eba1c4bff3ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Structures.hlsli">
@@ -138,8 +159,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\Ground.jpg" />
-    <Image Include="Textures\skybox.png" />
-    <Image Include="Textures\cubemap.dds" />
+    <Image Include="Textures\Ground.jpg">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="Textures\skybox.png">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="Textures\leaf_ground.jpg">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 //hard code all game objects here
 
+
 std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	std::vector<std::shared_ptr<CarGame::GameObject>> vec;
 
@@ -28,11 +29,6 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		//part2 right
 		{XMFLOAT3(0.3f, -0.3f, 0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
 		{XMFLOAT3(0.3f, -0.3f, -0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-
-		//left front wheel
-		//left back wheel
-		//right front wheel
-		//right back wheel
 	};
 	static const unsigned short car_indices[] = {
 		//left
@@ -72,6 +68,12 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 
 	};
 	myVertex* car_vertices = calculate_normal_from_pos_color(car_pos_color, car_indices, ARRAYSIZE(car_indices));
+
+	//wheel
+	int wheel_side_count = 16;
+	static const VertexPosColor* wheel_pos_color = generateWheelVertices(wheel_side_count, 0.5, 0.5);
+	static const unsigned short* wheel_indices = generateWheelIndices(wheel_side_count);
+	myVertex* wheel_vertices = calculate_normal_from_pos_color(wheel_pos_color, wheel_indices, wheel_side_count*3*4);
 
 	//cube
 	static const VertexPosColor cube_pos_color[] = {
@@ -155,10 +157,10 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	static const XMFLOAT4 groundColor(16 / 255.f, 111 / 255.f, 156 / 255.f, 1.0f);
 	static const VertexPosTex ground_pos_tex[] = {
 		//left bottom is origin
-		{XMFLOAT3(-100.0f, -1.f, 100.0f), XMFLOAT2(1.0f,0.0f)}, //left top
-		{XMFLOAT3(100.0f, -1.f,  100.0f), XMFLOAT2(1.0f,1.0f)}, //right top
-		{XMFLOAT3(-100.0f, -1.f, -100.0f), XMFLOAT2(0.0f,0.0f)}, //left bottom
-		{XMFLOAT3(100.0f,  -1.f,  -100.0f), XMFLOAT2(0.0f,1.0f)} //right bottom
+		{XMFLOAT3(-10.0f, -1.f, 10.0f), XMFLOAT2(1.0f,0.0f)}, //left top
+		{XMFLOAT3(10.0f, -1.f,  10.0f), XMFLOAT2(1.0f,1.0f)}, //right top
+		{XMFLOAT3(-10.0f, -1.f, -10.0f), XMFLOAT2(0.0f,0.0f)}, //left bottom
+		{XMFLOAT3(10.0f,  -1.f,  -10.0f), XMFLOAT2(0.0f,1.0f)} //right bottom
 	};
 	static const unsigned short ground_indices[] = {
 		0,1,2,
@@ -166,23 +168,27 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	};
 	myVertex* ground_vertices = calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
 
-
-
 	vec.emplace_back(
 		std::shared_ptr<GameObject>(new GameObject("Car", car_vertices, sizeof(car_pos_color) / sizeof(VertexPosColor), car_indices, sizeof(car_indices) / sizeof(unsigned short)))
+	);
+
+	vec.emplace_back(
+		std::shared_ptr<GameObject>(new GameObject("Wheel", wheel_vertices, wheel_side_count*2+2, wheel_indices, wheel_side_count*3*4))
 	);
 
 	vec.emplace_back(
 		std::shared_ptr<GameObject>(new GameObject("Ground", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short)))
 	);
 
-	vec.emplace_back(
+	/*vec.emplace_back(
 		std::shared_ptr<GameObject>(new GameObject("Cube", cube_vertices, sizeof(cube_pos_color) / sizeof(VertexPosColor), cube_indices, sizeof(cube_indices) / sizeof(unsigned short)))
-	);
+	);*/
 
 	vec.emplace_back(
 		std::shared_ptr<GameObject>(new GameObject("Skybox", skybox_vertices, sizeof(skybox_pos_tex) / sizeof(VertexPosTex), skybox_indices, sizeof(skybox_indices) / sizeof(unsigned short)))
 	);
+
+	
 
 	//load outside models
 	//WaveFrontReader<unsigned short> obj_reader;
@@ -267,4 +273,39 @@ static myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vert
 		XMStoreFloat3(&myVertices[i].normal, nor);
 	}
 	return myVertices;
+}
+static VertexPosColor* CarGame::generateWheelVertices(int side_count, float height, float width) {
+	VertexPosColor* result = new VertexPosColor[side_count*2+2];
+	float rad = 2 * PI / side_count;
+	//two halves
+	for (int i = 0; i < side_count; ++i) {
+		result[i] = {XMFLOAT3(width/2, std::sin(rad*i)*height / 2, std::cos(rad*i)*height/2), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
+		result[i+side_count+1] = {XMFLOAT3(-width/2, std::sin(rad*i)*height / 2, std::cos(rad*i)*height / 2), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
+	}
+	//center
+	result[side_count] = { XMFLOAT3(width/2.0,0.0f,0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
+	result[side_count*2+1] = { XMFLOAT3(-width/2.0,0.0f,0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
+	return result;
+}
+
+static unsigned short* CarGame::generateWheelIndices(int side_count) {
+	unsigned short* result = new unsigned short[side_count*3*4];
+	for (int i = 0; i < side_count; ++i) {
+		//1st half
+		result[i*3 + 0] = i; //0
+		result[i*3 + 1] = (i + 1) % side_count; //1
+		result[i*3 + 2] = side_count; //8
+		//2nd half
+		result[(i + side_count) * 3 + 0] = i + side_count + 1; //9
+		result[(i + side_count) * 3 + 1] = (i + 1) % side_count + side_count + 1; //10
+		result[(i + side_count) * 3 + 2] = side_count*2+1; //17
+		//mid
+		result[ (side_count*2) * 3 + 0 + i * 6] = i; //0
+		result[ (side_count*2) * 3 + 1 + i * 6] = i + side_count + 1; //9
+		result[ (side_count*2) * 3 + 2 + i * 6] = (i + 1) % side_count + side_count + 1; //10
+		result[ (side_count*2) * 3 + 3 + i * 6] = i; //0
+		result[ (side_count*2) * 3 + 4 + i * 6] = (i + 1 ) % side_count + side_count + 1; //10
+		result[ (side_count*2) * 3 + 5 + i * 6] = (i + 1) % side_count; //1
+	}
+	return result;
 }

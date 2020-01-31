@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Car.cpp" />
     <ClCompile Include="CarGameApp.cpp" />
     <ClCompile Include="d3dApp.cpp" />
     <ClCompile Include="DDSTextureLoader\DDSTextureLoader.cpp" />
@@ -131,10 +132,12 @@
     <ClCompile Include="GameObjectRenderer.cpp" />
     <ClCompile Include="GameObjectRendererWithTex.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="KeyboardController.cpp" />
     <ClCompile Include="LightingStructures.cpp" />
     <ClCompile Include="LoadGameObjects.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="MouseController.cpp" />
     <ClCompile Include="ShaderStructure.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="Utilities.cpp" />
@@ -142,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="CarGameApp.h" />
     <ClInclude Include="d3dApp.h" />
     <ClInclude Include="DDSTextureLoader\DDSTextureLoader.h" />
@@ -149,9 +153,11 @@
     <ClInclude Include="GameObjectRenderer.h" />
     <ClInclude Include="GameObjectRendererWithTex.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="KeyboardController.h" />
     <ClInclude Include="LightingStructures.h" />
     <ClInclude Include="LoadGameObjects.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MouseController.h" />
     <ClInclude Include="ShaderStructure.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="Utilities.h" />
@@ -223,8 +229,8 @@
     <None Include="Structures.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\cubemap.dds" />
     <Image Include="Textures\Ground.jpg" />
+    <Image Include="Textures\leaf_ground.jpg" />
     <Image Include="Textures\skybox.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

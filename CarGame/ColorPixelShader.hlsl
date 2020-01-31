@@ -8,8 +8,11 @@ struct ColorPixelInput
 	float3 normal_world : NORMAL;
 };
 
-float4 main(ColorPixelInput input) : SV_TARGET
-{
+float4 main(ColorPixelInput input) : SV_TARGET{
+	//Gouraud shading
+	//return Input.color
+
+	//Phong shading
 	//init varibles
 	float4 _ambient = {0.0f, 0.0f, 0.0f, 0.0f};
 	float4 _diffuse = { 0.0f, 0.0f, 0.0f, 0.0f};

@@ -22,7 +22,8 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	//init game object renderers
 	for (auto obj_ptr:gameObjects) {
 		if (obj_ptr->getName() == "Ground") {
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/Ground.jpg", false));
+			obj_ptr->setScale(10, 1, 10);
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/leaf_ground.jpg", false));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}
@@ -43,8 +44,6 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	m_pMouse->SetWindow(m_MainWindow);
 	m_pMouse->SetMode(Mouse::MODE_ABSOLUTE);
 
-	//debug
-	gameObjects[2]->setRotation(1.0f,1.0f,1.0f);
 
 }
 

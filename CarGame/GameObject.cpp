@@ -14,7 +14,6 @@ GameObject::GameObject(std::string name, const myVertex vertices[], unsigned int
 	setPosition(0.0f, 0.0f, 0.0f);
 	setRotation(0.0f, 0.0f, 0.0f);
 	setScale(1.0f, 1.0f, 1.0f);
-
 }
 GameObject::~GameObject(){}
 
