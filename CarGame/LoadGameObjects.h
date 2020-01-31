@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
 #include "GameObject.h"
+#include "Car.h"
 #include "DirectXTex/DirectXTex.h"
 #include "DirectXMesh/DirectXMesh.h"
 #include "Utilities/WaveFrontReader.h"
 #include <math.h>
 
-#define PI 3.14159265358979323846
+
 
 namespace CarGame {
 	std::vector<std::shared_ptr<CarGame::GameObject>> LoadGameObjects();

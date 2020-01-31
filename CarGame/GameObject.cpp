@@ -65,19 +65,21 @@ GameObject::~GameObject(){}
  }
 
 XMMATRIX GameObject::getTransformMatrix() {
-	// M = TRS? SRT?
+	// M = TRS? SRT!
 	XMMATRIX T = XMMatrixTranslation(position.x, position.y, position.z);
-
 	XMMATRIX rX = XMMatrixRotationX(rotation.x);
 	XMMATRIX rY = XMMatrixRotationY(rotation.y);
 	XMMATRIX rZ = XMMatrixRotationZ(rotation.z);
-
 	XMMATRIX R = rX * rY * rZ;
-
 	XMMATRIX S = XMMatrixScaling(scale.x, scale.y, scale.z);
 
 	//return T*R*S;
-	return S*R*T;
+
+	if (parent) 
+		return S*R*T*parent->getTransformMatrix();
+	else 
+		return S*R*T;
+	
 }
 
 std::string GameObject::getName() {

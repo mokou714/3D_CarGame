@@ -2,6 +2,7 @@
 
 #include "d3dApp.h"
 #include "GameObject.h"
+#include "Car.h"
 #include "GameObjectRenderer.h"
 #include "GameObjectRendererWithTex.h"
 #include "Camera.h"

@@ -28,6 +28,8 @@ namespace CarGame {
 		virtual void Translate(XMFLOAT3 direction, float speed);
 		virtual void Rotate(XMFLOAT3 axis, float degree);
 
+		GameObject* parent;
+
 	private:
 		std::string name;
 		const myVertex* vertices; //local space positions

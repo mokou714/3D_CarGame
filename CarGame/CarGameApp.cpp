@@ -96,6 +96,7 @@ void CarGameApp::updateGameObjects() {
 				XMStoreFloat3(&forward_dir, local_forward);
 				obj->Translate(forward_dir, MOVING_SPEED);
 				cam->updateTranslation(forward_dir, MOVING_SPEED);
+				((Car*)obj.get())->updateWheels(0);
 			}
 			if (keyState.IsKeyDown(Keyboard::S)) {
 				XMVECTOR world_backward = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
@@ -104,14 +105,21 @@ void CarGameApp::updateGameObjects() {
 				XMStoreFloat3(&backward_dir, local_forward);
 				obj->Translate(backward_dir, MOVING_SPEED);
 				cam->updateTranslation(backward_dir, MOVING_SPEED);
+				((Car*)obj.get())->updateWheels(0);
 			}
 			if (keyState.IsKeyDown(Keyboard::A)) {
-				if (cam->mode == ThirdPerson)
+				if (cam->mode == ThirdPerson) {
 					obj->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED);
+					((Car*)obj.get())->updateWheels(-1);
+				}
+				
 			}
 			if (keyState.IsKeyDown(Keyboard::D)) {
-				if (cam->mode == ThirdPerson)
+				if (cam->mode == ThirdPerson) {
 					obj->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED);
+					((Car*)obj.get())->updateWheels(1);
+				}
+				
 			}
 			if (keyState.IsKeyDown(Keyboard::F)) {
 				cam->switchCamMode();
