@@ -15,4 +15,5 @@ namespace CarGame {
 	static myVertex* calculate_normal_from_pos_tex(const VertexPosTex* vertices, const unsigned short* indices, unsigned int i_size);
 	static VertexPosColor* generateWheelVertices(int side_count, float height, float width);
 	static unsigned short* generateWheelIndices(int side_count);
+	static VertexPosTex* generateWheelVerticesWithTex(int side_count, float height, float width);
 }

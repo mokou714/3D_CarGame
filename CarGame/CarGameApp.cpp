@@ -33,6 +33,11 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}
+		else if (obj_ptr->getName() == "Wheel") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/tire.jpg", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
 		else {
 			auto renderer_ptr = std::shared_ptr<GameObjectRenderer>(new GameObjectRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam));
 			renderer_ptr->init();
@@ -96,7 +101,7 @@ void CarGameApp::updateGameObjects() {
 				XMStoreFloat3(&forward_dir, local_forward);
 				obj->Translate(forward_dir, MOVING_SPEED);
 				cam->updateTranslation(forward_dir, MOVING_SPEED);
-				((Car*)obj.get())->updateWheels(0);
+				((Car*)obj.get())->updateWheels(forward);
 			}
 			if (keyState.IsKeyDown(Keyboard::S)) {
 				XMVECTOR world_backward = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
@@ -105,19 +110,19 @@ void CarGameApp::updateGameObjects() {
 				XMStoreFloat3(&backward_dir, local_forward);
 				obj->Translate(backward_dir, MOVING_SPEED);
 				cam->updateTranslation(backward_dir, MOVING_SPEED);
-				((Car*)obj.get())->updateWheels(0);
+				((Car*)obj.get())->updateWheels(backward);
 			}
 			if (keyState.IsKeyDown(Keyboard::A)) {
 				if (cam->mode == ThirdPerson) {
 					obj->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED);
-					((Car*)obj.get())->updateWheels(-1);
+					((Car*)obj.get())->updateWheels(leftward);
 				}
 				
 			}
 			if (keyState.IsKeyDown(Keyboard::D)) {
 				if (cam->mode == ThirdPerson) {
 					obj->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED);
-					((Car*)obj.get())->updateWheels(1);
+					((Car*)obj.get())->updateWheels(rightward);
 				}
 				
 			}

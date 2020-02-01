@@ -168,5 +168,8 @@
     <Image Include="Textures\leaf_ground.jpg">
       <Filter>Textures</Filter>
     </Image>
+    <Image Include="Textures\tire.jpg">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

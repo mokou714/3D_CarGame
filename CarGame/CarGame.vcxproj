@@ -232,6 +232,7 @@
     <Image Include="Textures\Ground.jpg" />
     <Image Include="Textures\leaf_ground.jpg" />
     <Image Include="Textures\skybox.png" />
+    <Image Include="Textures\tire.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,7 +3,7 @@
 using namespace CarGame;
 
 Car::Car(std::string name, const myVertex vertices[], unsigned int vSize, const unsigned short indices[], unsigned int iSize)
-	:GameObject(name,vertices,vSize,indices,iSize)
+	:GameObject(name,vertices,vSize,indices,iSize), wheel_angle(0.0f),wheel_rotation(0.0f)
 {}
 
 void Car::initWheelPositions() {
@@ -18,18 +18,28 @@ void Car::initWheelPositions() {
 }
 
 
-void Car::updateWheels(int dir) {
+void Car::updateWheels(moving_direction dir) {
 	XMFLOAT3 carRot = getRotation();
 	XMFLOAT3 carScale = getScale();
 	//update rotations
 	float rotateAngle = PI / 6;
-	if (dir == 0) {
-		wheels.leftFrontWheel->setRotation(carRot.x, 0, carRot.z);
-		wheels.rightFrontWheel->setRotation(carRot.x, 0, carRot.z);
+	if (dir == forward or dir == backward) {
+		int _dir = dir == forward ? 1 : -1;
+		wheel_rotation = fmod(wheel_rotation + WHEEL_ROTATING_SPEED * _dir, 2 * PI);
+		wheels.leftFrontWheel->setRotation(wheel_rotation, 0, carRot.z);
+		wheels.rightFrontWheel->setRotation(wheel_rotation, 0, carRot.z);
+		wheels.leftRearWheel->setRotation(wheel_rotation, 0, carRot.z);
+		wheels.rightRearWheel->setRotation(wheel_rotation, 0, carRot.z);
 	}
 	else {
-		wheels.leftFrontWheel->setRotation(carRot.x, rotateAngle*dir, carRot.z);
-		wheels.rightFrontWheel->setRotation(carRot.x, rotateAngle*dir, carRot.z);
+		int _dir = dir == leftward ? -1 : 1;
+		wheel_angle += WHEEL_TURNING_SPEED * _dir;
+		if (wheel_angle > PI / 6)
+			wheel_angle = PI / 6;
+		if (wheel_angle < -PI / 6)
+			wheel_angle = -PI / 6;
+		wheels.leftFrontWheel->setRotation(wheel_rotation, wheel_angle, carRot.z);
+		wheels.rightFrontWheel->setRotation(wheel_rotation, wheel_angle, carRot.z);
 	}
 	//wheels.leftRearWheel->setRotation(carRot.x, carRot.y, carRot.z);
 	//wheels.rightRearWheel->setRotation(carRot.x, carRot.y, carRot.z);

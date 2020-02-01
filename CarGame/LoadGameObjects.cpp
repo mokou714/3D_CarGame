@@ -76,14 +76,14 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	int wheel_side_count = 16;
 	float wheel_height = 0.3;
 	float wheel_width = 0.1f;
-	static const VertexPosColor* wheel_pos_color = generateWheelVertices(wheel_side_count, wheel_height, wheel_width);
+	static const VertexPosTex* wheel_pos_color = generateWheelVerticesWithTex(wheel_side_count, wheel_height, wheel_width);
 	static const unsigned short* wheel_indices = generateWheelIndices(wheel_side_count);
-	myVertex* wheel_vertices = calculate_normal_from_pos_color(wheel_pos_color, wheel_indices, wheel_side_count*3*4);
+	myVertex* wheel_vertices = calculate_normal_from_pos_tex(wheel_pos_color, wheel_indices, wheel_side_count*3*4);
 
-	GameObject* leftFrontWheel = new GameObject("LeftFrontWheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
-	GameObject* rightFrontWheel = new GameObject("rightFrontWheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
-	GameObject* leftRearWheel = new GameObject("leftRearWheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
-	GameObject* rightRearWheel = new GameObject("rightRearWheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
+	GameObject* leftFrontWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
+	GameObject* rightFrontWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
+	GameObject* leftRearWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
+	GameObject* rightRearWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
 	car->wheels.leftFrontWheel = leftFrontWheel;
 	car->wheels.rightFrontWheel = rightFrontWheel;
 	car->wheels.leftRearWheel = leftRearWheel;
@@ -287,6 +287,20 @@ static VertexPosColor* CarGame::generateWheelVertices(int side_count, float heig
 	//center
 	result[side_count] = { XMFLOAT3(width/2.0,0.0f,0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
 	result[side_count*2+1] = { XMFLOAT3(-width/2.0,0.0f,0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
+	return result;
+}
+
+static VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float height, float width) {
+	VertexPosTex* result = new VertexPosTex[side_count * 2 + 2];
+	float rad = 2 * PI / side_count;
+	//two halves
+	for (int i = 0; i < side_count; ++i) {
+		result[i] = { XMFLOAT3(width / 2, std::sin(rad*i)*height / 2, std::cos(rad*i)*height / 2), XMFLOAT2(std::sin(rad*i)/2.5+0.5f,std::cos(rad*i)/2.5+0.5f) };
+		result[i + side_count + 1] = { XMFLOAT3(-width / 2, std::sin(rad*i)*height / 2, std::cos(rad*i)*height / 2), XMFLOAT2(std::sin(rad*i)/2.5 + 0.5f,std::cos(rad*i)/2.5+0.5f) };
+	}
+	//center
+	result[side_count] = { XMFLOAT3(width / 2.0,0.0f,0.0f), XMFLOAT2(0.5f,0.55f) };
+	result[side_count * 2 + 1] = { XMFLOAT3(-width / 2.0,0.0f,0.0f), XMFLOAT2(0.5f,0.555f) };
 	return result;
 }
 static unsigned short* CarGame::generateWheelIndices(int side_count) {

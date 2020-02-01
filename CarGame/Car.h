@@ -1,8 +1,18 @@
 #pragma once
 #include "GameObject.h"
 #define PI 3.14159265358979323846
+#define WHEEL_TURNING_SPEED 0.01
+#define WHEEL_ROTATING_SPEED 0.01
+
 
 namespace CarGame {
+	enum moving_direction {
+		forward,
+		backward,
+		leftward,
+		rightward
+	};
+
 	struct Wheels {
 		GameObject* leftFrontWheel;
 		GameObject* rightFrontWheel;
@@ -16,7 +26,10 @@ namespace CarGame {
 		Wheels wheels;
 		//update wheels
 		void initWheelPositions();
-		void updateWheels(int dir);
+		void updateWheels(moving_direction dir);
+	private:
+		float wheel_angle;
+		float wheel_rotation;
 	};
 
 
