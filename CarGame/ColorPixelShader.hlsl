@@ -36,7 +36,7 @@ float4 main(ColorPixelInput input) : SV_TARGET{
 	}
 
 	// I = A + D * N.L + (R.V)^n
-	float4 I = input.color * (_ambient + _diffuse) + _specular;
+	float4 I = input.color * (_ambient + _diffuse + _specular);
 	I.a = material.diffuse.a * input.color.a;
 	return I;
 }

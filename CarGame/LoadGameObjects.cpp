@@ -7,28 +7,29 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	std::vector<std::shared_ptr<CarGame::GameObject>> to_render;
 
 	//Car
+	XMFLOAT4 car_color = { 252.0 / 255.0f, 225.0 / 255.f, 20.0 / 255.f, 1.0f };
 	static const VertexPosColor car_pos_color[] = {
 		//part1 left
-		{XMFLOAT3(-0.35f, 0.2f, 0.4f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.35f, 0.0f, 0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.35f, 0.0f, -0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.35f, 0.5f, -0.4f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.35f, 0.5f, 0.4f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(-0.35f, 0.2f, 0.4f), car_color},
+		{XMFLOAT3(-0.35f, 0.0f, 0.7f), car_color},
+		{XMFLOAT3(-0.35f, 0.0f, -0.7f), car_color},
+		{XMFLOAT3(-0.35f, 0.5f, -0.4f), car_color},
+		{XMFLOAT3(-0.35f, 0.5f, 0.4f), car_color},
 		
 		//part2 left
-		{XMFLOAT3(-0.35f, -0.3f, 0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(-0.35f, -0.3f, -0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(-0.35f, -0.3f, 0.7f), car_color},
+		{XMFLOAT3(-0.35f, -0.3f, -0.7f), car_color},
 
 		//part1 right
-		{XMFLOAT3(0.35f, 0.2f, 0.4f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.35f, 0.0f, 0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.35f, 0.0f, -0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.35f, 0.5f, -0.4f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.35f, 0.5f, 0.4), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(0.35f, 0.2f, 0.4f), car_color},
+		{XMFLOAT3(0.35f, 0.0f, 0.7f), car_color},
+		{XMFLOAT3(0.35f, 0.0f, -0.7f), car_color},
+		{XMFLOAT3(0.35f, 0.5f, -0.4f), car_color},
+		{XMFLOAT3(0.35f, 0.5f, 0.4), car_color},
 
 		//part2 right
-		{XMFLOAT3(0.35f, -0.3f, 0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
-		{XMFLOAT3(0.35f, -0.3f, -0.7f), XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f)},
+		{XMFLOAT3(0.35f, -0.3f, 0.7f), car_color},
+		{XMFLOAT3(0.35f, -0.3f, -0.7f), car_color},
 	};
 	static const unsigned short car_indices[] = {
 		//left
