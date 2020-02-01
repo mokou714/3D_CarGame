@@ -300,7 +300,7 @@ static VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float
 	}
 	//center
 	result[side_count] = { XMFLOAT3(width / 2.0,0.0f,0.0f), XMFLOAT2(0.5f,0.55f) };
-	result[side_count * 2 + 1] = { XMFLOAT3(-width / 2.0,0.0f,0.0f), XMFLOAT2(0.5f,0.555f) };
+	result[side_count * 2 + 1] = { XMFLOAT3(-width / 2.0,0.0f,0.0f), XMFLOAT2(0.5f,0.55f) };
 	return result;
 }
 static unsigned short* CarGame::generateWheelIndices(int side_count) {

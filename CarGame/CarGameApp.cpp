@@ -101,7 +101,11 @@ void CarGameApp::updateGameObjects() {
 				XMStoreFloat3(&forward_dir, local_forward);
 				obj->Translate(forward_dir, MOVING_SPEED);
 				cam->updateTranslation(forward_dir, MOVING_SPEED);
+				//update wheel rotation
 				((Car*)obj.get())->updateWheels(forward);
+				//interpolate wheel angle to 0 if not pressing A and D
+				if (!keyState.IsKeyDown(Keyboard::A) && !keyState.IsKeyDown(Keyboard::D))
+					((Car*)obj.get())->interpolateTurningAngle(0);
 			}
 			if (keyState.IsKeyDown(Keyboard::S)) {
 				XMVECTOR world_backward = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
@@ -110,18 +114,28 @@ void CarGameApp::updateGameObjects() {
 				XMStoreFloat3(&backward_dir, local_forward);
 				obj->Translate(backward_dir, MOVING_SPEED);
 				cam->updateTranslation(backward_dir, MOVING_SPEED);
+				//update wheel rotation
 				((Car*)obj.get())->updateWheels(backward);
+				//interpolate wheel angle to 0 if not pressing A and D
+				if (!keyState.IsKeyDown(Keyboard::A) && !keyState.IsKeyDown(Keyboard::D))
+					((Car*)obj.get())->interpolateTurningAngle(0);
 			}
 			if (keyState.IsKeyDown(Keyboard::A)) {
 				if (cam->mode == ThirdPerson) {
-					obj->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED);
+					//rotate car only when moving forward or backward
+					if (keyState.IsKeyDown(Keyboard::W)|| keyState.IsKeyDown(Keyboard::S))
+						obj->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED);
+					//update wheel angle
 					((Car*)obj.get())->updateWheels(leftward);
 				}
 				
 			}
 			if (keyState.IsKeyDown(Keyboard::D)) {
 				if (cam->mode == ThirdPerson) {
-					obj->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED);
+					//rotate car only when moving forward or backward
+					if (keyState.IsKeyDown(Keyboard::W) || keyState.IsKeyDown(Keyboard::S))
+						obj->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED);
+					//update wheel angle
 					((Car*)obj.get())->updateWheels(rightward);
 				}
 				

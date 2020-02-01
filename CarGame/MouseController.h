@@ -14,6 +14,25 @@ namespace CarGame {
 		int scrollWheelValue;
 	};
 
+	class myMouseImpl {
+	public:
+		void SetWindow(HWND window);
+
+	private:
+		HWND            mWindow;
+
+		//ScopedHandle    mScrollWheelValue;
+
+		int             mLastX;
+		int             mLastY;
+		int             mRelativeX;
+		int             mRelativeY;
+
+		bool            mInFocus;
+
+		friend void ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam);
+	};
+
 
 	//update mouse state for each frame
 	class myMouseState {

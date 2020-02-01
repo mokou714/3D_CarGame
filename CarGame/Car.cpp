@@ -17,7 +17,7 @@ void Car::initWheelPositions() {
 	wheels.rightRearWheel->setPosition(carPos.x + xOffset, carPos.y - yOffset, carPos.z - zOffset);
 }
 
-
+//update wheel angle and rotation
 void Car::updateWheels(moving_direction dir) {
 	XMFLOAT3 carRot = getRotation();
 	XMFLOAT3 carScale = getScale();
@@ -26,24 +26,35 @@ void Car::updateWheels(moving_direction dir) {
 	if (dir == forward or dir == backward) {
 		int _dir = dir == forward ? 1 : -1;
 		wheel_rotation = fmod(wheel_rotation + WHEEL_ROTATING_SPEED * _dir, 2 * PI);
-		wheels.leftFrontWheel->setRotation(wheel_rotation, 0, carRot.z);
-		wheels.rightFrontWheel->setRotation(wheel_rotation, 0, carRot.z);
+		wheels.leftFrontWheel->setRotation(wheel_rotation, wheel_angle, carRot.z);
+		wheels.rightFrontWheel->setRotation(wheel_rotation, wheel_angle, carRot.z);
 		wheels.leftRearWheel->setRotation(wheel_rotation, 0, carRot.z);
 		wheels.rightRearWheel->setRotation(wheel_rotation, 0, carRot.z);
 	}
 	else {
-		int _dir = dir == leftward ? -1 : 1;
-		wheel_angle += WHEEL_TURNING_SPEED * _dir;
-		if (wheel_angle > PI / 6)
-			wheel_angle = PI / 6;
-		if (wheel_angle < -PI / 6)
-			wheel_angle = -PI / 6;
+		dir == leftward ? interpolateTurningAngle(-1): interpolateTurningAngle(1);
 		wheels.leftFrontWheel->setRotation(wheel_rotation, wheel_angle, carRot.z);
 		wheels.rightFrontWheel->setRotation(wheel_rotation, wheel_angle, carRot.z);
 	}
-	//wheels.leftRearWheel->setRotation(carRot.x, carRot.y, carRot.z);
-	//wheels.rightRearWheel->setRotation(carRot.x, carRot.y, carRot.z);
+}
 
+//wheel turing interpolation
+void Car::interpolateTurningAngle(int dir) {
+	//0, turn back
+	if (dir == 0) {
+		if (wheel_angle < 0) {
+			wheel_angle + WHEEL_TURNING_SPEED > 0 ? wheel_angle = 0 : wheel_angle += WHEEL_TURNING_SPEED;		
+		}
+		else {
+			wheel_angle - WHEEL_TURNING_SPEED < 0 ? wheel_angle = 0 : wheel_angle -= WHEEL_TURNING_SPEED;
+		}
+	}
+	//1 or -1, turn right or left
+	else {
+		wheel_angle += WHEEL_TURNING_SPEED * dir;
+		if (wheel_angle > PI / 6) { wheel_angle = PI / 6; }
+		if (wheel_angle < -PI / 6) { wheel_angle = -PI / 6; }
+	}
 }
 
 

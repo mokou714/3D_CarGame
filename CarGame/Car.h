@@ -27,9 +27,11 @@ namespace CarGame {
 		//update wheels
 		void initWheelPositions();
 		void updateWheels(moving_direction dir);
+		void interpolateTurningAngle(int dir);
 	private:
 		float wheel_angle;
 		float wheel_rotation;
+		
 	};
 
 
