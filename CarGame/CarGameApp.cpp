@@ -5,6 +5,7 @@ using namespace CarGame;
 
 #define TURNING_SPEED 0.005f
 #define MOVING_SPEED 0.01f
+#define MOUSE_SENSITIVITY 5
 
 //public
 CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
@@ -46,8 +47,8 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	}	
 
 	//only init mouse
-	m_pMouse->SetWindow(m_MainWindow);
-	m_pMouse->SetMode(Mouse::MODE_ABSOLUTE);
+	//m_pMouse->SetWindow(m_MainWindow);
+	//m_pMouse->SetMode(Mouse::MODE_ABSOLUTE);
 
 
 }
@@ -100,7 +101,7 @@ void CarGameApp::updateGameObjects() {
 				XMFLOAT3 forward_dir;
 				XMStoreFloat3(&forward_dir, local_forward);
 				obj->Translate(forward_dir, MOVING_SPEED);
-				cam->updateTranslation(forward_dir, MOVING_SPEED);
+				cam->updateTranslation();
 				//update wheel rotation
 				((Car*)obj.get())->updateWheels(forward);
 				//interpolate wheel angle to 0 if not pressing A and D
@@ -113,7 +114,7 @@ void CarGameApp::updateGameObjects() {
 				XMFLOAT3 backward_dir;
 				XMStoreFloat3(&backward_dir, local_forward);
 				obj->Translate(backward_dir, MOVING_SPEED);
-				cam->updateTranslation(backward_dir, MOVING_SPEED);
+				cam->updateTranslation();
 				//update wheel rotation
 				((Car*)obj.get())->updateWheels(backward);
 				//interpolate wheel angle to 0 if not pressing A and D
@@ -153,13 +154,9 @@ void CarGameApp::updateGameObjects() {
 }
 
 void CarGameApp::updateMouseControl(){
-	//get mouse state
-	Mouse::State mouseState = m_pMouse->GetState();
-	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
-	m_MouseTracker.Update(mouseState);
 	//horizontal movement rotates camera around y axis
-	cam->updateHorizontal((mouseState.x - lastMouseState.x) * 0.005f);
 	//vertical movement rotates camera around x axis
-	cam->updateVertical((mouseState.y - lastMouseState.y) * 0.005f);
-	
+	cam->updateLookingAngle(m_pMouse->xPos * 0.0001f * MOUSE_SENSITIVITY, m_pMouse->yPos * 0.0001f * MOUSE_SENSITIVITY);
+	cam->updateLookingDistance(m_pMouse->scrollWheelValue);
+	//m_pMouse->scrollWheelValue = 0;
 }

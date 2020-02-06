@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include "ShaderStructure.h"
+#define PI 3.14159265358979323846
 
 using namespace DirectX;
 

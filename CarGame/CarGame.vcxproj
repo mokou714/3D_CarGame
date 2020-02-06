@@ -136,7 +136,6 @@
     <ClCompile Include="LightingStructures.cpp" />
     <ClCompile Include="LoadGameObjects.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MouseController.cpp" />
     <ClCompile Include="ShaderStructure.cpp" />
     <ClCompile Include="timer.cpp" />
@@ -156,7 +155,6 @@
     <ClInclude Include="KeyboardController.h" />
     <ClInclude Include="LightingStructures.h" />
     <ClInclude Include="LoadGameObjects.h" />
-    <ClInclude Include="Mouse.h" />
     <ClInclude Include="MouseController.h" />
     <ClInclude Include="ShaderStructure.h" />
     <ClInclude Include="timer.h" />

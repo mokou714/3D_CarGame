@@ -6,7 +6,7 @@
 namespace CarGame {
 	enum camera_mode{FirstPerson,ThirdPerson};
 
-	class Camera {
+	class Camera{
 	public:
 		Camera(int WindowWidth, int WindowHeight, std::shared_ptr<GameObject> target);
 		std::shared_ptr<GameObject> target;
@@ -16,9 +16,9 @@ namespace CarGame {
 		DirectX::XMVECTOR getPosition();
 		DirectX::XMVECTOR getLookingAt();
 		float getAspectRatio();
-		void updateTranslation(XMFLOAT3 dir, float speed);
-		void updateHorizontal(float angleVelocity);
-		void updateVertical(float angleVelocity);
+		void updateTranslation();
+		void updateLookingAngle(float X_angleVelocity, float Y_angleVelocity);
+		void updateLookingDistance(float scrollWheelValue);
 		void switchCamMode();
 		void reset3rdView();
 	private:
@@ -27,7 +27,8 @@ namespace CarGame {
 		DirectX::XMVECTOR lookingAt;
 		int w_width;
 		int w_height;
-		DirectX::XMVECTOR default_3rd_pos_offset;
+		DirectX::XMVECTOR dir_to_object;
+		float distant_to_object;
 		
 	};
 }

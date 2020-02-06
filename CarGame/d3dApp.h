@@ -15,7 +15,8 @@
 #include "timer.h"
 #include "Utilities.h"
 #include "Keyboard.h"
-#include "Mouse.h"
+//#include "Mouse.h"
+#include "MouseController.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -40,6 +41,7 @@ public:
 protected:
 	bool InitMainWindow();
 	bool InitD3D();
+	bool RegisterDevicesForInput();
 
 protected:
 	HINSTANCE m_AppInstance;        
@@ -66,8 +68,8 @@ protected:
 	D3D11_VIEWPORT m_ScreenViewport;     
 
 	//mouse & keyboard
-	std::unique_ptr<CarGame::Mouse> m_pMouse;
-	CarGame::Mouse::ButtonStateTracker m_MouseTracker;
+	std::unique_ptr<CarGame::myMouse> m_pMouse;
+	//CarGame::Mouse::ButtonStateTracker m_MouseTracker;
 	std::unique_ptr<CarGame::Keyboard> m_pKeyboard;
 	CarGame::Keyboard::KeyboardStateTracker m_KeyboardTracker;
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "GameObject.h"
-#define PI 3.14159265358979323846
 #define WHEEL_TURNING_SPEED 0.01
 #define WHEEL_ROTATING_SPEED 0.01
 

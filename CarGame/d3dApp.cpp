@@ -1,6 +1,4 @@
 ﻿#include "d3dApp.h"
-#include "Keyboard.h"
-#include "Mouse.h"
 #include <sstream>
 
 /*
@@ -84,13 +82,17 @@ int d3dApp::Run()
 bool d3dApp::Init()
 {
 	//set up mouse, keyboard pointer
-	m_pMouse = std::make_unique<CarGame::Mouse>();
+	m_pMouse = std::make_unique<CarGame::myMouse>();
 	m_pKeyboard = std::make_unique<CarGame::Keyboard>();
+
 
 	if (!InitMainWindow())
 		return false;
 
 	if (!InitD3D())
+		return false;
+
+	if (!RegisterDevicesForInput())
 		return false;
 
 	return true;
@@ -154,6 +156,15 @@ void d3dApp::OnResize()
 	m_d3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
 }
 
+
+/*
+A Windows window is identified by a "window handle" (HWND) 
+and is created after the CWnd object is created by a call to the Create member function of class CWnd.
+
+wParam -> word parameter 16,32,64bits
+lParam -> long parameter 32,64bits
+
+*/
 LRESULT d3dApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -264,9 +275,8 @@ LRESULT d3dApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
 		return 0;
 
-		// mouse/keyboard event
+		//************************************** mouse/keyboard event*********************************************
 	case WM_INPUT:
-
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
@@ -289,6 +299,7 @@ LRESULT d3dApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_SYSKEYUP:
 		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
+		//********************************************************************************************************
 
 	case WM_ACTIVATEAPP:
 		m_pMouse->ProcessMessage(msg, wParam, lParam);
@@ -473,5 +484,21 @@ bool d3dApp::InitD3D()
 	return true;
 }
 
+bool d3dApp::RegisterDevicesForInput() {
+	RAWINPUTDEVICE Rid[1];
+
+	Rid[0].usUsagePage = 0x01;
+	Rid[0].usUsage = 0x02;
+
+	Rid[0].dwFlags = 0;  
+	Rid[0].hwndTarget = m_MainWindow;
+
+	return RegisterRawInputDevices(Rid, 1, sizeof(RAWINPUTDEVICE));
+
+	//Rid[1].usUsagePage = 0x01;
+	//Rid[1].usUsage = 0x06;
+	//Rid[1].dwFlags = 0;   
+	//Rid[1].hwndTarget = m_MainWindow;
+}
 
 

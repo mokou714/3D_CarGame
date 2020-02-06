@@ -32,9 +32,6 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>IO</Filter>
     </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>IO</Filter>
-    </ClCompile>
     <ClCompile Include="LightingStructures.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -86,9 +83,6 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="Keyboard.h">
-      <Filter>IO</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
       <Filter>IO</Filter>
     </ClInclude>
     <ClInclude Include="LightingStructures.h">
