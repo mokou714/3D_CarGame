@@ -157,6 +157,6 @@ void CarGameApp::updateMouseControl(){
 	//horizontal movement rotates camera around y axis
 	//vertical movement rotates camera around x axis
 	cam->updateLookingAngle(m_pMouse->xPos * 0.0001f * MOUSE_SENSITIVITY, m_pMouse->yPos * 0.0001f * MOUSE_SENSITIVITY);
-	cam->updateLookingDistance(m_pMouse->scrollWheelValue);
-	//m_pMouse->scrollWheelValue = 0;
+	cam->updateLookingDistance(m_pMouse->scrollWheelValue * 10);
+	m_pMouse->scrollWheelValue /= 1.01;
 }

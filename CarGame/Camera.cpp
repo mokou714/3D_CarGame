@@ -2,6 +2,8 @@
 
 using namespace CarGame;
 
+static int scrolling_counter = 0;
+
 Camera::Camera(int WindowWidth, int WindowHeight, std::shared_ptr<GameObject> target) 
 	: w_width(WindowWidth), w_height(WindowHeight), target(target)
 {
@@ -134,8 +136,16 @@ void Camera::updateLookingAngle(float X_angleVelocity, float Y_angleVelocity) {
 
 void Camera::updateLookingDistance(float scrollWheelValue) {
 	if (mode == ThirdPerson) {
-		
-		distant_to_object += scrollWheelValue * 0.0001f;
+		if (scrolling_counter == 0) {
+			scrolling_counter = 10;
+			scrollWheelValue = scrollWheelValue;
+		}
+		else {
+			distant_to_object += scrollWheelValue/10 * 0.0001f;
+			//scrollWheelValue = scrollWheelValue / 3;
+			scrolling_counter--;
+			
+		}
 
 		if (distant_to_object < 1) { distant_to_object = 1; }
 		if (distant_to_object > 10) { distant_to_object = 10; }

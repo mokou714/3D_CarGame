@@ -32,6 +32,8 @@ void myMouse::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 
 		scrollWheelValue = GET_WHEEL_DELTA_WPARAM(wParam);
 
+
+
 		return;
 	}
 				   
