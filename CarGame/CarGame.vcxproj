@@ -131,7 +131,6 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectRenderer.cpp" />
     <ClCompile Include="GameObjectRendererWithTex.cpp" />
-    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="KeyboardController.cpp" />
     <ClCompile Include="LightingStructures.cpp" />
     <ClCompile Include="LoadGameObjects.cpp" />
@@ -151,7 +150,6 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectRenderer.h" />
     <ClInclude Include="GameObjectRendererWithTex.h" />
-    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyboardController.h" />
     <ClInclude Include="LightingStructures.h" />
     <ClInclude Include="LoadGameObjects.h" />

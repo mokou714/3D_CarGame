@@ -14,9 +14,8 @@
 #include <DirectXMath.h>
 #include "timer.h"
 #include "Utilities.h"
-#include "Keyboard.h"
-//#include "Mouse.h"
 #include "MouseController.h"
+#include "KeyboardController.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -69,9 +68,8 @@ protected:
 
 	//mouse & keyboard
 	std::unique_ptr<CarGame::myMouse> m_pMouse;
-	//CarGame::Mouse::ButtonStateTracker m_MouseTracker;
-	std::unique_ptr<CarGame::Keyboard> m_pKeyboard;
-	CarGame::Keyboard::KeyboardStateTracker m_KeyboardTracker;
+	std::unique_ptr<CarGame::myKeyboard> m_pKeyboard;
+
 
 	//initial attributes
 	int m_WindowWidth; 

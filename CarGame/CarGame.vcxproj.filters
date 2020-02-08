@@ -29,9 +29,6 @@
     <ClCompile Include="Utilities.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Keyboard.cpp">
-      <Filter>IO</Filter>
-    </ClCompile>
     <ClCompile Include="LightingStructures.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -82,9 +79,6 @@
     <ClInclude Include="Utilities.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>IO</Filter>
-    </ClInclude>
     <ClInclude Include="LightingStructures.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -128,9 +122,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="IO">
-      <UniqueIdentifier>{099e625a-adbe-4ed4-a115-0a6e6f0a3149}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header">
       <UniqueIdentifier>{2476f6a7-c1ae-413b-9002-01c0ad747b2b}</UniqueIdentifier>
     </Filter>

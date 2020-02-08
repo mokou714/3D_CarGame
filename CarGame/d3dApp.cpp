@@ -83,7 +83,7 @@ bool d3dApp::Init()
 {
 	//set up mouse, keyboard pointer
 	m_pMouse = std::make_unique<CarGame::myMouse>();
-	m_pKeyboard = std::make_unique<CarGame::Keyboard>();
+	m_pKeyboard = std::make_unique<CarGame::myKeyboard>();
 
 
 	if (!InitMainWindow())
