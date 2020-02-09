@@ -88,6 +88,10 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	car->wheels.rightFrontWheel = rightFrontWheel;
 	car->wheels.leftRearWheel = leftRearWheel;
 	car->wheels.rightRearWheel = rightRearWheel;
+	car->addChild(leftFrontWheel);
+	car->addChild(rightFrontWheel);
+	car->addChild(leftRearWheel);
+	car->addChild(rightRearWheel);
 	leftFrontWheel->parent = car;
 	rightFrontWheel->parent = car;
 	leftRearWheel->parent = car;

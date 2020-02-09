@@ -14,6 +14,7 @@ GameObject::GameObject(std::string name, const myVertex vertices[], unsigned int
 	setPosition(0.0f, 0.0f, 0.0f);
 	setRotation(0.0f, 0.0f, 0.0f);
 	setScale(1.0f, 1.0f, 1.0f);
+	visible = true;
 }
 GameObject::~GameObject(){}
 
@@ -97,4 +98,17 @@ void GameObject::Rotate(XMFLOAT3 quaternion, float degree){
 	rotation.x += quaternion.x * degree;
 	rotation.y += quaternion.y * degree;
 	rotation.z += quaternion.z * degree;
+}
+
+void GameObject::setVisible(bool isVisible) {
+	visible = isVisible;
+	for (GameObject* obj:children) {
+		obj->setVisible(isVisible);
+	}
+}
+bool GameObject::getVisible() {
+	return visible;
+}
+void GameObject::addChild(GameObject* obj) {
+	children.emplace_back(obj);
 }

@@ -107,7 +107,7 @@ void GameObjectRendererWithTex::LoadResources(){
 	D3D11_RASTERIZER_DESC R_desc;
 	ZeroMemory(&R_desc, sizeof(D3D11_RASTERIZER_DESC));
 	R_desc.FillMode = D3D11_FILL_SOLID;
-	R_desc.CullMode = D3D11_CULL_NONE;
+	R_desc.CullMode = D3D11_CULL_NONE; //no backculling
 	R_desc.FrontCounterClockwise = true;
 	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&R_desc, &m_ResterizerState));
 

@@ -76,16 +76,13 @@ void CarGameApp::RenderScene() {
 //render each object individually
 bool CarGameApp::renderObjects() {
 	for (auto& renderer : Renderers) {
-		renderer->Render();
+		if(renderer->gameObject->getVisible())
+			renderer->Render();
 	}
 	return true;
 }
 
 void CarGameApp::updateGameObjects() {
-	//get keyboard state
-	//Keyboard::State keyState = m_pKeyboard->GetState();
-	//Keyboard::State lastKeyState = m_KeyboardTracker.GetLastState();
-	//m_KeyboardTracker.Update(keyState);
 	for (auto& obj : gameObjects) {
 		if (obj->getName() == "Car") {
 			if (m_pKeyboard->state.W) {
@@ -116,8 +113,9 @@ void CarGameApp::updateGameObjects() {
 					((Car*)obj.get())->interpolateTurningAngle(0);
 			}
 			if (m_pKeyboard->state.A) {
+				//FirstPerson, only rotate wheels unless car is moving
 				if (cam->mode == ThirdPerson) {
-					//rotate car only when moving forward or backward, reverse A/D when backward
+					//reverse A/D when moving backward
 					if (m_pKeyboard->state.W)
 						obj->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED);
 					else if(m_pKeyboard->state.S)
@@ -125,11 +123,13 @@ void CarGameApp::updateGameObjects() {
 					//update wheel angle
 					((Car*)obj.get())->updateWheels(leftward);
 				}
+				//ThirdPerson, keyboard not used
 				
 			}
 			if (m_pKeyboard->state.D) {
+				//FirstPerson, only rotate wheels unless car is moving
 				if (cam->mode == ThirdPerson) {
-					//rotate car only when moving forward or backward, reverse A/D when backward
+					//reverse A/D when moving backward
 					if (m_pKeyboard->state.W)
 						obj->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED);
 					else if(m_pKeyboard->state.S)
@@ -137,10 +137,13 @@ void CarGameApp::updateGameObjects() {
 					//update wheel angle
 					((Car*)obj.get())->updateWheels(rightward);
 				}
+				//ThirdPerson, keyboard not used
+				
 				
 			}
 			if (m_pKeyboard->state.F) {
 				cam->switchCamMode();
+				obj->setVisible( cam->mode == FirstPerson ?false:true);
 				Sleep(150);
 			}
 			if (m_pKeyboard->state.R){
@@ -157,4 +160,5 @@ void CarGameApp::updateMouseControl(){
 	cam->updateLookingAngle(m_pMouse->xPos * 0.0001f * MOUSE_SENSITIVITY, m_pMouse->yPos * 0.0001f * MOUSE_SENSITIVITY);
 	cam->updateLookingDistance(m_pMouse->scrollWheelValue * 10);
 	m_pMouse->scrollWheelValue /= 1.01;
+
 }

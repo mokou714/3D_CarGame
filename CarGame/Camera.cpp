@@ -127,10 +127,13 @@ void Camera::updateLookingAngle(float X_angleVelocity, float Y_angleVelocity) {
 		}
 	}
 	else {
-		//for FPS mode, do not update x axis rotation
-		XMVECTOR Y_Axis = XMVectorSet(0, 1, 0, 0);
-		XMVECTOR LocalYAxis_quaternion_rotation = XMQuaternionRotationAxis(Y_Axis, X_angleVelocity);
+		//only change vertical angle
 		target->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), X_angleVelocity);
+		XMFLOAT3 targetRotation = target->getRotation();
+		XMVECTOR quaternion_Y_rotation = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), targetRotation.y);
+		//looking at
+		lookingAt = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), quaternion_Y_rotation)*100;
+		
 	}
 }
 
