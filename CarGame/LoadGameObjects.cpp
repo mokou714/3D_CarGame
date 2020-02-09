@@ -196,7 +196,24 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 		2,1,3
 	};
 	myVertex* ground_vertices = calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
-	to_render.emplace_back(std::shared_ptr<GameObject>(new GameObject("Ground", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short))));
+	GameObject* ground = new GameObject("Ground", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+	to_render.emplace_back(std::shared_ptr<GameObject>(ground));
+	
+	//roads
+	myVertex* road_vertices = calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
+	GameObject* road1 = new GameObject("Road", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+	GameObject* road2 = new GameObject("Road", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+	road1->setScale(0.1, 1, 1);
+	road2->setScale(0.1, 1, 1);
+	road2->setRotation(0, PI / 2, 0);
+	road1->setPosition(0, 0.1, 0);
+	road2->setPosition(0, 0.2, 0);
+	ground->addChild(road1);
+	ground->addChild(road2);
+	road1->parent = road2->parent = ground;
+	to_render.emplace_back(std::shared_ptr<GameObject>(road1));
+	to_render.emplace_back(std::shared_ptr<GameObject>(road2));
+
 
 	//load outside models
 	//WaveFrontReader<unsigned short> obj_reader;

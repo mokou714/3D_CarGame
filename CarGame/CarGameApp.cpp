@@ -4,7 +4,6 @@
 using namespace CarGame;
 
 #define TURNING_SPEED 0.005f
-#define MOVING_SPEED 0.01f
 #define MOUSE_SENSITIVITY 5
 
 //public
@@ -22,20 +21,27 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	
 	//init game object renderers
 	for (auto obj_ptr:gameObjects) {
-		if (obj_ptr->getName() == "Ground") {
+		std::string obj_name = obj_ptr->getName();
+		
+		if (obj_name == "Ground") {
 			obj_ptr->setScale(10, 1, 10);
 			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/leaf_ground.jpg", false));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}
-		else if (obj_ptr->getName() == "Skybox") {
+		else if (obj_name == "Skybox") {
 			obj_ptr->setScale(1000, 1000, 1000);
 			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/skybox.png", true));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}
-		else if (obj_ptr->getName() == "Wheel") {
+		else if (obj_name == "Wheel") {
 			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/tire.jpg", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "Road") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/road.jpg", false));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}

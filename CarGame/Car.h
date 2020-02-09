@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #define WHEEL_TURNING_SPEED 0.01
 #define WHEEL_ROTATING_SPEED 0.01
+#define MOVING_SPEED 0.02f
 
 
 namespace CarGame {
