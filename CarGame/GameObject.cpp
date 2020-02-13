@@ -37,6 +37,10 @@ GameObject::~GameObject(){}
 	scale.z = z;
 }
 
+ void GameObject::setName(std::string name) {
+	 this->name = name;
+ }
+
  XMFLOAT3 GameObject::getPosition() {
 	return position;
 }

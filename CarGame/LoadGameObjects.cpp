@@ -37,11 +37,56 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	to_render.emplace_back(std::shared_ptr<GameObject>(rightFrontWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftRearWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(rightRearWheel));
-
 	
 	//Cube
 	//to_render.emplace_back(std::shared_ptr<GameObject>(LoadCube()));
 
+	//car windows
+	GameObject* leftFrontWindow = LoadWindow();
+	GameObject* leftRearWindow = LoadWindow();
+	GameObject* rightFrontWindow = LoadWindow();
+	GameObject* rightRearWindow = LoadWindow();
+	GameObject* frontWindow = LoadWindow();
+	leftFrontWindow->setPosition(-0.36f, 0.16f, 0.15f);
+	leftRearWindow->setPosition(-0.36f, 0.16f, -0.233f);
+	rightFrontWindow->setPosition(0.36f, 0.16f, 0.15f);
+	rightRearWindow->setPosition(0.36f, 0.16f, -0.233f);
+	frontWindow->setPosition(0, 0.15f, 0.41f);
+	frontWindow->setRotation(0, PI/2, 0);
+	frontWindow->setScale(1, 1, 1.8);
+	car->addChild(leftFrontWindow);
+	car->addChild(leftRearWindow);
+	car->addChild(rightFrontWindow);
+	car->addChild(rightRearWindow);
+	car->addChild(frontWindow);
+	leftFrontWindow->parent = car;
+	leftRearWindow->parent = car;
+	rightFrontWindow->parent = car;
+	rightRearWindow->parent = car;
+	frontWindow->parent = car;
+	to_render.emplace_back(std::shared_ptr<GameObject>(leftFrontWindow));
+	to_render.emplace_back(std::shared_ptr<GameObject>(leftRearWindow));
+	to_render.emplace_back(std::shared_ptr<GameObject>(rightFrontWindow));
+	to_render.emplace_back(std::shared_ptr<GameObject>(rightRearWindow));
+	to_render.emplace_back(std::shared_ptr<GameObject>(frontWindow));
+
+	//car lights
+	GameObject* light1 = LoadCarLight();
+	GameObject* light2 = LoadCarLight();
+	light1->setName("CarLight");
+	light2->setName("CarLight");
+	car->addChild(light1);
+	car->addChild(light2);
+	light1->parent = car;
+	light2->parent = car;
+	light1->setPosition(0.18, -0.185, 0.735);
+	light1->setRotation(0, PI / 2, 0);
+	light1->setScale(0.65, 0.65, 0.65);
+	light2->setPosition(-0.18, -0.185, 0.735);
+	light2->setRotation(0, PI / 2, 0);
+	light2->setScale(0.65, 0.65, 0.65);
+	to_render.emplace_back(std::shared_ptr<GameObject>(light1));
+	to_render.emplace_back(std::shared_ptr<GameObject>(light2));
 
 	//Skybox
 	to_render.emplace_back(std::shared_ptr<GameObject>(LoadSkybox()));
@@ -159,7 +204,7 @@ static myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vert
 	return myVertices;
 }
 
-//Calcuate wheel vertex positions and indices
+//Calculate wheel vertex positions and indices
 static VertexPosColor* CarGame::generateWheelVertices(int side_count, float height, float width) {
 	VertexPosColor* result = new VertexPosColor[side_count*2+2];
 	float rad = 2 * PI / side_count;
@@ -207,6 +252,27 @@ static unsigned short* CarGame::generateWheelIndices(int side_count) {
 	}
 	return result;
 }
+//Calculate circle vertex position for light
+static VertexPosColor* CarGame::generateCircle(int side_count, float height, float width) {
+	VertexPosColor* result = new VertexPosColor[side_count + 1];
+	float rad = 2 * PI / side_count;
+	for (int i = 0; i < side_count; ++i) {
+		result[i] = { XMFLOAT3(width / 2, std::sin(rad*i)*height / 2, std::cos(rad*i)*height / 2), XMFLOAT4(1,1,1,1)};
+	}
+	//center
+	result[side_count] = { XMFLOAT3(width / 2.0,0.0f,0.0f), XMFLOAT4(1,1,1,1) };
+	return result;
+}
+static unsigned short* CarGame::generateCircleIndices(int side_count) {
+	unsigned short* result = new unsigned short[side_count * 3];
+	for (int i = 0; i < side_count; ++i) {
+		result[i * 3 + 0] = i;
+		result[i * 3 + 1] = (i+1)%side_count;
+		result[i * 3 + 2] = side_count;
+	}
+	return result;
+}
+
 
 //Load Object from outside files
 static GameObject* CarGame::LoadObjectFromFile(const wchar_t* file, const char* name) {
@@ -276,4 +342,19 @@ static GameObject* CarGame::LoadGround() {
 static GameObject* CarGame::LoadRoad(){
 	myVertex* road_vertices = CarGame::calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
 	return new GameObject("Road", road_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+}
+
+static GameObject* CarGame::LoadWindow() {
+	myVertex* window_vertices = CarGame::calculate_normal_from_pos_color(window_pos_color, window_indices, ARRAYSIZE(window_indices));
+	return new GameObject("Window", window_vertices, sizeof(window_pos_color) / sizeof(VertexPosColor), window_indices, sizeof(window_indices) / sizeof(unsigned short));
+}
+
+static GameObject* CarGame::LoadCarLight() {
+	int side_count = 16;
+	float height = 0.3f;
+	float width = 0.1f;
+	VertexPosColor* light_vertices = generateCircle(side_count,height,width);
+	unsigned short* light_indices = generateCircleIndices(side_count);
+	myVertex* vertices = calculate_normal_from_pos_color(light_vertices, light_indices, side_count * 3);
+	return new GameObject("CarLight", vertices, side_count + 1, light_indices, side_count * 3);
 }

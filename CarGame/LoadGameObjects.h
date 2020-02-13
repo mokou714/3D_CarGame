@@ -12,7 +12,7 @@ namespace CarGame {
 	static const XMFLOAT4 car_color = { 223 / 255.f, 227 / 255.f, 18 / 255.f, 1 };
 	static const VertexPosColor car_pos_color[] = {
 		//part1 left
-		{XMFLOAT3(-0.35f, 0.2f, 0.4f), car_color},
+		{XMFLOAT3(-0.35f, 0.15f, 0.4f), car_color},
 		{XMFLOAT3(-0.35f, 0.0f, 0.7f), car_color},
 		{XMFLOAT3(-0.35f, 0.0f, -0.7f), car_color},
 		{XMFLOAT3(-0.35f, 0.5f, -0.4f), car_color},
@@ -23,7 +23,7 @@ namespace CarGame {
 		{XMFLOAT3(-0.35f, -0.3f, -0.7f), car_color},
 
 		//part1 right
-		{XMFLOAT3(0.35f, 0.2f, 0.4f), car_color},
+		{XMFLOAT3(0.35f, 0.15f, 0.4f), car_color},
 		{XMFLOAT3(0.35f, 0.0f, 0.7f), car_color},
 		{XMFLOAT3(0.35f, 0.0f, -0.7f), car_color},
 		{XMFLOAT3(0.35f, 0.5f, -0.4f), car_color},
@@ -70,6 +70,19 @@ namespace CarGame {
 		12,5,6
 
 	};
+
+	//window
+	static const VertexPosColor window_pos_color[] = {
+		{XMFLOAT3(0.f, 0.0f, 0.15f), XMFLOAT4(1,1,1,1)},
+		{XMFLOAT3(0.f, 0.0f, -0.15f), XMFLOAT4(1,1,1,1)},
+		{XMFLOAT3(0.f, 0.25f, -0.15f), XMFLOAT4(1,1,1,1)},
+		{XMFLOAT3(0.f, 0.25f, 0.15f), XMFLOAT4(1,1,1,1)},
+	};
+	static const unsigned short window_indices[] = {
+		0,2,1,
+		0,3,2,
+	};
+
 	//cube
 	static const VertexPosColor cube_pos_color[] = {
 		{XMFLOAT3(0.5f,   0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
@@ -169,6 +182,9 @@ namespace CarGame {
 	static VertexPosColor* generateWheelVertices(int side_count, float height, float width);
 	static VertexPosTex* generateWheelVerticesWithTex(int side_count, float height, float width);
 	static unsigned short* generateWheelIndices(int side_count);
+	//Circle
+	static VertexPosColor* generateCircle(int side_count, float height, float width);
+	static unsigned short* generateCircleIndices(int side_count);
 	//Load Object from outside files
 	static GameObject* LoadObjectFromFile(const wchar_t* file, const char* name);
 	static Car* LoadCar();
@@ -177,4 +193,7 @@ namespace CarGame {
 	static GameObject* LoadSkybox();
 	static GameObject* LoadGround();
 	static GameObject* LoadRoad();
+	static GameObject* LoadWindow();
+	static GameObject* LoadCarLight();
+
 }

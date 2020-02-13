@@ -23,6 +23,7 @@ namespace CarGame {
 		unsigned int getIndicesCount();
 		unsigned int getVerticesCount();
 		std::string getName();
+		void setName(std::string name);
 		void setPosition(float x, float y, float z);
 		void setRotation(float x, float y, float z);
 		void setScale(float x, float y, float z);
