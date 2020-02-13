@@ -24,7 +24,6 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 		std::string obj_name = obj_ptr->getName();
 		
 		if (obj_name == "Ground") {
-			obj_ptr->setScale(10, 1, 10);
 			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/leaf_ground.jpg", false));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
@@ -47,6 +46,11 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 		}
 		else if (obj_name == "Tree") {
 			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/apple_tree.png", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "FatTree") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/fat_tree.png", false));
 			renderer_ptr->init();
 			Renderers.emplace_back(renderer_ptr);
 		}

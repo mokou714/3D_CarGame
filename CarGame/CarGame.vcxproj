@@ -225,6 +225,7 @@
     <None Include="Structures.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Textures\fat_tree.png" />
     <Image Include="Textures\Ground.jpg" />
     <Image Include="Textures\leaf_ground.jpg" />
     <Image Include="Textures\road.jpg" />

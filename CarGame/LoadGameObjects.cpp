@@ -97,6 +97,7 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	leftRearWheel->parent = car;
 	rightRearWheel->parent = car;
 	car->initWheelPositions();
+	car->setPosition(0, 0.48, 0);
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftFrontWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(rightFrontWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftRearWheel));
@@ -186,10 +187,10 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	static const XMFLOAT4 groundColor(16 / 255.f, 111 / 255.f, 156 / 255.f, 1.0f);
 	static const VertexPosTex ground_pos_tex[] = {
 		//left bottom is origin
-		{XMFLOAT3(-10.0f, -1.f, 10.0f), XMFLOAT2(1.0f,0.0f)}, //left top
-		{XMFLOAT3(10.0f, -1.f,  10.0f), XMFLOAT2(1.0f,1.0f)}, //right top
-		{XMFLOAT3(-10.0f, -1.f, -10.0f), XMFLOAT2(0.0f,0.0f)}, //left bottom
-		{XMFLOAT3(10.0f,  -1.f,  -10.0f), XMFLOAT2(0.0f,1.0f)} //right bottom
+		{XMFLOAT3(-10.0f, 0.f, 10.0f), XMFLOAT2(1.0f,0.0f)}, //left top
+		{XMFLOAT3(10.0f, 0.f,  10.0f), XMFLOAT2(1.0f,1.0f)}, //right top
+		{XMFLOAT3(-10.0f, 0.f, -10.0f), XMFLOAT2(0.0f,0.0f)}, //left bottom
+		{XMFLOAT3(10.0f,  0.f,  -10.0f), XMFLOAT2(0.0f,1.0f)} //right bottom
 	};
 	static const unsigned short ground_indices[] = {
 		0,1,2,
@@ -197,6 +198,7 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	};
 	myVertex* ground_vertices = calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
 	GameObject* ground = new GameObject("Ground", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+	ground->setScale(3, 1, 3);
 	to_render.emplace_back(std::shared_ptr<GameObject>(ground));
 	
 	//roads
@@ -206,23 +208,40 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	road1->setScale(0.1, 1, 1);
 	road2->setScale(0.1, 1, 1);
 	road2->setRotation(0, PI / 2, 0);
-	road1->setPosition(0, 0.1, 0);
-	road2->setPosition(0, 0.2, 0);
+	road1->setPosition(0, 0.001, 0);
+	road2->setPosition(0, 0.002, 0);
 	ground->addChild(road1);
 	ground->addChild(road2);
 	road1->parent = road2->parent = ground;
 	to_render.emplace_back(std::shared_ptr<GameObject>(road1));
 	to_render.emplace_back(std::shared_ptr<GameObject>(road2));
 
-	GameObject* tree = LoadObjectFromFile(L"Models/apple_tree_01.obj", "Tree");
-	
+	//load objects from files
+	GameObject* tree = LoadObjectFromFile(L"Models/fat_tree.obj", "FatTree");
+	tree->setScale(0.3, 0.3, 0.3);
 	to_render.push_back(std::shared_ptr<GameObject>(tree));
+	GameObject* tree1 = LoadObjectFromFile(L"Models/apple_tree_01.obj", "Tree");
+	tree1->setPosition(-15, 0, 10);
+	tree1->setScale(0.5, 0.5, 0.5);
+	to_render.push_back(std::shared_ptr<GameObject>(tree1));
+	GameObject* tree2 = LoadObjectFromFile(L"Models/apple_tree_02.obj", "Tree");
+	tree2->setPosition(10, 0, 10);
+	tree2->setScale(0.5, 0.5, 0.5);
+	to_render.push_back(std::shared_ptr<GameObject>(tree2));
+	GameObject* tree3 = LoadObjectFromFile(L"Models/apple_tree_03.obj", "Tree");
+	tree3->setPosition(12, 0, -10);
+	tree3->setScale(0.5, 0.5, 0.5);
+	to_render.push_back(std::shared_ptr<GameObject>(tree3));
+	GameObject* tree4 = LoadObjectFromFile(L"Models/apple_tree_04.obj", "Tree");
+	tree4->setPosition(-15,0, -10);
+	tree4->setScale(0.5, 0.5, 0.5);
+	to_render.push_back(std::shared_ptr<GameObject>(tree4));
 	
 	return to_render;
 }
 
 //Smooth shading normals
-static myVertex* CarGame::calculate_normal_from_pos_color(const VertexPosColor* vertices, const unsigned short* indices, unsigned int i_size) {
+myVertex* CarGame::calculate_normal_from_pos_color(const VertexPosColor* vertices, const unsigned short* indices, unsigned int i_size) {
 	myColorVertex* myVertices = new myColorVertex[i_size];
 	//init normals
 	for (int i = 0; i < i_size;++i) {
@@ -255,7 +274,7 @@ static myVertex* CarGame::calculate_normal_from_pos_color(const VertexPosColor* 
 	}
 	return myVertices;
 }
-static myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vertices, const unsigned short* indices, unsigned int i_size) {
+myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vertices, const unsigned short* indices, unsigned int i_size) {
 	myTexVertex* myVertices = new myTexVertex[i_size];
 	//init normals
 	for (int i = 0; i < i_size; ++i) {
@@ -289,7 +308,7 @@ static myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vert
 	return myVertices;
 }
 //Calcuate wheel vertex positions and indices
-static VertexPosColor* CarGame::generateWheelVertices(int side_count, float height, float width) {
+VertexPosColor* CarGame::generateWheelVertices(int side_count, float height, float width) {
 	VertexPosColor* result = new VertexPosColor[side_count*2+2];
 	float rad = 2 * PI / side_count;
 	//two halves
@@ -302,8 +321,7 @@ static VertexPosColor* CarGame::generateWheelVertices(int side_count, float heig
 	result[side_count*2+1] = { XMFLOAT3(-width/2.0,0.0f,0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
 	return result;
 }
-
-static VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float height, float width) {
+VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float height, float width) {
 	VertexPosTex* result = new VertexPosTex[side_count * 2 + 2];
 	float rad = 2 * PI / side_count;
 	//two halves
@@ -316,7 +334,7 @@ static VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float
 	result[side_count * 2 + 1] = { XMFLOAT3(-width / 2.0,0.0f,0.0f), XMFLOAT2(0.5f,0.55f) };
 	return result;
 }
-static unsigned short* CarGame::generateWheelIndices(int side_count) {
+unsigned short* CarGame::generateWheelIndices(int side_count) {
 	unsigned short* result = new unsigned short[side_count*3*4];
 	for (int i = 0; i < side_count; ++i) {
 		//1st half
@@ -337,7 +355,7 @@ static unsigned short* CarGame::generateWheelIndices(int side_count) {
 	}
 	return result;
 }
-
+//Load Object from outside files
 static CarGame::GameObject* CarGame::LoadObjectFromFile(const wchar_t* file, const char* name) {
 	WaveFrontReader<unsigned short> obj_reader;
 	obj_reader.Load(file);

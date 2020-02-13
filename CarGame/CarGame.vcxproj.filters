@@ -159,5 +159,8 @@
     <Image Include="Textures\road.jpg">
       <Filter>Textures</Filter>
     </Image>
+    <Image Include="Textures\fat_tree.png">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
