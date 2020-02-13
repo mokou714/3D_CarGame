@@ -17,7 +17,7 @@ void GameObjectRenderer::init() {
 	m_DirLight.ambient = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	m_DirLight.diffuse = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	m_DirLight.specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	m_DirLight.direction = XMFLOAT3(-0.577f, -0.577f, 0.577f);
+	m_DirLight.direction = XMFLOAT3(0.75f, -0.6f, -0.50f); //match the sun position on skybox
 
 
 	m_PSConstantBufferData.material.ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
