@@ -44,22 +44,12 @@ float Camera::getAspectRatio() {
 
 
 void Camera::updateTranslation() {
-
-	//set looking up
-	//XMFLOAT3 targetPos = target->getPosition();
-	//lookingAt = XMVectorSet(targetPos.x, targetPos.y, targetPos.z, 0.0);
-	//translate
-	/*XMFLOAT4 newPos;
-	XMStoreFloat4(&newPos,position);
-	newPos.x += direction.x * speed;
-	newPos.y += direction.y * speed;
-	newPos.z += direction.z * speed;
-	position = XMLoadFloat4(&newPos);*/
-	
+	//relative postion
 	if (mode == ThirdPerson) {
 		XMVECTOR vecToTarget = XMVector3Normalize(lookingAt-position);
 		position = XMLoadFloat3(&target->getPosition()) - (vecToTarget*distant_to_object);
 	}
+	//fixed target position
 	else {
 		position = XMLoadFloat3(&target->getPosition());
 	}
@@ -141,7 +131,6 @@ void Camera::updateLookingDistance(float scrollWheelValue) {
 	if (mode == ThirdPerson) {
 		if (scrolling_counter == 0) {
 			scrolling_counter = 10;
-			scrollWheelValue = scrollWheelValue;
 		}
 		else {
 			distant_to_object += scrollWheelValue/10 * 0.0001f;
@@ -149,8 +138,7 @@ void Camera::updateLookingDistance(float scrollWheelValue) {
 			scrolling_counter--;
 			
 		}
-
-		if (distant_to_object < 1) { distant_to_object = 1; }
+		if (distant_to_object < 1.5) { distant_to_object = 1.5; }
 		if (distant_to_object > 10) { distant_to_object = 10; }
 		updateTranslation();
 	}

@@ -2,88 +2,21 @@
 
 //hard code all game objects here
 
+using namespace CarGame;
 
-std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
-	std::vector<std::shared_ptr<CarGame::GameObject>> to_render;
-
-	//Car
-	XMFLOAT4 car_color = { 252.0 / 255.0f, 225.0 / 255.f, 20.0 / 255.f, 1.0f };
-	static const VertexPosColor car_pos_color[] = {
-		//part1 left
-		{XMFLOAT3(-0.35f, 0.2f, 0.4f), car_color},
-		{XMFLOAT3(-0.35f, 0.0f, 0.7f), car_color},
-		{XMFLOAT3(-0.35f, 0.0f, -0.7f), car_color},
-		{XMFLOAT3(-0.35f, 0.5f, -0.4f), car_color},
-		{XMFLOAT3(-0.35f, 0.5f, 0.4f), car_color},
-		
-		//part2 left
-		{XMFLOAT3(-0.35f, -0.3f, 0.7f), car_color},
-		{XMFLOAT3(-0.35f, -0.3f, -0.7f), car_color},
-
-		//part1 right
-		{XMFLOAT3(0.35f, 0.2f, 0.4f), car_color},
-		{XMFLOAT3(0.35f, 0.0f, 0.7f), car_color},
-		{XMFLOAT3(0.35f, 0.0f, -0.7f), car_color},
-		{XMFLOAT3(0.35f, 0.5f, -0.4f), car_color},
-		{XMFLOAT3(0.35f, 0.5f, 0.4), car_color},
-
-		//part2 right
-		{XMFLOAT3(0.35f, -0.3f, 0.7f), car_color},
-		{XMFLOAT3(0.35f, -0.3f, -0.7f), car_color},
-	};
-	static const unsigned short car_indices[] = {
-		//left
-		0,2,1,
-		0,3,2,
-		0,4,3,
-		1,2,5,
-		5,2,6,
-		//right counterclockwise
-		9,7,8,
-		10,7,9,
-		11,7,10,
-		9,8,12,
-		9,12,13,
-
-		//front
-		8,1,12,
-		12,1,5,
-		7,0,8,
-		8,0,1,
-		11,4,7,
-		7,4,0,
-
-		//back counterclockwise
-		10,9,3,
-		3,9,2,
-		13,2,9,
-		2,13,6,
-
-		//top
-		10,3,11,
-		11,3,4,
-
-		//bottom counterclockwise
-		6,13,12,
-		12,5,6
-
-	};
-	myVertex* car_vertices = calculate_normal_from_pos_color(car_pos_color, car_indices, ARRAYSIZE(car_indices));
-	Car* car = new Car("Car", car_vertices, sizeof(car_pos_color) / sizeof(VertexPosColor), car_indices, sizeof(car_indices) / sizeof(unsigned short));
+std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
+	//GameObject Container
+	std::vector<std::shared_ptr<GameObject>> to_render;
+	
+	//car
+	Car* car = LoadCar();
 	to_render.emplace_back(std::shared_ptr<GameObject>(car));
 
-	//wheel
-	int wheel_side_count = 16;
-	float wheel_height = 0.3;
-	float wheel_width = 0.1f;
-	static const VertexPosTex* wheel_pos_color = generateWheelVerticesWithTex(wheel_side_count, wheel_height, wheel_width);
-	static const unsigned short* wheel_indices = generateWheelIndices(wheel_side_count);
-	myVertex* wheel_vertices = calculate_normal_from_pos_tex(wheel_pos_color, wheel_indices, wheel_side_count*3*4);
+	GameObject* leftFrontWheel = LoadWheel();
+	GameObject* rightFrontWheel = LoadWheel();
+	GameObject* leftRearWheel = LoadWheel();
+	GameObject* rightRearWheel = LoadWheel();
 
-	GameObject* leftFrontWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
-	GameObject* rightFrontWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
-	GameObject* leftRearWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
-	GameObject* rightRearWheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
 	car->wheels.leftFrontWheel = leftFrontWheel;
 	car->wheels.rightFrontWheel = rightFrontWheel;
 	car->wheels.leftRearWheel = leftRearWheel;
@@ -98,113 +31,30 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	rightRearWheel->parent = car;
 	car->initWheelPositions();
 	car->setPosition(0, 0.48, 0);
+	
+	//wheels
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftFrontWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(rightFrontWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftRearWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(rightRearWheel));
 
-	//cube
-	static const VertexPosColor cube_pos_color[] = {
-		{XMFLOAT3(0.5f,   0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f,   0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f,  -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(0.5f,  -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)},
-	};
-	static const unsigned short cube_indices[] = {
-		//left
-		0,3,1,
-		1,3,2,
-		//front
-		4,0,5,
-		5,0,1,
-		//right
-		7,4,6,
-		6,4,5,
-		//back
-		3,7,2,
-		2,7,6,
-		//top
-		0,4,3,
-		3,4,7,
-		//bottom
-		5,1,6,
-		6,1,2
-	};
-	myVertex* cube_vertices = calculate_normal_from_pos_color(cube_pos_color, cube_indices, ARRAYSIZE(cube_indices));
-	to_render.emplace_back(std::shared_ptr<GameObject>(new GameObject("Cube", cube_vertices, sizeof(cube_pos_color) / sizeof(VertexPosColor), cube_indices, sizeof(cube_indices) / sizeof(unsigned short))));
+	
+	//Cube
+	//to_render.emplace_back(std::shared_ptr<GameObject>(LoadCube()));
 
-	//skybox
-	static float edge_offset = 0.0005; 
-	static const VertexPosTex skybox_pos_tex[] = {
-	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.0f + edge_offset, 2/3.0f - edge_offset)}, //0,0.33
-	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(0.0f + edge_offset, 1/3.0f + edge_offset)}, //0,0.66
 
-	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.25f + edge_offset, 1.0f)},//0.25,0
-	{XMFLOAT3(-0.5f,   -0.5f,  0.5f), XMFLOAT2(0.25f + edge_offset, 2/3.0f - edge_offset)}, //0.25,0.33
-	{XMFLOAT3(-0.5f,   0.5f,   0.5f), XMFLOAT2(0.25f + edge_offset, 1/3.0f + edge_offset)}, //0.25,0.66
-	{XMFLOAT3(-0.5f,   0.5f,  -0.5f), XMFLOAT2(0.25f + edge_offset, 0.0f)}, //0.25, 1.0
+	//Skybox
+	to_render.emplace_back(std::shared_ptr<GameObject>(LoadSkybox()));
 
-	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.50f - edge_offset, 1.0f)},//0.5,0
-	{XMFLOAT3(0.5f,    -0.5f,  0.5f), XMFLOAT2(0.50f - edge_offset, 2/3.0f - edge_offset)}, //0.5,0.33
-	{XMFLOAT3(0.5f,    0.5f,   0.5f), XMFLOAT2(0.50f - edge_offset, 1/3.0f + edge_offset)},//0.5,0.66
-	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.50f - edge_offset, 0.0f)},//0.5,1.0
-
-	{XMFLOAT3(0.5f,    -0.5f,  -0.5f), XMFLOAT2(0.75f, 2/3.0f - edge_offset)},//0.75,0.33
-	{XMFLOAT3(0.5f,    0.5f,  -0.5f), XMFLOAT2(0.75f, 1/3.0f + edge_offset)},//0.75,0.66
-
-	{XMFLOAT3(-0.5f,    -0.5f,  -0.5f), XMFLOAT2(1.0f - edge_offset, 2/3.0f - edge_offset)},//1.0,0.33
-	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(1.0f - edge_offset, 1/3.0f + edge_offset)},//1.0,0.66
-	};
-	static const unsigned short skybox_indices[] = {
-		//left
-		4,1,0,
-		4,0,3,
-		//top
-		4,5,9,
-		4,9,8,
-		//bottom
-		2,3,7,
-		2,7,6,
-		//right
-		7,10,11,
-		7,11,8,
-		//back
-		10,12,13,
-		10,13,11,
-		//front
-		7,8,4,
-		7,4,3,
-
-	};
-	myVertex* skybox_vertices = calculate_normal_from_pos_tex(skybox_pos_tex, skybox_indices, ARRAYSIZE(skybox_indices));
-	to_render.emplace_back(std::shared_ptr<GameObject>(new GameObject("Skybox", skybox_vertices, sizeof(skybox_pos_tex) / sizeof(VertexPosTex), skybox_indices, sizeof(skybox_indices) / sizeof(unsigned short))));
-
-	//ground
-	static const XMFLOAT4 groundColor(16 / 255.f, 111 / 255.f, 156 / 255.f, 1.0f);
-	static const VertexPosTex ground_pos_tex[] = {
-		//left bottom is origin
-		{XMFLOAT3(-10.0f, 0.f, 10.0f), XMFLOAT2(1.0f,0.0f)}, //left top
-		{XMFLOAT3(10.0f, 0.f,  10.0f), XMFLOAT2(1.0f,1.0f)}, //right top
-		{XMFLOAT3(-10.0f, 0.f, -10.0f), XMFLOAT2(0.0f,0.0f)}, //left bottom
-		{XMFLOAT3(10.0f,  0.f,  -10.0f), XMFLOAT2(0.0f,1.0f)} //right bottom
-	};
-	static const unsigned short ground_indices[] = {
-		0,1,2,
-		2,1,3
-	};
-	myVertex* ground_vertices = calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
-	GameObject* ground = new GameObject("Ground", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+	
+	//Ground
+	GameObject* ground = LoadGround();
 	ground->setScale(3, 1, 3);
 	to_render.emplace_back(std::shared_ptr<GameObject>(ground));
 	
 	//roads
-	myVertex* road_vertices = calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
-	GameObject* road1 = new GameObject("Road", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
-	GameObject* road2 = new GameObject("Road", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+	GameObject* road1 = LoadRoad();
+	GameObject* road2 = LoadRoad();
 	road1->setScale(0.1, 1, 1);
 	road2->setScale(0.1, 1, 1);
 	road2->setRotation(0, PI / 2, 0);
@@ -240,8 +90,9 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	return to_render;
 }
 
+//Static Helpers
 //Smooth shading normals
-myVertex* CarGame::calculate_normal_from_pos_color(const VertexPosColor* vertices, const unsigned short* indices, unsigned int i_size) {
+static myVertex* CarGame::calculate_normal_from_pos_color(const VertexPosColor* vertices, const unsigned short* indices, unsigned int i_size) {
 	myColorVertex* myVertices = new myColorVertex[i_size];
 	//init normals
 	for (int i = 0; i < i_size;++i) {
@@ -274,7 +125,7 @@ myVertex* CarGame::calculate_normal_from_pos_color(const VertexPosColor* vertice
 	}
 	return myVertices;
 }
-myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vertices, const unsigned short* indices, unsigned int i_size) {
+static myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vertices, const unsigned short* indices, unsigned int i_size) {
 	myTexVertex* myVertices = new myTexVertex[i_size];
 	//init normals
 	for (int i = 0; i < i_size; ++i) {
@@ -307,8 +158,9 @@ myVertex* CarGame::calculate_normal_from_pos_tex(const VertexPosTex* vertices, c
 	}
 	return myVertices;
 }
+
 //Calcuate wheel vertex positions and indices
-VertexPosColor* CarGame::generateWheelVertices(int side_count, float height, float width) {
+static VertexPosColor* CarGame::generateWheelVertices(int side_count, float height, float width) {
 	VertexPosColor* result = new VertexPosColor[side_count*2+2];
 	float rad = 2 * PI / side_count;
 	//two halves
@@ -321,7 +173,7 @@ VertexPosColor* CarGame::generateWheelVertices(int side_count, float height, flo
 	result[side_count*2+1] = { XMFLOAT3(-width/2.0,0.0f,0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) };
 	return result;
 }
-VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float height, float width) {
+static VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float height, float width) {
 	VertexPosTex* result = new VertexPosTex[side_count * 2 + 2];
 	float rad = 2 * PI / side_count;
 	//two halves
@@ -334,7 +186,7 @@ VertexPosTex* CarGame::generateWheelVerticesWithTex(int side_count, float height
 	result[side_count * 2 + 1] = { XMFLOAT3(-width / 2.0,0.0f,0.0f), XMFLOAT2(0.5f,0.55f) };
 	return result;
 }
-unsigned short* CarGame::generateWheelIndices(int side_count) {
+static unsigned short* CarGame::generateWheelIndices(int side_count) {
 	unsigned short* result = new unsigned short[side_count*3*4];
 	for (int i = 0; i < side_count; ++i) {
 		//1st half
@@ -355,8 +207,9 @@ unsigned short* CarGame::generateWheelIndices(int side_count) {
 	}
 	return result;
 }
+
 //Load Object from outside files
-static CarGame::GameObject* CarGame::LoadObjectFromFile(const wchar_t* file, const char* name) {
+static GameObject* CarGame::LoadObjectFromFile(const wchar_t* file, const char* name) {
 	WaveFrontReader<unsigned short> obj_reader;
 	obj_reader.Load(file);
 
@@ -379,6 +232,48 @@ static CarGame::GameObject* CarGame::LoadObjectFromFile(const wchar_t* file, con
 		obj_indices[i] = obj_reader.indices[i];
 	}
 
-	return new CarGame::GameObject(name, obj_vertices, v_size, obj_indices, i_size);
+	return new GameObject(name, obj_vertices, v_size, obj_indices, i_size);
 
+}
+
+static Car* CarGame::LoadCar() {
+	//Car
+	XMFLOAT4 car_color = { 252.0 / 255.0f, 225.0 / 255.f, 20.0 / 255.f, 1.0f };
+
+	myVertex* car_vertices = CarGame::calculate_normal_from_pos_color(car_pos_color, car_indices, ARRAYSIZE(car_indices));
+	Car* car = new Car("Car", car_vertices, sizeof(car_pos_color) / sizeof(VertexPosColor), car_indices, sizeof(car_indices) / sizeof(unsigned short));
+	return car;
+}
+
+static GameObject* CarGame::LoadWheel() {
+	//wheel
+	int wheel_side_count = 16;
+	float wheel_height = 0.3;
+	float wheel_width = 0.1f;
+	static const VertexPosTex* wheel_pos_color = CarGame::generateWheelVerticesWithTex(wheel_side_count, wheel_height, wheel_width);
+	static const unsigned short* wheel_indices = CarGame::generateWheelIndices(wheel_side_count);
+	myVertex* wheel_vertices = CarGame::calculate_normal_from_pos_tex(wheel_pos_color, wheel_indices, wheel_side_count * 3 * 4);
+
+	GameObject* wheel = new GameObject("Wheel", wheel_vertices, wheel_side_count * 2 + 2, wheel_indices, wheel_side_count * 3 * 4);
+	return wheel;
+}
+
+static GameObject* CarGame::LoadCube() {
+	myVertex* cube_vertices = CarGame::calculate_normal_from_pos_color(cube_pos_color, cube_indices, ARRAYSIZE(cube_indices));
+	return new GameObject("Cube", cube_vertices, sizeof(cube_pos_color) / sizeof(VertexPosColor), cube_indices, sizeof(cube_indices) / sizeof(unsigned short));
+}
+
+static GameObject* CarGame::LoadSkybox() {
+	myVertex* skybox_vertices = CarGame::calculate_normal_from_pos_tex(skybox_pos_tex, skybox_indices, ARRAYSIZE(skybox_indices));
+	return new GameObject("Skybox", skybox_vertices, sizeof(skybox_pos_tex) / sizeof(VertexPosTex), skybox_indices, sizeof(skybox_indices) / sizeof(unsigned short));
+}
+
+static GameObject* CarGame::LoadGround() {
+	myVertex* ground_vertices = CarGame::calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
+	return new GameObject("Ground", ground_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
+}
+
+static GameObject* CarGame::LoadRoad(){
+	myVertex* road_vertices = CarGame::calculate_normal_from_pos_tex(ground_pos_tex, ground_indices, ARRAYSIZE(ground_indices));
+	return new GameObject("Road", road_vertices, sizeof(ground_pos_tex) / sizeof(VertexPosTex), ground_indices, sizeof(ground_indices) / sizeof(unsigned short));
 }
