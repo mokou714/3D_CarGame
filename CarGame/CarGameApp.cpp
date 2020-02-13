@@ -17,7 +17,7 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 
 	//init camera, set first game object as target
 	cam = std::shared_ptr<Camera>(new Camera(m_WindowWidth, m_WindowHeight, gameObjects[0]));
-	cam->setPosition(0.0f, 1.2f, -1.0f);
+	
 	
 	//init game object renderers
 	for (auto obj_ptr:gameObjects) {
@@ -80,6 +80,7 @@ void CarGameApp::RenderScene() {
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
 	m_d3dImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), black);
 	m_d3dImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 	
 	//Render the scene objects.
 	if(renderObjects() )

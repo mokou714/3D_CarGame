@@ -30,7 +30,7 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	leftRearWheel->parent = car;
 	rightRearWheel->parent = car;
 	car->initWheelPositions();
-	car->setPosition(0, 0.48, 0);
+	car->setPosition(0, 0.48, -10);
 	
 	//wheels
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftFrontWheel));
@@ -47,10 +47,10 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	GameObject* rightFrontWindow = LoadWindow();
 	GameObject* rightRearWindow = LoadWindow();
 	GameObject* frontWindow = LoadWindow();
-	leftFrontWindow->setPosition(-0.36f, 0.16f, 0.15f);
-	leftRearWindow->setPosition(-0.36f, 0.16f, -0.233f);
-	rightFrontWindow->setPosition(0.36f, 0.16f, 0.15f);
-	rightRearWindow->setPosition(0.36f, 0.16f, -0.233f);
+	leftFrontWindow->setPosition(-0.3501f, 0.16f, 0.15f);
+	leftRearWindow->setPosition(-0.3501f, 0.16f, -0.233f);
+	rightFrontWindow->setPosition(0.3501f, 0.16f, 0.15f);
+	rightRearWindow->setPosition(0.3501f, 0.16f, -0.233f);
 	frontWindow->setPosition(0, 0.15f, 0.41f);
 	frontWindow->setRotation(0, PI/2, 0);
 	frontWindow->setScale(1, 1, 1.8);

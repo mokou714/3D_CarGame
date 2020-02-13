@@ -10,9 +10,9 @@ Camera::Camera(int WindowWidth, int WindowHeight, std::shared_ptr<GameObject> ta
 	
 	//initialize position, looking at, up vector
 	XMFLOAT3 targetPos = target->getPosition();
-	setLookingAt(targetPos.x, targetPos.y, targetPos.z);
+	setLookingAt(targetPos.x, targetPos.y, targetPos.z); 
 	upVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	setPosition(0, 0, 0);
+	setPosition(targetPos.x + 0.0f, targetPos.y + 1.0f, targetPos.z + -1.0f); //set iniitial position related to car
 	
 	mode = ThirdPerson;
 	reset3rdView();
