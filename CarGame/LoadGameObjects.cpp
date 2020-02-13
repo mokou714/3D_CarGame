@@ -214,18 +214,10 @@ std::vector<std::shared_ptr<CarGame::GameObject>> CarGame::LoadGameObjects() {
 	to_render.emplace_back(std::shared_ptr<GameObject>(road1));
 	to_render.emplace_back(std::shared_ptr<GameObject>(road2));
 
-
-	//load outside models
-	//WaveFrontReader<unsigned short> obj_reader;
-	//obj_reader.Load(L"Models/table.obj");
-	//unsigned int v_size = obj_reader.vertices.size();
-	//static std::vector<mVertex> obj_vertices;
-	//unsigned int i_size = obj_reader.indices.size();
-	//static std::vector<unsigned short> indices = obj_reader.indices;
-	//for (auto& vertex : obj_reader.vertices) {
-	//	obj_vertices.push_back({ vertex.position, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) });
-	//}
-
+	GameObject* tree = LoadObjectFromFile(L"Models/apple_tree_01.obj", "Tree");
+	
+	to_render.push_back(std::shared_ptr<GameObject>(tree));
+	
 	return to_render;
 }
 
@@ -344,4 +336,31 @@ static unsigned short* CarGame::generateWheelIndices(int side_count) {
 		result[ (side_count*2) * 3 + 5 + i * 6] = (i + 1) % side_count; //1
 	}
 	return result;
+}
+
+static CarGame::GameObject* CarGame::LoadObjectFromFile(const wchar_t* file, const char* name) {
+	WaveFrontReader<unsigned short> obj_reader;
+	obj_reader.Load(file);
+
+	//vertices
+	unsigned int v_size = obj_reader.vertices.size();
+	myTexVertex* obj_vertices = new myTexVertex[v_size];
+
+	//indices
+	unsigned int i_size = obj_reader.indices.size();
+	unsigned short* obj_indices = new unsigned short[i_size];
+
+	//copy vertices
+	for (int i = 0; i < v_size; ++i) {
+		obj_vertices[i].pos = obj_reader.vertices[i].position;
+		obj_vertices[i].normal = obj_reader.vertices[i].normal;
+		obj_vertices[i].texcoord = obj_reader.vertices[i].textureCoordinate;
+	}
+	//copy indices
+	for (int i = 0; i < i_size; ++i) {
+		obj_indices[i] = obj_reader.indices[i];
+	}
+
+	return new CarGame::GameObject(name, obj_vertices, v_size, obj_indices, i_size);
+
 }

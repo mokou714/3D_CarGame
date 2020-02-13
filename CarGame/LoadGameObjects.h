@@ -16,4 +16,5 @@ namespace CarGame {
 	static VertexPosColor* generateWheelVertices(int side_count, float height, float width);
 	static unsigned short* generateWheelIndices(int side_count);
 	static VertexPosTex* generateWheelVerticesWithTex(int side_count, float height, float width);
+	static GameObject* LoadObjectFromFile(const wchar_t* file, const char* name);
 }
