@@ -6,6 +6,7 @@ Car::Car(std::string name, const myVertex vertices[], unsigned int vSize, const 
 	:GameObject(name,vertices,vSize,indices,iSize), wheel_angle(0.0f),wheel_rotation(0.0f)
 {}
 
+
 void Car::initWheelPositions() {
 	XMFLOAT3 carPos = getPosition();
 	float xOffset = 0.35f;

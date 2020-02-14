@@ -98,8 +98,8 @@ void Camera::updateLookingAngle(float X_angleVelocity, float Y_angleVelocity) {
 
 		XMVECTOR Y_Axis = XMVectorSet(0, 1, 0, 0);
 		XMVECTOR X_Axis = XMVector3Cross(vecToTarget, Y_Axis);
-		XMVECTOR LocalYAxis_quaternion_rotation = XMQuaternionRotationAxis(Y_Axis , X_angleVelocity);
-		XMVECTOR LocalXAxis_quaternion_rotation = XMQuaternionRotationAxis(X_Axis, Y_angleVelocity);
+		XMVECTOR LocalYAxis_quaternion_rotation = XMQuaternionRotationAxis(Y_Axis , X_angleVelocity * THIRD_PERSON_MOUSE_SENSITIVITY);
+		XMVECTOR LocalXAxis_quaternion_rotation = XMQuaternionRotationAxis(X_Axis, Y_angleVelocity * THIRD_PERSON_MOUSE_SENSITIVITY);
 		XMVECTOR new_position = targetPosVec - XMVector3Rotate(XMVector3Rotate(vecToTarget,LocalYAxis_quaternion_rotation),LocalXAxis_quaternion_rotation);
 		
 		//limit vertical angle
@@ -118,7 +118,7 @@ void Camera::updateLookingAngle(float X_angleVelocity, float Y_angleVelocity) {
 	}
 	else {
 		//only change vertical angle
-		target->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), X_angleVelocity);
+		target->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), X_angleVelocity * FIRST_PERSON_MOUSE_SENSITIVITY);
 		XMFLOAT3 targetRotation = target->getRotation();
 		XMVECTOR quaternion_Y_rotation = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), targetRotation.y);
 		//looking at

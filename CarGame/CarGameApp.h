@@ -26,6 +26,8 @@ namespace CarGame {
 		//update Keyboard/Mouse
 		void updateGameObjects();
 		void updateMouseControl();
+		void updateKeyboardControl();
+		void updateCar(Car* car);
 	
 	};
 

@@ -117,7 +117,6 @@ void GameObjectRendererWithTex::LoadResources(){
 	DS_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	DS_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_DepthStencilState));
-
 }
 
 bool GameObjectRendererWithTex::Render() {
