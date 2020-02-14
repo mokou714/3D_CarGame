@@ -104,13 +104,12 @@ void GameObjectRendererWithTex::LoadResources(){
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	CheckIfFailed(m_d3dDevice->CreateSamplerState(&sampDesc, m_SamplerState.GetAddressOf()));
 
-	D3D11_RASTERIZER_DESC R_desc;
-	ZeroMemory(&R_desc, sizeof(D3D11_RASTERIZER_DESC));
-	R_desc.FillMode = D3D11_FILL_SOLID;
-	R_desc.CullMode = D3D11_CULL_NONE; //no backculling
-	R_desc.FrontCounterClockwise = true;
-	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&R_desc, &m_ResterizerState));
-
+	//for texture rendering, render both front and back faces
+	D3D11_RASTERIZER_DESC Ras_desc;
+	ZeroMemory(&Ras_desc, sizeof(D3D11_RASTERIZER_DESC));
+	Ras_desc.FillMode = D3D11_FILL_SOLID;
+	Ras_desc.CullMode = D3D11_CULL_NONE; //no backculling
+	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&Ras_desc, &m_ResterizerState));
 	D3D11_DEPTH_STENCIL_DESC DS_Desc;
 	ZeroMemory(&DS_Desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	DS_Desc.DepthEnable = true;
@@ -137,11 +136,9 @@ bool GameObjectRendererWithTex::Render() {
 	//bind sampler
 	m_d3dImmediateContext->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
 	m_d3dImmediateContext->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
-	//resterization & depthstencil, only for skybox
-	if (isSkybox) {
-		m_d3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState.Get(), 0);
-		m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
-	}
+	//resterization & depthstencil
+	m_d3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState.Get(), 0);
+	m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
 	//bind vertex buffer
 	UINT stride = sizeof(myTexVertex);
 	UINT offset = 0;

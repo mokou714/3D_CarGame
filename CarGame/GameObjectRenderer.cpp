@@ -113,6 +113,20 @@ void GameObjectRenderer::LoadResources() {
 	
 	//store index size for drawing
 	m_IndexCount = gameObject->getIndicesCount();
+
+	//init rasterization state
+	D3D11_RASTERIZER_DESC Ras_desc;
+	ZeroMemory(&Ras_desc, sizeof(D3D11_RASTERIZER_DESC));
+	Ras_desc.FillMode = D3D11_FILL_SOLID;
+	Ras_desc.CullMode = D3D11_CULL_BACK; //backculling
+	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&Ras_desc, &m_ResterizerState));
+	//init depth&stencil state
+	D3D11_DEPTH_STENCIL_DESC DS_Desc;
+	ZeroMemory(&DS_Desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	DS_Desc.DepthEnable = true;
+	DS_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	DS_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_DepthStencilState));
 }
 
 void GameObjectRenderer::UpdateVertexShaderConstantBuffer() {
@@ -164,6 +178,9 @@ bool GameObjectRenderer::Render() {
 	//bind shaders
 	m_d3dImmediateContext->VSSetShader(m_VertexShader.Get(), nullptr, 0);
 	m_d3dImmediateContext->PSSetShader(m_PixelShader.Get(), nullptr, 0);
+	//resterization & depthstencil
+	m_d3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState.Get(), 0);
+	m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
 	//bind vertex buffer
 	UINT stride = sizeof(myColorVertex);
 	UINT offset = 0;

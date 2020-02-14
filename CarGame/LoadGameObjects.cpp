@@ -51,6 +51,8 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	leftRearWindow->setPosition(-0.3501f, 0.16f, -0.233f);
 	rightFrontWindow->setPosition(0.3501f, 0.16f, 0.15f);
 	rightRearWindow->setPosition(0.3501f, 0.16f, -0.233f);
+	rightFrontWindow->setRotation(0, PI, 0);
+	rightRearWindow->setRotation(0, PI, 0);
 	frontWindow->setPosition(0, 0.15f, 0.41f);
 	frontWindow->setRotation(0, PI/2, 0);
 	frontWindow->setScale(1, 1, 1.8);

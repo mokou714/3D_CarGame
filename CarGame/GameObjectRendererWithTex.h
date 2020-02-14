@@ -16,7 +16,5 @@ namespace CarGame {
 		const wchar_t* tex_file;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Texture; //texture
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> m_SamplerState; //sampler
-		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_ResterizerState; //rasteriztion
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_DepthStencilState; //depthstencil
 	};
 }

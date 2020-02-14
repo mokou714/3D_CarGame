@@ -29,6 +29,8 @@ namespace CarGame {
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_VertexBuffer; //vertices
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_IndexBuffer;  //indeces
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer[2]; //0 vertex(WVP) buffer, 1 pixel(lighting) buffer
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_ResterizerState; //rasteriztion
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_DepthStencilState; //depthstencil
 		VSConstantBuffer m_VSConstantBufferData;
 		PSConstantBuffer m_PSConstantBufferData;
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VertexShader;
