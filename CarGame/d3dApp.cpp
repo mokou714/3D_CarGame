@@ -104,13 +104,6 @@ void d3dApp::OnResize()
 	assert(m_d3dDevice);
 	assert(m_SwapChain);
 
-	if (m_d3dDevice1 != nullptr)
-	{
-		assert(m_d3dImmediateContext1);
-		assert(m_d3dDevice1);
-		assert(m_SwapChain1);
-	}
-
 	// reset rendering resource
 	m_RenderTargetView.Reset();
 	m_DepthStencilView.Reset();
@@ -139,14 +132,14 @@ void d3dApp::OnResize()
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
 
-	// create depthstencil buffer and view
+	//create depthstencil buffer and view
 	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_DepthStencilBuffer.GetAddressOf()));
 	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), nullptr, m_DepthStencilView.GetAddressOf()));
 
-	// bind depthstencil buffer
+	//bind depthstencil buffer
 	m_d3dImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
 
-	// set viewpost
+	//set viewpost
 	m_ScreenViewport.TopLeftX = 0;
 	m_ScreenViewport.TopLeftY = 0;
 	m_ScreenViewport.Width = static_cast<float>(m_WindowWidth);
@@ -161,10 +154,11 @@ void d3dApp::OnResize()
 A Windows window is identified by a "window handle" (HWND) 
 and is created after the CWnd object is created by a call to the Create member function of class CWnd.
 
-wParam -> word parameter 16,32,64bits
-lParam -> long parameter 32,64bits
+wParam -> word parameter 16/32/64bits
+lParam -> long parameter 32/64bits
 
 */
+
 LRESULT d3dApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -275,7 +269,7 @@ LRESULT d3dApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
 		return 0;
 
-		//************************************** mouse/keyboard event*********************************************
+		//****************************************** mouse/keyboard ***********************************************
 	case WM_INPUT:
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
@@ -339,6 +333,7 @@ bool d3dApp::InitMainWindow()
 
 	m_MainWindow = CreateWindow(L"D3DWndClassName", L"Car Game",
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_AppInstance, 0);
+	
 	if (!m_MainWindow)
 	{
 		MessageBox(0, L"CreateWindow Failed.", 0, 0);
@@ -365,12 +360,12 @@ bool d3dApp::InitD3D()
 	};
 	UINT numDriverTypes = ARRAYSIZE(driverTypes);
 
-	// feature levels 
+	// feature levels, do DX11.0 only
 	D3D_FEATURE_LEVEL featureLevels[] =
 	{
-		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0,
 	};
+
 	UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
 	D3D_FEATURE_LEVEL featureLevel;
@@ -381,16 +376,9 @@ bool d3dApp::InitD3D()
 	{
 		d3dDriverType = driverTypes[driverTypeIndex];
 
-		//try create device with d3d11.1
-		hr = D3D11CreateDevice(nullptr, d3dDriverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
+		hr = D3D11CreateDevice(nullptr, d3dDriverType, nullptr, createDeviceFlags, &featureLevels[0], numFeatureLevels,
 			D3D11_SDK_VERSION, m_d3dDevice.GetAddressOf(), &featureLevel, m_d3dImmediateContext.GetAddressOf());
-
-		//if not support d3d11.1, try d3d11.0
-		if (hr == E_INVALIDARG){
-			hr = D3D11CreateDevice(nullptr, d3dDriverType, nullptr, createDeviceFlags, &featureLevels[1], numFeatureLevels - 1,
-				D3D11_SDK_VERSION, m_d3dDevice.GetAddressOf(), &featureLevel, m_d3dImmediateContext.GetAddressOf());
-		}
-
+		
 		if (SUCCEEDED(hr))
 			break;
 	}
@@ -401,84 +389,37 @@ bool d3dApp::InitD3D()
 		return false;
 	}
 
-	// check if support dx11.1
-	if (featureLevel != D3D_FEATURE_LEVEL_11_0 && featureLevel != D3D_FEATURE_LEVEL_11_1)
-	{
-		MessageBox(0, L"Direct3D Feature Level 11 unsupported.", 0, 0);
-		return false;
-	}
-
+	//only use DX11.0 for Win7+ OS
 	Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
-	Microsoft::WRL::ComPtr<IDXGIFactory1> dxgiFactory1 = nullptr;	// D3D11.0 contains DXGI1.1
-	Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory2 = nullptr;	// D3D11.1 contains DXGI1.2
-
-	// 为了正确创建 DXGI交换链，首先我们需要获取创建 D3D设备 的 DXGI工厂，否则会引发报错：
-	// "IDXGIFactory::CreateSwapChain: This function is being called with a device from a different IDXGIFactory."
+	Microsoft::WRL::ComPtr<IDXGIFactory1> dxgiFactory = nullptr;	
+	
 	CheckIfFailed(m_d3dDevice.As(&dxgiDevice));
 	CheckIfFailed(dxgiDevice->GetAdapter(dxgiAdapter.GetAddressOf()));
-	CheckIfFailed(dxgiAdapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(dxgiFactory1.GetAddressOf())));
-	hr = dxgiFactory1.As(&dxgiFactory2);
+	CheckIfFailed(dxgiAdapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(dxgiFactory.GetAddressOf())));
 
-	// if device has dxgiFactory2, it supports dx11.1
-	if (dxgiFactory2 != nullptr)
-	{
-		CheckIfFailed(m_d3dDevice.As(&m_d3dDevice1));
-		CheckIfFailed(m_d3dImmediateContext.As(&m_d3dImmediateContext1));
-		// sawp chain desc
-		DXGI_SWAP_CHAIN_DESC1 sd;
-		ZeroMemory(&sd, sizeof(sd));
-		sd.Width = m_WindowWidth;
-		sd.Height = m_WindowHeight;
-		sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//swap chain desc
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(sd));
+	sd.BufferDesc.Width = m_WindowWidth;
+	sd.BufferDesc.Height = m_WindowHeight;
+	sd.BufferDesc.RefreshRate.Numerator = 60;
+	sd.BufferDesc.RefreshRate.Denominator = 1;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	//disable 4xMsaa
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.BufferCount = 1;
+	sd.OutputWindow = m_MainWindow;
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	sd.Flags = 0;
+	//create swap chain
+	CheckIfFailed(dxgiFactory->CreateSwapChain(m_d3dDevice.Get(), &sd, m_SwapChain.GetAddressOf()));
 	
-		//disable 4xMsaa
-		sd.SampleDesc.Count = 1;
-		sd.SampleDesc.Quality = 0;
-		
-		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		sd.BufferCount = 1;
-		sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-		sd.Flags = 0;
-
-		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fd;
-		fd.RefreshRate.Numerator = 60;
-		fd.RefreshRate.Denominator = 1;
-		fd.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-		fd.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		fd.Windowed = TRUE;
-		// create swap chain
-		CheckIfFailed(dxgiFactory2->CreateSwapChainForHwnd(m_d3dDevice.Get(), m_MainWindow, &sd, &fd, nullptr, m_SwapChain1.GetAddressOf()));
-		CheckIfFailed(m_SwapChain1.As(&m_SwapChain));
-	}
-	//if not, do dx11.0
-	else
-	{
-		// swap chain desc
-		DXGI_SWAP_CHAIN_DESC sd;
-		ZeroMemory(&sd, sizeof(sd));
-		sd.BufferDesc.Width = m_WindowWidth;
-		sd.BufferDesc.Height = m_WindowHeight;
-		sd.BufferDesc.RefreshRate.Numerator = 60;
-		sd.BufferDesc.RefreshRate.Denominator = 1;
-		sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-		
-		//disable 4xMsaa
-		sd.SampleDesc.Count = 1;
-		sd.SampleDesc.Quality = 0;
-		
-		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		sd.BufferCount = 1;
-		sd.OutputWindow = m_MainWindow;
-		sd.Windowed = TRUE;
-		sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-		sd.Flags = 0;
-		//create swap chain
-		CheckIfFailed(dxgiFactory1->CreateSwapChain(m_d3dDevice.Get(), &sd, m_SwapChain.GetAddressOf()));
-	}
-
 	OnResize();
 
 	return true;

@@ -23,6 +23,8 @@ namespace CarGame {
 		bool renderObjects();
 		std::shared_ptr<Camera> cam;
 
+		void initRenderers();
+
 		//update Keyboard/Mouse
 		void updateGameObjects();
 		void updateMouseControl();

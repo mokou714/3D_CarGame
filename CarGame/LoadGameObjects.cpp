@@ -79,12 +79,12 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	car->addChild(light2);
 	light1->parent = car;
 	light2->parent = car;
-	light1->setPosition(0.18, -0.185, 0.735);
+	light1->setPosition(0.18, -0.18, 0.735);
 	light1->setRotation(0, PI / 2, 0);
-	light1->setScale(0.65, 0.65, 0.65);
-	light2->setPosition(-0.18, -0.185, 0.735);
+	light1->setScale(0.45, 0.45, 0.45);
+	light2->setPosition(-0.18, -0.18, 0.735);
 	light2->setRotation(0, PI / 2, 0);
-	light2->setScale(0.65, 0.65, 0.65);
+	light2->setScale(0.45, 0.45, 0.45);
 	to_render.emplace_back(std::shared_ptr<GameObject>(light1));
 	to_render.emplace_back(std::shared_ptr<GameObject>(light2));
 
@@ -100,35 +100,49 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	//roads
 	GameObject* road1 = LoadRoad();
 	GameObject* road2 = LoadRoad();
-	road1->setScale(0.1, 1, 1);
-	road2->setScale(0.1, 1, 1);
+	GameObject* road3 = LoadRoad();
+	GameObject* road4 = LoadRoad();
+	road1->setScale(0.1, 1, 0.6);
+	road2->setScale(0.1, 1, 0.45);
+	road3->setScale(0.1, 1, 0.45);
+	road4->setScale(0.1, 1, 0.6);
+
+	road1->setPosition(-5.5, 0.001, 0);
+	road4->setPosition( 5.5, 0.001, 0);
+
 	road2->setRotation(0, PI / 2, 0);
-	road1->setPosition(0, 0.001, 0);
-	road2->setPosition(0, 0.002, 0);
+	road2->setPosition(0, 0.001, -5);
+	road3->setRotation(0, PI / 2, 0);
+	road3->setPosition(0, 0.001, 5);
+
 	ground->addChild(road1);
 	ground->addChild(road2);
-	road1->parent = road2->parent = ground;
+	ground->addChild(road3);
+	ground->addChild(road4);
+	road1->parent = road2->parent = road3->parent = road4->parent = ground;
 	to_render.emplace_back(std::shared_ptr<GameObject>(road1));
 	to_render.emplace_back(std::shared_ptr<GameObject>(road2));
+	to_render.emplace_back(std::shared_ptr<GameObject>(road3));
+	to_render.emplace_back(std::shared_ptr<GameObject>(road4));
 
 	//load objects from files
 	GameObject* tree = LoadObjectFromFile(L"Models/fat_tree.obj", "FatTree");
 	tree->setScale(0.3, 0.3, 0.3);
 	to_render.push_back(std::shared_ptr<GameObject>(tree));
 	GameObject* tree1 = LoadObjectFromFile(L"Models/apple_tree_01.obj", "Tree");
-	tree1->setPosition(-15, 0, 10);
+	tree1->setPosition(-9, 0, 8);
 	tree1->setScale(0.5, 0.5, 0.5);
 	to_render.push_back(std::shared_ptr<GameObject>(tree1));
 	GameObject* tree2 = LoadObjectFromFile(L"Models/apple_tree_02.obj", "Tree");
-	tree2->setPosition(10, 0, 10);
+	tree2->setPosition(10, 0, 11);
 	tree2->setScale(0.5, 0.5, 0.5);
 	to_render.push_back(std::shared_ptr<GameObject>(tree2));
 	GameObject* tree3 = LoadObjectFromFile(L"Models/apple_tree_03.obj", "Tree");
-	tree3->setPosition(12, 0, -10);
+	tree3->setPosition(9, 0, -10);
 	tree3->setScale(0.5, 0.5, 0.5);
 	to_render.push_back(std::shared_ptr<GameObject>(tree3));
 	GameObject* tree4 = LoadObjectFromFile(L"Models/apple_tree_04.obj", "Tree");
-	tree4->setPosition(-15,0, -10);
+	tree4->setPosition(-9,0, -10);
 	tree4->setScale(0.5, 0.5, 0.5);
 	to_render.push_back(std::shared_ptr<GameObject>(tree4));
 	
@@ -253,14 +267,14 @@ static unsigned short* CarGame::generateWheelIndices(int side_count) {
 	return result;
 }
 //Calculate circle vertex position for light
-static VertexPosColor* CarGame::generateCircle(int side_count, float height, float width) {
-	VertexPosColor* result = new VertexPosColor[side_count + 1];
+static VertexPosTex* CarGame::generateCircle(int side_count, float height, float width) {
+	VertexPosTex* result = new VertexPosTex[side_count + 1];
 	float rad = 2 * PI / side_count;
 	for (int i = 0; i < side_count; ++i) {
-		result[i] = { XMFLOAT3(width / 2, std::sin(rad*i)*height / 2, std::cos(rad*i)*height / 2), XMFLOAT4(1,1,1,1)};
+		result[i] = { XMFLOAT3(width / 2, std::sin(rad*i)*height / 2, std::cos(rad*i)*height / 2), XMFLOAT2(std::sin(rad*i) / 2.2 + 0.5f,std::cos(rad*i) / 2.2 + 0.5f) };
 	}
 	//center
-	result[side_count] = { XMFLOAT3(width / 2.0,0.0f,0.0f), XMFLOAT4(1,1,1,1) };
+	result[side_count] = { XMFLOAT3(width / 2.0,0.0f,0.0f),XMFLOAT2(0.5f,0.5f) };
 	return result;
 }
 static unsigned short* CarGame::generateCircleIndices(int side_count) {
@@ -353,8 +367,9 @@ static GameObject* CarGame::LoadCarLight() {
 	int side_count = 16;
 	float height = 0.3f;
 	float width = 0.1f;
-	VertexPosColor* light_vertices = generateCircle(side_count,height,width);
+	VertexPosTex* light_vertices = generateCircle(side_count,height,width);
 	unsigned short* light_indices = generateCircleIndices(side_count);
-	myVertex* vertices = calculate_normal_from_pos_color(light_vertices, light_indices, side_count * 3);
+	//myVertex* vertices = calculate_normal_from_pos_color(light_vertices, light_indices, side_count * 3);
+	myVertex* vertices = calculate_normal_from_pos_tex(light_vertices, light_indices, side_count * 3);
 	return new GameObject("CarLight", vertices, side_count + 1, light_indices, side_count * 3);
 }

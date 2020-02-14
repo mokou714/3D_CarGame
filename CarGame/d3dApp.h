@@ -52,14 +52,10 @@ protected:
 
 	timer m_timer;
 
-	//D3D resources
+	//D3D11.0 resources
 	Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
-	
-	Microsoft::WRL::ComPtr<ID3D11Device1> m_d3dDevice1; 
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dImmediateContext1; 
-	Microsoft::WRL::ComPtr<IDXGISwapChain1> m_SwapChain1; 
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_DepthStencilBuffer;       
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RenderTargetView;   
@@ -69,7 +65,6 @@ protected:
 	//mouse & keyboard
 	std::unique_ptr<CarGame::myMouse> m_pMouse;
 	std::unique_ptr<CarGame::myKeyboard> m_pKeyboard;
-
 
 	//initial attributes
 	int m_WindowWidth; 

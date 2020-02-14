@@ -14,51 +14,13 @@ CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
 	//load game objects
 	gameObjects = LoadGameObjects();
 
-	//init camera, set first game object as target
+	//initialize camera, set first game object as target
 	cam = std::shared_ptr<Camera>(new Camera(m_WindowWidth, m_WindowHeight, gameObjects[0]));
 	
+	//initialize renderers for each game object
+	initRenderers();
 	
-	//init game object renderers
-	for (auto obj_ptr:gameObjects) {
-		std::string obj_name = obj_ptr->getName();
-		
-		if (obj_name == "Ground") {
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/leaf_ground.jpg", false));
-			renderer_ptr->init();
-			Renderers.emplace_back(renderer_ptr);
-		}
-		else if (obj_name == "Skybox") {
-			obj_ptr->setScale(1000, 1000, 1000);
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/skybox.png", true));
-			renderer_ptr->init();
-			Renderers.emplace_back(renderer_ptr);
-		}
-		else if (obj_name == "Wheel") {
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/tire.jpg", false));
-			renderer_ptr->init();
-			Renderers.emplace_back(renderer_ptr);
-		}
-		else if (obj_name == "Road") {
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/road.jpg", false));
-			renderer_ptr->init();
-			Renderers.emplace_back(renderer_ptr);
-		}
-		else if (obj_name == "Tree") {
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/apple_tree.png", false));
-			renderer_ptr->init();
-			Renderers.emplace_back(renderer_ptr);
-		}
-		else if (obj_name == "FatTree") {
-			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/fat_tree.png", false));
-			renderer_ptr->init();
-			Renderers.emplace_back(renderer_ptr);
-		}
-		else {
-			auto renderer_ptr = std::shared_ptr<GameObjectRenderer>(new GameObjectRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam));
-			renderer_ptr->init();
-			Renderers.emplace_back(renderer_ptr);
-		}
-	}	
+	
 }
 
 CarGameApp::~CarGameApp(){}
@@ -185,5 +147,54 @@ void CarGameApp::updateCar(Car* car) {
 		cam->switchCamMode();
 		car->setVisible(cam->mode == FirstPerson ? false : true);
 		Sleep(150);
+	}
+}
+
+void CarGameApp::initRenderers() {
+	//init game object renderers
+	for (auto obj_ptr : gameObjects) {
+		std::string obj_name = obj_ptr->getName();
+
+		if (obj_name == "Ground") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/leaf_ground.jpg", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "Skybox") {
+			obj_ptr->setScale(1000, 1000, 1000);
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/skybox.png", true));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "Wheel") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/tire.jpg", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "Road") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/road.jpg", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "Tree") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/apple_tree.png", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "CarLight") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/car_light.jpg", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else if (obj_name == "FatTree") {
+			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/fat_tree.png", false));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
+		else {
+			auto renderer_ptr = std::shared_ptr<GameObjectRenderer>(new GameObjectRenderer(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam));
+			renderer_ptr->init();
+			Renderers.emplace_back(renderer_ptr);
+		}
 	}
 }

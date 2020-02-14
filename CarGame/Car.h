@@ -6,8 +6,6 @@
 #define TURNING_SPEED 0.005f
 
 
-
-
 namespace CarGame {
 	enum moving_direction {
 		forward,

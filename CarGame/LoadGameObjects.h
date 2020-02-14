@@ -183,7 +183,7 @@ namespace CarGame {
 	static VertexPosTex* generateWheelVerticesWithTex(int side_count, float height, float width);
 	static unsigned short* generateWheelIndices(int side_count);
 	//Circle
-	static VertexPosColor* generateCircle(int side_count, float height, float width);
+	static VertexPosTex* generateCircle(int side_count, float height, float width);
 	static unsigned short* generateCircleIndices(int side_count);
 	//Load Object from outside files
 	static GameObject* LoadObjectFromFile(const wchar_t* file, const char* name);
