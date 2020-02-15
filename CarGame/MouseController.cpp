@@ -5,7 +5,8 @@ using namespace CarGame;
 myMouse::myMouse() {
 	xPos = yPos = scrollWheelValue = 0;
 	leftButton = middleButton = rightButton = false;
-	
+
+	ShowCursor(false);
 }
 
 

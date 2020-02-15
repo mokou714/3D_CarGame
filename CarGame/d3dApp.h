@@ -1,16 +1,13 @@
 #pragma once
 
-#include <d3d11_1.h>			// including Windows.h
-#include <DirectXCollision.h>	// including DirectXMath.h
+#include <d3d11.h> //including Windows.h
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
-#include <d3dcompiler.h>		// used by HLSL
+#include <d3dcompiler.h> //to compile HLSL
 #include <vector>
 #include <string>
-
 #include <wrl/client.h>
 #include <string>
-#include <d3d11_1.h>
 #include <DirectXMath.h>
 #include "timer.h"
 #include "Utilities.h"
@@ -21,7 +18,7 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "D3DCompiler.lib")
-#pragma comment(lib, "winmm.lib")
+
 
 class d3dApp {
 

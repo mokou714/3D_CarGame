@@ -27,7 +27,7 @@ namespace CarGame {
 		{XMFLOAT3(0.35f, 0.0f, 0.7f), car_color},
 		{XMFLOAT3(0.35f, 0.0f, -0.7f), car_color},
 		{XMFLOAT3(0.35f, 0.5f, -0.4f), car_color},
-		{XMFLOAT3(0.35f, 0.5f, 0.4), car_color},
+		{XMFLOAT3(0.35f, 0.5f, 0.4f), car_color},
 
 		//part2 right
 		{XMFLOAT3(0.35f, -0.3f, 0.7f), car_color},
@@ -115,7 +115,7 @@ namespace CarGame {
 		6,1,2
 	};
 	//skybox
-	static float edge_offset = 0.0005;
+	static float edge_offset = 0.0005f;
 	static const VertexPosTex skybox_pos_tex[] = {
 	{XMFLOAT3(-0.5f,   -0.5f,  -0.5f), XMFLOAT2(0.0f + edge_offset, 2 / 3.0f - edge_offset)}, //0,0.33
 	{XMFLOAT3(-0.5f,    0.5f,  -0.5f), XMFLOAT2(0.0f + edge_offset, 1 / 3.0f + edge_offset)}, //0,0.66

@@ -1,8 +1,8 @@
 #pragma once
 #include "GameObject.h"
-#define WHEEL_TURNING_SPEED 0.01
-#define WHEEL_ROTATING_SPEED 0.01
-#define MOVING_SPEED 0.02f
+#define WHEEL_TURNING_SPEED 0.01f
+#define WHEEL_ROTATING_SPEED 0.02f
+#define MOVING_SPEED 0.03f
 #define TURNING_SPEED 0.005f
 
 

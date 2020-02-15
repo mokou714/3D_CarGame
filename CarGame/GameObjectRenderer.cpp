@@ -40,7 +40,7 @@ GameObjectRenderer::~GameObjectRenderer() {
 void GameObjectRenderer::LoadResources() {
 	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
 	// Compile vertex shader shader
-	CheckIfFailed(CompileShader(L"ColorVertexShader.hlsl", "main", "vs_5_0", Blob.ReleaseAndGetAddressOf()));
+	CheckIfFailed(CompileShader(L"Shaders/ColorVertexShader.hlsl", "main", "vs_5_0", Blob.ReleaseAndGetAddressOf()));
 	//load vertex shader
 	CheckIfFailed(m_d3dDevice->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_VertexShader.GetAddressOf()));
 
@@ -54,7 +54,7 @@ void GameObjectRenderer::LoadResources() {
 		m_d3dDevice->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), Blob->GetBufferPointer(), Blob->GetBufferSize(), &m_VertexLayout)
 	);
 	//Compile pixel shader shader
-	CheckIfFailed(CompileShader(L"ColorPixelShader.hlsl", "main", "ps_5_0", Blob.ReleaseAndGetAddressOf()));
+	CheckIfFailed(CompileShader(L"Shaders/ColorPixelShader.hlsl", "main", "ps_5_0", Blob.ReleaseAndGetAddressOf()));
 	//load pixel shader
 	CheckIfFailed(m_d3dDevice->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_PixelShader.GetAddressOf()));
 	Blob.Reset();

@@ -81,12 +81,12 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	car->addChild(light2);
 	light1->parent = car;
 	light2->parent = car;
-	light1->setPosition(0.18, -0.18, 0.735);
-	light1->setRotation(0, PI / 2, 0);
-	light1->setScale(0.45, 0.45, 0.45);
-	light2->setPosition(-0.18, -0.18, 0.735);
-	light2->setRotation(0, PI / 2, 0);
-	light2->setScale(0.45, 0.45, 0.45);
+	light1->setPosition(0.18f, -0.18f, 0.735f);
+	light1->setRotation(0, PI / 2.f, 0);
+	light1->setScale(0.45f, 0.45f, 0.45f);
+	light2->setPosition(-0.18f, -0.18f, 0.735f);
+	light2->setRotation(0, PI / 2.f, 0);
+	light2->setScale(0.45f, 0.45f, 0.45f);
 	to_render.emplace_back(std::shared_ptr<GameObject>(light1));
 	to_render.emplace_back(std::shared_ptr<GameObject>(light2));
 
@@ -104,18 +104,18 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	GameObject* road2 = LoadRoad();
 	GameObject* road3 = LoadRoad();
 	GameObject* road4 = LoadRoad();
-	road1->setScale(0.1, 1, 0.6);
-	road2->setScale(0.1, 1, 0.45);
-	road3->setScale(0.1, 1, 0.45);
-	road4->setScale(0.1, 1, 0.6);
+	road1->setScale(0.1f, 1.f, 0.6f);
+	road2->setScale(0.1f, 1.f, 0.45f);
+	road3->setScale(0.1f, 1.f, 0.45f);
+	road4->setScale(0.1f, 1.f, 0.6f);
 
-	road1->setPosition(-5.5, 0.001, 0);
-	road4->setPosition( 5.5, 0.001, 0);
+	road1->setPosition(-5.5f, 0.001f, 0);
+	road4->setPosition( 5.5f, 0.001f, 0);
 
-	road2->setRotation(0, PI / 2, 0);
-	road2->setPosition(0, 0.001, -5);
-	road3->setRotation(0, PI / 2, 0);
-	road3->setPosition(0, 0.001, 5);
+	road2->setRotation(0, PI / 2.f, 0);
+	road2->setPosition(0, 0.001f, -5);
+	road3->setRotation(0, PI / 2.f, 0);
+	road3->setPosition(0, 0.001f, 5);
 
 	ground->addChild(road1);
 	ground->addChild(road2);
@@ -129,23 +129,23 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 
 	//load objects from files
 	GameObject* tree = LoadObjectFromFile(L"Models/fat_tree.obj", "FatTree");
-	tree->setScale(0.3, 0.3, 0.3);
+	tree->setScale(0.3f, 0.3f, 0.3f);
 	to_render.push_back(std::shared_ptr<GameObject>(tree));
 	GameObject* tree1 = LoadObjectFromFile(L"Models/apple_tree_01.obj", "Tree");
 	tree1->setPosition(-9, 0, 8);
-	tree1->setScale(0.5, 0.5, 0.5);
+	tree1->setScale(0.5f, 0.5f, 0.5f);
 	to_render.push_back(std::shared_ptr<GameObject>(tree1));
 	GameObject* tree2 = LoadObjectFromFile(L"Models/apple_tree_02.obj", "Tree");
 	tree2->setPosition(10, 0, 11);
-	tree2->setScale(0.5, 0.5, 0.5);
+	tree2->setScale(0.5f, 0.5f, 0.5f);
 	to_render.push_back(std::shared_ptr<GameObject>(tree2));
 	GameObject* tree3 = LoadObjectFromFile(L"Models/apple_tree_03.obj", "Tree");
 	tree3->setPosition(9, 0, -10);
-	tree3->setScale(0.5, 0.5, 0.5);
+	tree3->setScale(0.5f, 0.5f, 0.5f);
 	to_render.push_back(std::shared_ptr<GameObject>(tree3));
 	GameObject* tree4 = LoadObjectFromFile(L"Models/apple_tree_04.obj", "Tree");
 	tree4->setPosition(-9,0, -10);
-	tree4->setScale(0.5, 0.5, 0.5);
+	tree4->setScale(0.5f, 0.5f, 0.5f);
 	to_render.push_back(std::shared_ptr<GameObject>(tree4));
 	
 	return to_render;

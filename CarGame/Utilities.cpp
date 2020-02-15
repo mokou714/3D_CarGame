@@ -1,5 +1,4 @@
 ﻿#include "Utilities.h"
-#include <comdef.h>
 
 HRESULT CompileShader(
 	const WCHAR* hlslFileName,

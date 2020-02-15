@@ -75,7 +75,7 @@ void CarGameApp::updateMouseControl(){
 	//vertical movement rotates camera around x axis
 	cam->updateLookingAngle(m_pMouse->xPos * 0.0001f, m_pMouse->yPos * 0.0001f);
 	cam->updateLookingDistance(m_pMouse->scrollWheelValue * 10);
-	m_pMouse->scrollWheelValue /= 1.01;
+	m_pMouse->scrollWheelValue /= 1.03f;
 
 }
 
@@ -83,6 +83,9 @@ void CarGameApp::updateKeyboardControl() {
 	if (m_pKeyboard->state.R) {
 		cam->reset3rdView();
 		Sleep(150);
+	}
+	if (m_pKeyboard->state.Esc) {
+		exit(0);
 	}
 }
 

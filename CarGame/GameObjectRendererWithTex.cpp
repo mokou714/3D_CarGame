@@ -10,8 +10,8 @@ GameObjectRendererWithTex::GameObjectRendererWithTex(std::shared_ptr<GameObject>
 
 void GameObjectRendererWithTex::LoadResources(){
 	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
-	const wchar_t* VSFile = isSkybox? L"SkyVertex.hlsl" : L"TexVertexShader.hlsl";
-	const wchar_t* PSFile = isSkybox? L"SkyPixel.hlsl": L"TexPixelShader.hlsl";
+	const wchar_t* VSFile = isSkybox? L"Shaders/SkyVertex.hlsl" : L"Shaders/TexVertexShader.hlsl";
+	const wchar_t* PSFile = isSkybox? L"Shaders/SkyPixel.hlsl": L"Shaders/TexPixelShader.hlsl";
 
 	// Compile vertex shader shader
 	CheckIfFailed(CompileShader(VSFile, "main", "vs_5_0", Blob.ReleaseAndGetAddressOf()));
