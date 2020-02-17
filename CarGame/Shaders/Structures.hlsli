@@ -27,6 +27,12 @@ cbuffer PSConstantBuffer : register(b1) {
 	float3 eyePos;
 };
 
+cbuffer OrthoConstantBuffer : register(b2) {
+	matrix orthoWorld;
+	matrix orthoView;
+	matrix orthoProjection;
+};
+
 
 struct ColorVertexInput {
 	float3 pos : POSITION;
@@ -39,6 +45,7 @@ struct ColorVertexOutput {
 	float3 pos_W : POSITION;
 	float4 color : COLOR;
 	float3 normal_world : NORMAL;
+	float4 lightViewPosition : TEXCOORD1;
 };
 
 struct TexVertexInput {
@@ -52,4 +59,5 @@ struct TexVertexOutput {
 	float3 pos_W : POSITION;
 	float3 normal_world : NORMAL;
 	float2 tex : TEXCOORD;
+	float4 lightViewPosition : TEXCOORD1;
 };

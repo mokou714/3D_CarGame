@@ -54,9 +54,17 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_DepthStencilBuffer;       
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_DepthStencilBuffer;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RenderTargetView;   
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_DepthStencilView;   
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_Normal_DepthStencilView;   
+
+	//shadow depthstencil view
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_Shadow_DepthStencilView;
+
+	//shadow texture
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ShadowSRV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_ShadowTextureBuffer;
+
 	D3D11_VIEWPORT m_ScreenViewport;     
 
 	//mouse & keyboard

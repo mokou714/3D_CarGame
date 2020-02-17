@@ -37,23 +37,35 @@ void CarGameApp::RenderScene() {
 	assert(m_d3dImmediateContext);
 	assert(m_SwapChain);
 
-	//m_d3dImmediateContext->OMSetRenderTargets(0, nullptr, m_DepthStencilView.Get());
-
-	//clear and setup render target view and depth stencil view
+	//clear render target view
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
 	m_d3dImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), black);
-	m_d3dImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	//Render depth here
-	//for (auto& renderer : Renderers) {
-	//	renderer->RenderDepth();
-	//}
+	//clear shadow depth
+	m_d3dImmediateContext->ClearDepthStencilView(m_Shadow_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	//clear depth buffer
+	m_d3dImmediateContext->ClearDepthStencilView(m_Normal_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	//set shadow depthstencil render target
+	m_d3dImmediateContext->OMSetRenderTargets(0, nullptr, m_Shadow_DepthStencilView.Get());
+
+	//render depth of all objects
+	for (auto& renderer : Renderers) {
+		renderer->RenderDepth();
+	}
+
+	//set normal depthstencil render target
+	m_d3dImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_Normal_DepthStencilView.Get());
+	//bind shadow texture after setting up normal depthstencil render target
+	m_d3dImmediateContext->PSSetShaderResources(1, 1, m_ShadowSRV.GetAddressOf());
 	
 	//Render the scene objects.
 	if(renderObjects() )
 		//Present scene if succeeded
 		CheckIfFailed(m_SwapChain->Present(0, 0));
+
+	
 }
 
 //private

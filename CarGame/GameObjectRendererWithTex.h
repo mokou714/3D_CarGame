@@ -16,6 +16,7 @@ namespace CarGame {
 		//texture resources
 		const wchar_t* tex_file;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Texture; //texture
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> m_SamplerState; //sampler
+		Microsoft::WRL::ComPtr<ID3D11SamplerState> m_WrapStyleSampler;//sampler for texture
+		
 	};
 }

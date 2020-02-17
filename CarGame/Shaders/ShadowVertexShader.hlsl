@@ -1,4 +1,4 @@
-cbuffer OrthoConstantBuffer : register(b3) {
+cbuffer OrthoConstantBuffer : register(b2) {
 	matrix orthoWorld;
 	matrix orthoView;
 	matrix orthoProjection;
@@ -6,13 +6,10 @@ cbuffer OrthoConstantBuffer : register(b3) {
 
 struct ShadowVertexInput {
 	float3 pos : POSITION;
-	float4 color : COLOR;
-	float3 normal_local: NORMAL;
 };
 
 struct ShadowVertexOutput {
 	float4 pos_H : SV_POSITION;
-	float3 pos_W : POSITION;
 };
 
 
@@ -25,6 +22,6 @@ ShadowVertexOutput main(ShadowVertexInput input){
 	pos_H = mul(pos_H, orthoProjection);
 
 	output.pos_H = pos_H; //transformed homogenuous position
-	output.pos_W = pos_H.xyz; //transoformed position
+
 	return output;
 }
