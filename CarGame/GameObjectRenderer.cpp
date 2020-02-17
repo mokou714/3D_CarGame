@@ -39,7 +39,7 @@ GameObjectRenderer::~GameObjectRenderer() {
 //load resources only oncec, when initialized
 void GameObjectRenderer::LoadResources() {
 	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
-	// Compile vertex shader shader
+	// Compile vertex shader
 	CheckIfFailed(CompileShader(L"Shaders/ColorVertexShader.hlsl", "main", "vs_5_0", Blob.ReleaseAndGetAddressOf()));
 	//load vertex shader
 	CheckIfFailed(m_d3dDevice->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_VertexShader.GetAddressOf()));
@@ -53,10 +53,19 @@ void GameObjectRenderer::LoadResources() {
 	CheckIfFailed(
 		m_d3dDevice->CreateInputLayout(vertexDesc, ARRAYSIZE(vertexDesc), Blob->GetBufferPointer(), Blob->GetBufferSize(), &m_VertexLayout)
 	);
-	//Compile pixel shader shader
+	//Compile pixel shader
 	CheckIfFailed(CompileShader(L"Shaders/ColorPixelShader.hlsl", "main", "ps_5_0", Blob.ReleaseAndGetAddressOf()));
 	//load pixel shader
 	CheckIfFailed(m_d3dDevice->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_PixelShader.GetAddressOf()));
+	
+	//Compile shadow vertex shader 
+	CheckIfFailed(CompileShader(L"Shaders/ShadowVertexShader.hlsl", "main", "vs_5_0", Blob.ReleaseAndGetAddressOf()));
+	CheckIfFailed(m_d3dDevice->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_ShadowVertexShader.GetAddressOf()));
+
+	//Compile shadow pixel shader
+	CheckIfFailed(CompileShader(L"Shaders/ShadowPixelShader.hlsl", "main", "ps_5_0", Blob.ReleaseAndGetAddressOf()));
+	CheckIfFailed(m_d3dDevice->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, m_ShadowPixelShader.GetAddressOf()));
+	
 	Blob.Reset();
 
 	//init VS cbuffer desc
@@ -114,19 +123,37 @@ void GameObjectRenderer::LoadResources() {
 	//store index size for drawing
 	m_IndexCount = gameObject->getIndicesCount();
 
+	//init shadow cbuffer desc
+	D3D11_BUFFER_DESC svcbd;
+	ZeroMemory(&svcbd, sizeof(svcbd));
+	svcbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	svcbd.ByteWidth = sizeof(VSConstantBuffer);
+	svcbd.Usage = D3D11_USAGE_DYNAMIC;
+	svcbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//create shadow cbuffer
+	CheckIfFailed(m_d3dDevice->CreateBuffer(&svcbd, nullptr, m_ConstantBuffer[2].GetAddressOf()));
+
 	//init rasterization state
 	D3D11_RASTERIZER_DESC Ras_desc;
 	ZeroMemory(&Ras_desc, sizeof(D3D11_RASTERIZER_DESC));
 	Ras_desc.FillMode = D3D11_FILL_SOLID;
 	Ras_desc.CullMode = D3D11_CULL_BACK; //backculling
 	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&Ras_desc, &m_ResterizerState));
-	//init depth&stencil state
-	D3D11_DEPTH_STENCIL_DESC DS_Desc;
-	ZeroMemory(&DS_Desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	DS_Desc.DepthEnable = true;
-	DS_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	DS_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_DepthStencilState));
+	//init normal depth&stencil state
+	D3D11_DEPTH_STENCIL_DESC DS_Desc1;
+	ZeroMemory(&DS_Desc1, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	DS_Desc1.DepthEnable = true;
+	DS_Desc1.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	DS_Desc1.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc1, &m_Normal_DepthStencilState));
+
+	//init normal depth&stencil state
+	D3D11_DEPTH_STENCIL_DESC DS_Desc2;
+	ZeroMemory(&DS_Desc2, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	DS_Desc2.DepthEnable = true;
+	DS_Desc2.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	DS_Desc2.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc2, &m_WriteDepth_DepthStencilState));
 }
 
 void GameObjectRenderer::UpdateVertexShaderConstantBuffer() {
@@ -179,7 +206,7 @@ bool GameObjectRenderer::Render() {
 	m_d3dImmediateContext->VSSetShader(m_VertexShader.Get(), nullptr, 0);
 	m_d3dImmediateContext->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 	//resterization & depthstencil
-	m_d3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState.Get(), 0);
+	m_d3dImmediateContext->OMSetDepthStencilState(m_Normal_DepthStencilState.Get(), 0);
 	m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
 	//bind vertex buffer
 	UINT stride = sizeof(myColorVertex);
@@ -194,6 +221,54 @@ bool GameObjectRenderer::Render() {
 	//draw
 	m_d3dImmediateContext->DrawIndexed(m_IndexCount, 0, 0);
 	return true;
+}
+
+void GameObjectRenderer::UpdateOrthoConstantBuffer() {
+	m_OrthoConstantBufferData.world = XMMatrixTranspose(gameObject->getTransformMatrix());
+	m_OrthoConstantBufferData.view = XMMatrixTranspose(
+		XMMatrixLookAtLH(
+			-XMVectorSet(m_DirLight.direction.x, m_DirLight.direction.y, m_DirLight.direction.z, 1.0f),
+			//m_Camera->getPosition(),
+			XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f),
+			XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+		)
+	);
+	m_OrthoConstantBufferData.orthoProjMatrix = XMMatrixOrthographicOffCenterLH(0.0f, 600.0f, 0.0f, 400.0f, 0.1f, 100.0f);
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[2].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
+	memcpy_s(mappedData.pData, sizeof(OrthoConstantBuffer), &m_OrthoConstantBufferData, sizeof(OrthoConstantBuffer));
+	m_d3dImmediateContext->Unmap(m_ConstantBuffer[2].Get(), 0);
+}
+
+void GameObjectRenderer::RenderDepth() {
+	UpdateOrthoConstantBuffer();
+
+	//bind topology and layout
+	m_d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_d3dImmediateContext->IASetInputLayout(m_VertexLayout.Get());
+
+	//bind shadow vertex&pixel shaders
+	m_d3dImmediateContext->VSSetShader(m_ShadowVertexShader.Get(), nullptr, 0);
+	m_d3dImmediateContext->PSSetShader(m_ShadowPixelShader.Get(), nullptr, 0);
+
+	//resterization & depthstencil
+	m_d3dImmediateContext->OMSetDepthStencilState(m_WriteDepth_DepthStencilState.Get(), 0);
+	m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
+
+	//bind vertex buffer
+	UINT stride = sizeof(myColorVertex);
+	UINT offset = 0;
+	m_d3dImmediateContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
+	
+	//bind index buffer, each index is one 16-bit unsigned integer (short).
+	m_d3dImmediateContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
+	//bind only shadow vertex shader constant buffer
+	m_d3dImmediateContext->VSSetConstantBuffers(0, 1, m_ConstantBuffer[2].GetAddressOf());
+
+	//draw
+	m_d3dImmediateContext->DrawIndexed(m_IndexCount, 0, 0);
+
 }
 
 void GameObjectRenderer::ReleaseResources() {

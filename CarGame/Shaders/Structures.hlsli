@@ -27,6 +27,7 @@ cbuffer PSConstantBuffer : register(b1) {
 	float3 eyePos;
 };
 
+
 struct ColorVertexInput {
 	float3 pos : POSITION;
 	float4 color : COLOR;

@@ -1,9 +1,9 @@
 #pragma once
 #include "GameObject.h"
-#define WHEEL_TURNING_SPEED 0.01f
-#define WHEEL_ROTATING_SPEED 0.02f
-#define MOVING_SPEED 0.03f
-#define TURNING_SPEED 0.005f
+#define WHEEL_TURNING_SPEED 5.0f
+#define WHEEL_ROTATING_SPEED 10.0f
+#define MOVING_SPEED 9.0f
+#define TURNING_SPEED 2.0f
 
 
 namespace CarGame {
@@ -26,8 +26,8 @@ namespace CarGame {
 		Car(std::string name, const myVertex vertices[], unsigned int vSize, const unsigned short indices[], unsigned int iSize);
 		Wheels wheels;
 		void initWheelPositions();
-		void updateWheels(moving_direction dir);
-		void interpolateTurningAngle(int dir);
+		void updateWheels(moving_direction dir, float dt);
+		void interpolateTurningAngle(int dir, float dt);
 	private:
 		float velocity;
 		float wheel_angle;

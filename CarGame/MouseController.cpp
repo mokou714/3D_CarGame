@@ -45,4 +45,12 @@ void myMouse::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 	default:
 		break;
 	}
+
+}
+
+void myMouse::reset() {
+	leftButton = middleButton = rightButton = false;
+	xPos = yPos = 0;
+	//not reset scrollwheel
+	//scrollWheelValue = 0;
 }

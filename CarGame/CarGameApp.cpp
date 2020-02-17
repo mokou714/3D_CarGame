@@ -3,10 +3,8 @@
 
 using namespace CarGame;
 
-
-
 //public
-CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance){
+CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance),dt(0.0f){
 	//set up window app and d3d
 	if (!Init())
 		exit(0);
@@ -27,6 +25,7 @@ CarGameApp::~CarGameApp(){}
 
 //called per frame
 void CarGameApp::UpdateScene(float dt) {
+	this->dt = dt;
 	updateGameObjects();
 	updateMouseControl();
 	updateKeyboardControl();
@@ -38,10 +37,17 @@ void CarGameApp::RenderScene() {
 	assert(m_d3dImmediateContext);
 	assert(m_SwapChain);
 
+	//m_d3dImmediateContext->OMSetRenderTargets(0, nullptr, m_DepthStencilView.Get());
+
 	//clear and setup render target view and depth stencil view
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
 	m_d3dImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), black);
 	m_d3dImmediateContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	//Render depth here
+	//for (auto& renderer : Renderers) {
+	//	renderer->RenderDepth();
+	//}
 
 	
 	//Render the scene objects.
@@ -71,9 +77,11 @@ void CarGameApp::updateGameObjects() {
 void CarGameApp::updateMouseControl(){
 	//horizontal movement rotates camera around y axis
 	//vertical movement rotates camera around x axis
-	cam->updateLookingAngle(m_pMouse->xPos * 0.0001f, m_pMouse->yPos * 0.0001f);
-	cam->updateLookingDistance(m_pMouse->scrollWheelValue * 10);
-	m_pMouse->scrollWheelValue /= 1.03f;
+	cam->updateLookingAngle(m_pMouse->xPos * 0.01f * dt, m_pMouse->yPos * 0.01f * dt);
+	cam->updateLookingDistance(m_pMouse->scrollWheelValue * 1000 * dt);
+	m_pMouse->scrollWheelValue /= (1 + 12*dt);
+
+	m_pMouse->reset();
 
 }
 
@@ -102,37 +110,37 @@ void CarGameApp::updateCar(Car* car) {
 		XMVECTOR local_forward = XMVector3Transform(world_forward, XMMatrixRotationY(car->getRotation().y));
 		XMFLOAT3 forward_dir;
 		XMStoreFloat3(&forward_dir, local_forward);
-		car->Translate(forward_dir, MOVING_SPEED);
+		car->Translate(forward_dir, MOVING_SPEED * dt);
 		cam->updateTranslation();
 		//update wheel rotation
-		car->updateWheels(forward);
+		car->updateWheels(forward, dt);
 		//interpolate wheel angle to 0 if not pressing A and D
 		if (!m_pKeyboard->state.A && !m_pKeyboard->state.D)
-			car->interpolateTurningAngle(0);
+			car->interpolateTurningAngle(0, dt);
 	}
 	if (m_pKeyboard->state.S) {
 		XMVECTOR world_backward = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 		XMVECTOR local_forward = XMVector3Transform(world_backward, XMMatrixRotationY(car->getRotation().y));
 		XMFLOAT3 backward_dir;
 		XMStoreFloat3(&backward_dir, local_forward);
-		car->Translate(backward_dir, MOVING_SPEED);
+		car->Translate(backward_dir, MOVING_SPEED * dt);
 		cam->updateTranslation();
 		//update wheel rotation
-		car->updateWheels(backward);
+		car->updateWheels(backward, dt);
 		//interpolate wheel angle to 0 if not pressing A and D
 		if (!m_pKeyboard->state.A && !m_pKeyboard->state.D)
-			car->interpolateTurningAngle(0);
+			car->interpolateTurningAngle(0, dt);
 	}
 	if (m_pKeyboard->state.A) {
 		//FirstPerson, only rotate wheels unless car is moving
 		if (cam->mode == ThirdPerson) {
 			//reverse A/D when moving backward
 			if (m_pKeyboard->state.W)
-				car->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED);
+				car->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED * dt);
 			else if (m_pKeyboard->state.S)
-				car->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED);
+				car->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED * dt);
 			//update wheel angle
-			car->updateWheels(leftward);
+			car->updateWheels(leftward, dt);
 		}
 		//ThirdPerson, keyboard not used
 
@@ -142,11 +150,11 @@ void CarGameApp::updateCar(Car* car) {
 		if (cam->mode == ThirdPerson) {
 			//reverse A/D when moving backward
 			if (m_pKeyboard->state.W)
-				car->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED);
+				car->Rotate(XMFLOAT3(0.0f, 1.0f, 0.0f), TURNING_SPEED * dt);
 			else if (m_pKeyboard->state.S)
-				car->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED);
+				car->Rotate(XMFLOAT3(0.0f, -1.0f, 0.0f), TURNING_SPEED * dt);
 			//update wheel angle
-			car->updateWheels(rightward);
+			car->updateWheels(rightward, dt);
 		}
 		//ThirdPerson, keyboard not used
 

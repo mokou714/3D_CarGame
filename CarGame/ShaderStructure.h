@@ -39,3 +39,9 @@ struct PSConstantBuffer {
 	DirectX::XMFLOAT3 offset; //132->144(16*9)
 };
 
+struct OrthoConstantBuffer {
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX orthoProjMatrix;
+};
+

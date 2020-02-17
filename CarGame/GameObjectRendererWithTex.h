@@ -10,6 +10,7 @@ namespace CarGame {
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> camera, const wchar_t* tex_file, bool isSkybos);
 		bool Render();
 		void LoadResources();
+		void RenderDepth();
 	private:
 		bool isSkybox;
 		//texture resources

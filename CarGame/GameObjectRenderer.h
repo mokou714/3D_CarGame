@@ -20,6 +20,8 @@ namespace CarGame {
 		void UpdateVertexShaderConstantBuffer();
 		void UpdatePixelShaderConstantBuffer();
 		void ReleaseResources();
+		void RenderDepth();
+		void UpdateOrthoConstantBuffer();
 	protected:
 		//app resources
 		Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice;
@@ -28,13 +30,18 @@ namespace CarGame {
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_VertexLayout;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_VertexBuffer; //vertices
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_IndexBuffer;  //indeces
-		Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer[2]; //0 vertex(WVP) buffer, 1 pixel(lighting) buffer
+		Microsoft::WRL::ComPtr<ID3D11Buffer> m_OrthoBuffer; //orthographic projection for shadow rendering
+		Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer[3]; //0 vertex(WVP) buffer, 1 pixel(lighting) buffer, 2 ortho buffer
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_ResterizerState; //rasteriztion
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_DepthStencilState; //depthstencil
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_Normal_DepthStencilState; //depthstencil state for normal rendering
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_WriteDepth_DepthStencilState; //depthstencil state for depth rendering
 		VSConstantBuffer m_VSConstantBufferData;
 		PSConstantBuffer m_PSConstantBufferData;
+		OrthoConstantBuffer m_OrthoConstantBufferData;
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_VertexShader;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PixelShader;
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_ShadowVertexShader;
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ShadowPixelShader;
 		unsigned int m_IndexCount; //draw
 		DirectionalLight m_DirLight; //light
 		

@@ -118,6 +118,7 @@ void d3dApp::OnResize()
 	CheckIfFailed(m_d3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, m_RenderTargetView.GetAddressOf()));
 	backBuffer.Reset();
 
+	//init depth test here
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	depthStencilDesc.Width = m_WindowWidth;

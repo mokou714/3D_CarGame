@@ -18,6 +18,8 @@ namespace CarGame {
 
 		myMouse(HWND window);
 
+		void reset();
+
 		//handle window message, update current state
 		void ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam);
 	};

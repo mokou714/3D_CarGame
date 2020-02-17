@@ -3,8 +3,8 @@
 #include <memory>
 #include "GameObject.h"
 
-#define FIRST_PERSON_MOUSE_SENSITIVITY 10
-#define THIRD_PERSON_MOUSE_SENSITIVITY 8
+#define FIRST_PERSON_MOUSE_SENSITIVITY 60
+#define THIRD_PERSON_MOUSE_SENSITIVITY 40
 
 namespace CarGame {
 	enum camera_mode{FirstPerson,ThirdPerson};

@@ -89,6 +89,16 @@ void GameObjectRendererWithTex::LoadResources(){
 	//store index size for drawing
 	m_IndexCount = gameObject->getIndicesCount();
 
+	//init shadow cbuffer desc
+	D3D11_BUFFER_DESC svcbd;
+	ZeroMemory(&svcbd, sizeof(svcbd));
+	svcbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	svcbd.ByteWidth = sizeof(VSConstantBuffer);
+	svcbd.Usage = D3D11_USAGE_DYNAMIC;
+	svcbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//create shadow cbuffer
+	CheckIfFailed(m_d3dDevice->CreateBuffer(&svcbd, nullptr, m_ConstantBuffer[2].GetAddressOf()));
+
 	//init texture
 	CheckIfFailed(DirectX::CreateWICTextureFromFile(m_d3dDevice.Get(), tex_file, nullptr, m_Texture.GetAddressOf()));
 	
@@ -115,7 +125,7 @@ void GameObjectRendererWithTex::LoadResources(){
 	DS_Desc.DepthEnable = true;
 	DS_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	DS_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_DepthStencilState));
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_Normal_DepthStencilState));
 }
 
 bool GameObjectRendererWithTex::Render() {
@@ -137,7 +147,7 @@ bool GameObjectRendererWithTex::Render() {
 	m_d3dImmediateContext->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
 	m_d3dImmediateContext->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
 	//resterization & depthstencil
-	m_d3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState.Get(), 0);
+	m_d3dImmediateContext->OMSetDepthStencilState(m_Normal_DepthStencilState.Get(), 0);
 	m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
 	//bind vertex buffer
 	UINT stride = sizeof(myTexVertex);
@@ -152,6 +162,37 @@ bool GameObjectRendererWithTex::Render() {
 	//draw
 	m_d3dImmediateContext->DrawIndexed(m_IndexCount, 0, 0);
 	return true;
+}
+
+void GameObjectRendererWithTex::RenderDepth() {
+	UpdateOrthoConstantBuffer();
+
+	//bind topology and layout
+	m_d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_d3dImmediateContext->IASetInputLayout(m_VertexLayout.Get());
+
+	//bind shadow vertex&pixel shaders
+	m_d3dImmediateContext->VSSetShader(m_ShadowVertexShader.Get(), nullptr, 0);
+	m_d3dImmediateContext->PSSetShader(m_ShadowPixelShader.Get(), nullptr, 0);
+
+	//resterization & depthstencil
+	m_d3dImmediateContext->OMSetDepthStencilState(m_WriteDepth_DepthStencilState.Get(), 0);
+	m_d3dImmediateContext->RSSetState(m_ResterizerState.Get());
+
+	//bind vertex buffer
+	UINT stride = sizeof(myTexVertex);
+	UINT offset = 0;
+	m_d3dImmediateContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
+
+	//bind index buffer, each index is one 16-bit unsigned integer (short).
+	m_d3dImmediateContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
+	//bind only shadow vertex shader constant buffer
+	m_d3dImmediateContext->VSSetConstantBuffers(0, 1, m_ConstantBuffer[2].GetAddressOf());
+
+	//draw
+	m_d3dImmediateContext->DrawIndexed(m_IndexCount, 0, 0);
+
 }
 
 
