@@ -30,7 +30,7 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	leftRearWheel->parent = car;
 	rightRearWheel->parent = car;
 	car->initWheelPositions();
-	car->setPosition(0, 0.48, -10);
+	car->setPosition(0, 0.48, -25);
 	
 	//wheels
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftFrontWheel));
@@ -147,6 +147,39 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	tree4->setPosition(-9,0, -10);
 	tree4->setScale(0.5f, 0.5f, 0.5f);
 	to_render.push_back(std::shared_ptr<GameObject>(tree4));
+	GameObject* tree5 = LoadObjectFromFile(L"Models/apple_tree_05.obj", "Tree");
+	tree5->setPosition(-23, 0, -24);
+	tree5->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree5));
+	GameObject* tree6 = LoadObjectFromFile(L"Models/apple_tree_01.obj", "Tree");
+	tree6->setPosition(-24, 0, 19);
+	tree6->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree6));
+	GameObject* tree7 = LoadObjectFromFile(L"Models/apple_tree_04.obj", "Tree");
+	tree7->setPosition(22, 0, 24);
+	tree7->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree7));
+	GameObject* tree8 = LoadObjectFromFile(L"Models/apple_tree_01.obj", "Tree");
+	tree8->setPosition(23, 0, -19);
+	tree8->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree8));
+	GameObject* tree9 = LoadObjectFromFile(L"Models/apple_tree_04.obj", "Tree");
+	tree9->setPosition(21, 0, -3);
+	tree9->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree9));
+	GameObject* tree10 = LoadObjectFromFile(L"Models/apple_tree_05.obj", "Tree");
+	tree10->setPosition(-2, 0, -21);
+	tree10->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree10));
+	GameObject* tree11 = LoadObjectFromFile(L"Models/apple_tree_04.obj", "Tree");
+	tree11->setPosition(4, 0, 19);
+	tree11->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree11));
+	GameObject* tree12 = LoadObjectFromFile(L"Models/apple_tree_02.obj", "Tree");
+	tree12->setPosition(-23, 0, 4);
+	tree12->setScale(0.5f, 0.5f, 0.5f);
+	to_render.push_back(std::shared_ptr<GameObject>(tree12));
+
 	
 	return to_render;
 }

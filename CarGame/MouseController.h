@@ -14,8 +14,9 @@ namespace CarGame {
 		int xPos;
 		int yPos;
 		int scrollWheelValue;
+		HWND m_MainWindow;
 
-		myMouse();
+		myMouse(HWND window);
 
 		//handle window message, update current state
 		void ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam);

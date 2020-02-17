@@ -44,7 +44,7 @@ void myKeyboard::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 	case 0x46://F
 		state.F = keyDown ? true : false;
 		return;
-	case 0x1B:
+	case 0x1B: //ESC
 		state.Esc = keyDown ? true : false;
 		return;
 	default:

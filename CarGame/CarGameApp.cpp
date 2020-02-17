@@ -66,8 +66,6 @@ void CarGameApp::updateGameObjects() {
 			updateCar((Car*)obj.get());
 		}
 	}
-
-	
 }
 
 void CarGameApp::updateMouseControl(){
@@ -85,7 +83,15 @@ void CarGameApp::updateKeyboardControl() {
 		Sleep(150);
 	}
 	if (m_pKeyboard->state.Esc) {
-		exit(0);
+		ClipCursor(NULL);
+		POINT pt;
+		pt.x = m_WindowWidth / 2;
+		pt.y = m_WindowHeight / 2;
+		ClientToScreen(m_MainWindow, &pt);
+		SetCursorPos(pt.x, pt.y);
+		//ShowCursor uses internal counter, >=0 show, <0 hide
+		while (ShowCursor(true) < 0)
+			ShowCursor(true);
 	}
 }
 

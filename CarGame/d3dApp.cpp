@@ -81,16 +81,18 @@ int d3dApp::Run()
 
 bool d3dApp::Init()
 {
-	//set up mouse, keyboard pointer
-	m_pMouse = std::make_unique<CarGame::myMouse>();
+	//reset keyboard state when window initialized
 	m_pKeyboard = std::make_unique<CarGame::myKeyboard>();
-
 
 	if (!InitMainWindow())
 		return false;
 
 	if (!InitD3D())
 		return false;
+
+	//get window reference
+	m_pMouse = std::make_unique<CarGame::myMouse>(m_MainWindow);
+	
 
 	if (!RegisterDevicesForInput())
 		return false;
@@ -151,7 +153,6 @@ void d3dApp::OnResize()
 	//keep cursor on the window
 	RECT ClipWindowRect;
 	GetWindowRect(m_MainWindow, &ClipWindowRect);
-	ClipWindowRect.top += 30;
 	ClipCursor(&ClipWindowRect);
 }
 
@@ -323,11 +324,11 @@ bool d3dApp::InitMainWindow()
 	wc.hCursor = LoadCursor(0, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
 	wc.lpszMenuName = 0;
-	wc.lpszClassName = "D3DWndClassName";
+	wc.lpszClassName = L"D3DWndClassName";
 
 	if (!RegisterClass(&wc))
 	{
-		MessageBox(0, "RegisterClass Failed.", 0, 0);
+		MessageBox(0, L"RegisterClass Failed.", 0, 0);
 		return false;
 	}
 
@@ -337,12 +338,12 @@ bool d3dApp::InitMainWindow()
 	int width = R.right - R.left;
 	int height = R.bottom - R.top;
 
-	m_MainWindow = CreateWindow("D3DWndClassName", "Car Game",
+	m_MainWindow = CreateWindow(L"D3DWndClassName", L"Car Game",
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_AppInstance, 0);
 	
 	if (!m_MainWindow)
 	{
-		MessageBox(0, "CreateWindow Failed.", 0, 0);
+		MessageBox(0, L"CreateWindow Failed.", 0, 0);
 		return false;
 	}
 
@@ -391,7 +392,7 @@ bool d3dApp::InitD3D()
 
 	//fail to create device
 	if (FAILED(hr)){
-		MessageBox(0, "D3D11CreateDevice Failed.", 0, 0);
+		MessageBox(0, L"LD3D11CreateDevice Failed.", 0, 0);
 		return false;
 	}
 

@@ -2,10 +2,9 @@
 
 using namespace CarGame;
 
-myMouse::myMouse() {
+myMouse::myMouse(HWND window):m_MainWindow(window) {
 	xPos = yPos = scrollWheelValue = 0;
 	leftButton = middleButton = rightButton = false;
-
 	ShowCursor(false);
 }
 
@@ -21,6 +20,16 @@ void myMouse::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 		if (raw.header.dwType == RIM_TYPEMOUSE) {
 			xPos = raw.data.mouse.lLastX;
 			yPos = raw.data.mouse.lLastY;
+
+			if (raw.data.mouse.ulButtons == RI_MOUSE_LEFT_BUTTON_DOWN) {
+				//ShowCursor uses internal counter, >=0 show, <0 hide
+				while(ShowCursor(false) >= 0)
+					ShowCursor(false);
+
+				RECT ClipWindowRect;
+				GetWindowRect(m_MainWindow, &ClipWindowRect);
+				ClipCursor(&ClipWindowRect);
+			}
 		}
 
 		return;
