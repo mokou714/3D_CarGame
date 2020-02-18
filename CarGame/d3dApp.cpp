@@ -127,7 +127,7 @@ void d3dApp::OnResize()
 	depthStencilDesc.Height = m_WindowHeight;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilDesc.SampleDesc.Count = 1;
 	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -136,29 +136,28 @@ void d3dApp::OnResize()
 	depthStencilDesc.MiscFlags = 0;
 	//create normal depthstencil buffer
 	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_DepthStencilBuffer.GetAddressOf()));
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), nullptr, m_Normal_DepthStencilView.GetAddressOf()));
+	
+	//create shadow depthstencil buffer
+	depthStencilDesc.Width = 8192;
+	depthStencilDesc.Height = 8192;
+	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_ShadowTextureBuffer.GetAddressOf()));
 
-	//create normal depthstencil view
+	//create shadow depthstencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
 	ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Texture2D.MipSlice = 0;
-	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), &dsvDesc, m_Normal_DepthStencilView.GetAddressOf()));
-	
-	//create shadow depthstencil buffer
-	depthStencilDesc.Width = 1024;
-	depthStencilDesc.Height = 1024;
-	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_ShadowTextureBuffer.GetAddressOf()));
-
 	//create shadow depthstencil view
 	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_ShadowTextureBuffer.Get(), &dsvDesc, m_Shadow_DepthStencilView.GetAddressOf()));
 
 	//create shadow viewport
-	
 	ZeroMemory(&m_ShadowViewport, sizeof(D3D11_VIEWPORT));
-	m_ShadowViewport.Width = 1024.0f;
-	m_ShadowViewport.Height = 1024.0f;
+	m_ShadowViewport.Width = 8192.0f;
+	m_ShadowViewport.Height = 8192.0f;
 	m_ShadowViewport.MinDepth = 0.0f;
 	m_ShadowViewport.MaxDepth = 1.0f;
 	m_ShadowViewport.TopLeftX = 0.0f;

@@ -12,6 +12,10 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	Car* car = LoadCar();
 	to_render.emplace_back(std::shared_ptr<GameObject>(car));
 
+	GameObject* w = LoadWheel();
+	w->setPosition(-15, 1,-15);
+	to_render.emplace_back(std::shared_ptr<GameObject>(w));
+
 	GameObject* leftFrontWheel = LoadWheel();
 	GameObject* rightFrontWheel = LoadWheel();
 	GameObject* leftRearWheel = LoadWheel();
@@ -37,9 +41,6 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	to_render.emplace_back(std::shared_ptr<GameObject>(rightFrontWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftRearWheel));
 	to_render.emplace_back(std::shared_ptr<GameObject>(rightRearWheel));
-	
-	//Cube
-	//to_render.emplace_back(std::shared_ptr<GameObject>(LoadCube()));
 
 	//car windows
 	GameObject* leftFrontWindow = LoadWindow();
@@ -93,7 +94,6 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	//Skybox
 	to_render.emplace_back(std::shared_ptr<GameObject>(LoadSkybox()));
 
-	
 	//Ground
 	GameObject* ground = LoadGround();
 	ground->setScale(3, 1, 3);
@@ -180,7 +180,6 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	tree12->setScale(0.5f, 0.5f, 0.5f);
 	to_render.push_back(std::shared_ptr<GameObject>(tree12));
 
-	
 	return to_render;
 }
 

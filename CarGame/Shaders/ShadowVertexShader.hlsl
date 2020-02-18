@@ -1,8 +1,4 @@
-cbuffer OrthoConstantBuffer : register(b2) {
-	matrix orthoWorld;
-	matrix orthoView;
-	matrix orthoProjection;
-};
+#include "Structures.hlsli"
 
 struct ShadowVertexInput {
 	float3 pos : POSITION;

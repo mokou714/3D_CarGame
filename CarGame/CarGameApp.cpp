@@ -47,13 +47,18 @@ void CarGameApp::RenderScene() {
 	//clear depth buffer
 	m_d3dImmediateContext->ClearDepthStencilView(m_Normal_DepthStencilView.Get(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	//set shadow viewport
+	m_d3dImmediateContext->RSSetViewports(1, &m_ShadowViewport);
+
 	//set shadow depthstencil render target
 	m_d3dImmediateContext->OMSetRenderTargets(0, nullptr, m_Shadow_DepthStencilView.Get());
 
-	m_d3dImmediateContext->RSSetViewports(1, &m_ShadowViewport);
+	
+
 	//render depth of all objects
 	for (auto& renderer : Renderers) {
-		renderer->RenderDepth();
+		if (renderer->gameObject->getVisible() )//&& renderer->gameObject->getName() != "Wheel")
+			renderer->RenderDepth();
 	}
 
 	//set normal depthstencil render target
@@ -61,6 +66,7 @@ void CarGameApp::RenderScene() {
 	//bind shadow texture after setting up normal depthstencil render target
 	m_d3dImmediateContext->PSSetShaderResources(1, 1, m_ShadowSRV.GetAddressOf());
 	m_d3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
+
 	//Render the scene objects.
 	if(renderObjects() )
 		//Present scene if succeeded
@@ -172,7 +178,6 @@ void CarGameApp::updateCar(Car* car) {
 		}
 		//ThirdPerson, keyboard not used
 
-
 	}
 	if (m_pKeyboard->state.F) {
 		cam->switchCamMode();
@@ -185,7 +190,6 @@ void CarGameApp::initRenderers() {
 	//init game object renderers
 	for (auto obj_ptr : gameObjects) {
 		std::string obj_name = obj_ptr->getName();
-
 		if (obj_name == "Ground") {
 			auto renderer_ptr = std::shared_ptr<GameObjectRendererWithTex>(new GameObjectRendererWithTex(obj_ptr, m_d3dDevice, m_d3dImmediateContext, cam, L"Textures/leaf_ground.jpg", false));
 			renderer_ptr->init();

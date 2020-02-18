@@ -13,10 +13,11 @@ TexVertexOutput main(TexVertexInput vertexInput) {
 	output.pos_W = pos_H.xyz; //transoformed position
 
 	//light view
-	output.lightViewPosition = float4(vertexInput.pos, 1.0f);
-	output.lightViewPosition = mul(output.lightViewPosition, orthoWorld);
-	output.lightViewPosition = mul(output.lightViewPosition, orthoView);
-	output.lightViewPosition = mul(output.lightViewPosition, orthoProjection);
+	float4 light_pos_H = float4(vertexInput.pos, 1.0f);
+	light_pos_H = mul(light_pos_H, orthoWorld);
+	light_pos_H = mul(light_pos_H, orthoView);
+	light_pos_H = mul(light_pos_H, orthoProjection);
+	output.lightViewPosition = light_pos_H;
 
 	//transform normal
 	output.normal_world = normalize(mul(vertexInput.normal_local, inv_world_view));

@@ -264,12 +264,12 @@ void GameObjectRenderer::UpdateOrthoConstantBuffer() {
 	m_OrthoConstantBufferData.world = XMMatrixTranspose(gameObject->getTransformMatrix());
 	m_OrthoConstantBufferData.view = XMMatrixTranspose(
 		XMMatrixLookAtLH(
-			XMVectorSet(-m_DirLight.direction.x*100, -m_DirLight.direction.y*100,-m_DirLight.direction.z*100, 1.0f),
+			XMVectorSet(-m_DirLight.direction.x*50, -m_DirLight.direction.y*50,-m_DirLight.direction.z*50, 1.0f),
 			XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f),
 			XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		)
 	);
-	m_OrthoConstantBufferData.orthoProjMatrix = XMMatrixTranspose(XMMatrixOrthographicLH(600.0f, 450.0f, 0.01f, 500.0f));
+	m_OrthoConstantBufferData.orthoProjMatrix = XMMatrixTranspose(XMMatrixOrthographicLH(800.0f, 600.0f, 0.01f, 1000.0f));
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[2].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));

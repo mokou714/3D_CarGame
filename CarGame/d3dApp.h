@@ -65,7 +65,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ShadowSRV;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_ShadowTextureBuffer;
 
-	D3D11_VIEWPORT m_ScreenViewport;     
+	D3D11_VIEWPORT m_ScreenViewport;
 
 	//mouse & keyboard
 	std::unique_ptr<CarGame::myMouse> m_pMouse;
