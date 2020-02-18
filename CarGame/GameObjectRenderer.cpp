@@ -14,9 +14,9 @@ void GameObjectRenderer::init() {
 	LoadResources();
 	UpdateVertexShaderConstantBuffer();
 	//init light and material
-	m_DirLight.ambient = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	m_DirLight.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	m_DirLight.diffuse = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	m_DirLight.specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	m_DirLight.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	m_DirLight.direction = XMFLOAT3(0.75f, -0.6f, -0.50f); //match the sun position on skybox
 
 
@@ -127,23 +127,41 @@ void GameObjectRenderer::LoadResources() {
 	D3D11_BUFFER_DESC svcbd;
 	ZeroMemory(&svcbd, sizeof(svcbd));
 	svcbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	svcbd.ByteWidth = sizeof(VSConstantBuffer);
+	svcbd.ByteWidth = sizeof(OrthoConstantBuffer);
 	svcbd.Usage = D3D11_USAGE_DYNAMIC;
 	svcbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	//create shadow cbuffer
 	CheckIfFailed(m_d3dDevice->CreateBuffer(&svcbd, nullptr, m_ConstantBuffer[2].GetAddressOf()));
 
 	//init sampler state
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	CheckIfFailed(m_d3dDevice->CreateSamplerState(&sampDesc,m_ClampStyleSampler.GetAddressOf()));
+	//D3D11_SAMPLER_DESC sampDesc;
+	//ZeroMemory(&sampDesc, sizeof(sampDesc));
+	//sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	//sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	//sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	//sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	//sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	//sampDesc.MinLOD = 0;
+	//sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	//from MS doc
+	D3D11_SAMPLER_DESC comparisonSamplerDesc;
+	ZeroMemory(&comparisonSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
+	comparisonSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	comparisonSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	comparisonSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	comparisonSamplerDesc.BorderColor[0] = 1.0f;
+	comparisonSamplerDesc.BorderColor[1] = 1.0f;
+	comparisonSamplerDesc.BorderColor[2] = 1.0f;
+	comparisonSamplerDesc.BorderColor[3] = 1.0f;
+	comparisonSamplerDesc.MinLOD = 0.f;
+	comparisonSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	comparisonSamplerDesc.MipLODBias = 0.f;
+	comparisonSamplerDesc.MaxAnisotropy = 0;
+	comparisonSamplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+	comparisonSamplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
+
+	CheckIfFailed(m_d3dDevice->CreateSamplerState(&comparisonSamplerDesc,m_ClampStyleSampler.GetAddressOf()));
 
 	//init rasterization state
 	D3D11_RASTERIZER_DESC Ras_desc;
@@ -151,13 +169,21 @@ void GameObjectRenderer::LoadResources() {
 	Ras_desc.FillMode = D3D11_FILL_SOLID;
 	Ras_desc.CullMode = D3D11_CULL_BACK; //backculling
 	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&Ras_desc, &m_ResterizerState));
+
 	//init depth&stencil state
-	D3D11_DEPTH_STENCIL_DESC DS_Desc1;
-	ZeroMemory(&DS_Desc1, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	DS_Desc1.DepthEnable = true;
-	DS_Desc1.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	DS_Desc1.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc1, &m_DepthStencilState));
+	D3D11_DEPTH_STENCIL_DESC DS_Desc;
+	ZeroMemory(&DS_Desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	DS_Desc.DepthEnable = true;
+	DS_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	DS_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_DepthStencilState));
+
+	D3D11_RASTERIZER_DESC ShadowRenderStateDesc;
+	ZeroMemory(&ShadowRenderStateDesc, sizeof(D3D11_RASTERIZER_DESC));
+	ShadowRenderStateDesc.CullMode = D3D11_CULL_FRONT;
+	ShadowRenderStateDesc.FillMode = D3D11_FILL_SOLID;
+	ShadowRenderStateDesc.DepthClipEnable = true;
+	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&ShadowRenderStateDesc,&m_ShadowRenderState));
 
 }
 
@@ -238,12 +264,12 @@ void GameObjectRenderer::UpdateOrthoConstantBuffer() {
 	m_OrthoConstantBufferData.world = XMMatrixTranspose(gameObject->getTransformMatrix());
 	m_OrthoConstantBufferData.view = XMMatrixTranspose(
 		XMMatrixLookAtLH(
-			XMVectorSet(-m_DirLight.direction.x*100, m_DirLight.direction.y*100,-m_DirLight.direction.z*100, 1.0f),
+			XMVectorSet(-m_DirLight.direction.x*100, -m_DirLight.direction.y*100,-m_DirLight.direction.z*100, 1.0f),
 			XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f),
 			XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		)
 	);
-	m_OrthoConstantBufferData.orthoProjMatrix = XMMatrixTranspose(XMMatrixOrthographicOffCenterLH(0,1000.0f, 0,1000.0f, 0.1f, 1000.0f));
+	m_OrthoConstantBufferData.orthoProjMatrix = XMMatrixTranspose(XMMatrixOrthographicLH(600.0f, 450.0f, 0.01f, 500.0f));
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[2].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
@@ -264,6 +290,9 @@ void GameObjectRenderer::RenderDepth() {
 
 	//bind vertex shader buffer (bind light view matrix)
 	m_d3dImmediateContext->VSSetConstantBuffers(2, 1, m_ConstantBuffer[2].GetAddressOf());
+
+	//bind rasterization state for depth rendering
+	m_d3dImmediateContext->RSSetState(m_ShadowRenderState.Get());
 
 	//bind vertex buffer
 	UINT stride = sizeof(myColorVertex);

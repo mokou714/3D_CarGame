@@ -40,18 +40,18 @@ float4 main(TexPixelInput input) : SV_TARGET
 
 	float4 texColor = Texture.Sample(WrapLinearSampler, input.tex);
 	// I = A + D * N.L + (R.V)^n
-	float4 I = texColor * (_ambient + _diffuse) + _specular;
+	float4 I = texColor * (_ambient + _diffuse + _specular);
 	I.a = material.diffuse.a * texColor.a;
 
 
 	//draw shadow
-	float bias = 0.0001f;
+	float bias = 0.001f;
 	float depthValue;
 	float lightDepthValue;
 	float2 projectTexCoord;
 	// Calculate the projected texture coordinates.
-	projectTexCoord.x = input.lightViewPosition.x / input.lightViewPosition.w / 2.0f + 0.5f;
-	projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w / 2.0f + 0.5f;
+	projectTexCoord.x = input.lightViewPosition.x / input.lightViewPosition.w * 0.5f + 0.5f;
+	projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w * 0.5f + 0.5f;
 	// Determine if the projected coordinates are in the 0 to 1 range.  If so then this pixel is in the view of the light.
 	if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
 	{

@@ -60,7 +60,7 @@ protected:
 
 	//shadow depthstencil view
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_Shadow_DepthStencilView;
-
+	D3D11_VIEWPORT m_ShadowViewport;
 	//shadow texture
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ShadowSRV;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_ShadowTextureBuffer;

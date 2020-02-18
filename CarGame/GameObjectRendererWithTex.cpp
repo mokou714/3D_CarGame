@@ -102,7 +102,7 @@ void GameObjectRendererWithTex::LoadResources(){
 	D3D11_BUFFER_DESC svcbd;
 	ZeroMemory(&svcbd, sizeof(svcbd));
 	svcbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	svcbd.ByteWidth = sizeof(VSConstantBuffer);
+	svcbd.ByteWidth = sizeof(OrthoConstantBuffer);
 	svcbd.Usage = D3D11_USAGE_DYNAMIC;
 	svcbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	//create shadow cbuffer
@@ -124,10 +124,29 @@ void GameObjectRendererWithTex::LoadResources(){
 	CheckIfFailed(m_d3dDevice->CreateSamplerState(&sampDesc, m_WrapStyleSampler.GetAddressOf()));
 
 	//init shadow texture sampler state
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	CheckIfFailed(m_d3dDevice->CreateSamplerState(&sampDesc, m_ClampStyleSampler.GetAddressOf()));
+	//sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	//sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	//sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+
+	//from MS doc
+	D3D11_SAMPLER_DESC comparisonSamplerDesc;
+	ZeroMemory(&comparisonSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
+	comparisonSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	comparisonSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	comparisonSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	comparisonSamplerDesc.BorderColor[0] = 1.0f;
+	comparisonSamplerDesc.BorderColor[1] = 1.0f;
+	comparisonSamplerDesc.BorderColor[2] = 1.0f;
+	comparisonSamplerDesc.BorderColor[3] = 1.0f;
+	comparisonSamplerDesc.MinLOD = 0.f;
+	comparisonSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	comparisonSamplerDesc.MipLODBias = 0.f;
+	comparisonSamplerDesc.MaxAnisotropy = 0;
+	comparisonSamplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+	comparisonSamplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
+
+	CheckIfFailed(m_d3dDevice->CreateSamplerState(&comparisonSamplerDesc, m_ClampStyleSampler.GetAddressOf()));
 
 
 	//for texture rendering, render both front and back faces
@@ -136,12 +155,20 @@ void GameObjectRendererWithTex::LoadResources(){
 	Ras_desc.FillMode = D3D11_FILL_SOLID;
 	Ras_desc.CullMode = D3D11_CULL_NONE; //no backculling
 	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&Ras_desc, &m_ResterizerState));
+
 	D3D11_DEPTH_STENCIL_DESC DS_Desc;
 	ZeroMemory(&DS_Desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	DS_Desc.DepthEnable = true;
 	DS_Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	DS_Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	CheckIfFailed(m_d3dDevice->CreateDepthStencilState(&DS_Desc, &m_DepthStencilState));
+
+	D3D11_RASTERIZER_DESC shadowRenderStateDesc;
+	ZeroMemory(&shadowRenderStateDesc, sizeof(D3D11_RASTERIZER_DESC));
+	shadowRenderStateDesc.CullMode = D3D11_CULL_FRONT;
+	shadowRenderStateDesc.FillMode = D3D11_FILL_SOLID;
+	shadowRenderStateDesc.DepthClipEnable = true;
+	CheckIfFailed(m_d3dDevice->CreateRasterizerState(&shadowRenderStateDesc, &m_ShadowRenderState));
 }
 
 bool GameObjectRendererWithTex::Render() {
@@ -198,6 +225,9 @@ void GameObjectRendererWithTex::RenderDepth() {
 
 	//bind vertex shader buffer(bind light view matrix)
 	m_d3dImmediateContext->VSSetConstantBuffers(2, 1, m_ConstantBuffer[2].GetAddressOf());
+
+	//bind rasterization state for depth rendering
+	m_d3dImmediateContext->RSSetState(m_ShadowRenderState.Get());
 
 	//bind vertex buffer
 	UINT stride = sizeof(myTexVertex);
