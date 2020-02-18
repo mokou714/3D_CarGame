@@ -44,6 +44,9 @@ void myKeyboard::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 	case 0x46://F
 		state.F = keyDown ? true : false;
 		return;
+	case 0x47://G
+		state.G = keyDown ? true : false;
+		return;
 	case 0x1B: //ESC
 		state.Esc = keyDown ? true : false;
 		return;
@@ -55,7 +58,7 @@ void myKeyboard::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 void myKeyboard::ResetState() {
 	state.A = state.D = state.W = state.S = 
 		state.LeftArrow = state.RightArrow = state.UpArrow = state.DownArrow = 
-		state.LShift = state.RShift = state.R = state.F = state.Esc = false;
+		state.LShift = state.RShift = state.R = state.F = state.G = state.Esc = false;
 }
 
 

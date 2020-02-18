@@ -12,10 +12,6 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	Car* car = LoadCar();
 	to_render.emplace_back(std::shared_ptr<GameObject>(car));
 
-	GameObject* w = LoadWheel();
-	w->setPosition(-15, 1,-15);
-	to_render.emplace_back(std::shared_ptr<GameObject>(w));
-
 	GameObject* leftFrontWheel = LoadWheel();
 	GameObject* rightFrontWheel = LoadWheel();
 	GameObject* leftRearWheel = LoadWheel();
@@ -34,7 +30,7 @@ std::vector<std::shared_ptr<GameObject>> CarGame::LoadGameObjects() {
 	leftRearWheel->parent = car;
 	rightRearWheel->parent = car;
 	car->initWheelPositions();
-	car->setPosition(0, 0.48, -25);
+	car->setPosition(0, 0.48, -18);
 	
 	//wheels
 	to_render.emplace_back(std::shared_ptr<GameObject>(leftFrontWheel));

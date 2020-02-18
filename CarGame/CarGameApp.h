@@ -22,6 +22,7 @@ namespace CarGame {
 		std::vector<std::shared_ptr<GameObjectRenderer>> Renderers;
 		bool renderObjects();
 		std::shared_ptr<Camera> cam;
+		bool isRenderingShadow;
 
 		float dt;
 

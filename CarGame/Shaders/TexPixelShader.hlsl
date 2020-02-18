@@ -45,7 +45,7 @@ float4 main(TexPixelInput input) : SV_TARGET
 
 
 	//draw shadow
-	float bias = 0.0001f;
+	float bias = 0.0002f;
 	float depthValue;
 	float lightDepthValue;
 	float2 projectTexCoord;

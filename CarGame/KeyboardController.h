@@ -41,7 +41,7 @@ namespace CarGame {
 
 		struct KeyboardState
 		{
-			bool W, S, A, D, R, F, LShift, RShift, LeftArrow, RightArrow, UpArrow, DownArrow, Esc;
+			bool W, S, A, D, R, F, G, LShift, RShift, LeftArrow, RightArrow, UpArrow, DownArrow, Esc;
 		};
 
 		myKeyboard();

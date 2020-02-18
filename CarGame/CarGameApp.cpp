@@ -4,7 +4,7 @@
 using namespace CarGame;
 
 //public
-CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance),dt(0.0f){
+CarGameApp::CarGameApp(HINSTANCE instance):d3dApp(instance),dt(0.0f),isRenderingShadow(true){
 	//set up window app and d3d
 	if (!Init())
 		exit(0);
@@ -47,24 +47,30 @@ void CarGameApp::RenderScene() {
 	//clear depth buffer
 	m_d3dImmediateContext->ClearDepthStencilView(m_Normal_DepthStencilView.Get(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	//set shadow viewport
-	m_d3dImmediateContext->RSSetViewports(1, &m_ShadowViewport);
+	if (isRenderingShadow) {
+		//set shadow viewport
+		m_d3dImmediateContext->RSSetViewports(1, &m_ShadowViewport);
 
-	//set shadow depthstencil render target
-	m_d3dImmediateContext->OMSetRenderTargets(0, nullptr, m_Shadow_DepthStencilView.Get());
+		//set shadow depthstencil render target
+		m_d3dImmediateContext->OMSetRenderTargets(0, nullptr, m_Shadow_DepthStencilView.Get());
 
-	
-
-	//render depth of all objects
-	for (auto& renderer : Renderers) {
-		if (renderer->gameObject->getVisible() )//&& renderer->gameObject->getName() != "Wheel")
-			renderer->RenderDepth();
+		//render depth of all objects
+		for (auto& renderer : Renderers) {
+			//not render wheel, window shadow
+			if (renderer->gameObject->getName() == "Wheel"
+				|| renderer->gameObject->getName() == "Window"
+				|| renderer->gameObject->getName() == "CarLight")
+				continue;
+			if (renderer->gameObject->getVisible())
+				renderer->RenderDepth();
+		}
 	}
 
 	//set normal depthstencil render target
 	m_d3dImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_Normal_DepthStencilView.Get());
 	//bind shadow texture after setting up normal depthstencil render target
 	m_d3dImmediateContext->PSSetShaderResources(1, 1, m_ShadowSRV.GetAddressOf());
+	//set normal screen viewport
 	m_d3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
 
 	//Render the scene objects.
@@ -98,7 +104,7 @@ void CarGameApp::updateMouseControl(){
 	//horizontal movement rotates camera around y axis
 	//vertical movement rotates camera around x axis
 	cam->updateLookingAngle(m_pMouse->xPos * 0.01f * dt, m_pMouse->yPos * 0.01f * dt);
-	cam->updateLookingDistance(m_pMouse->scrollWheelValue * 1000 * dt);
+	cam->updateLookingDistance(-m_pMouse->scrollWheelValue * 1000 * dt);
 	m_pMouse->scrollWheelValue /= (1 + 12*dt);
 
 	m_pMouse->reset();
@@ -120,6 +126,11 @@ void CarGameApp::updateKeyboardControl() {
 		//ShowCursor uses internal counter, >=0 show, <0 hide
 		while (ShowCursor(true) < 0)
 			ShowCursor(true);
+	}
+
+	if (m_pKeyboard->state.G) {
+		isRenderingShadow = !isRenderingShadow;
+		Sleep(150);
 	}
 }
 
