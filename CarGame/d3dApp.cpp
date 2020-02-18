@@ -139,8 +139,8 @@ void d3dApp::OnResize()
 	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), nullptr, m_Normal_DepthStencilView.GetAddressOf()));
 	
 	//create shadow depthstencil buffer
-	depthStencilDesc.Width = 8192;
-	depthStencilDesc.Height = 8192;
+	depthStencilDesc.Width = m_WindowWidth;
+	depthStencilDesc.Height = m_WindowHeight;
 	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_ShadowTextureBuffer.GetAddressOf()));
@@ -156,8 +156,8 @@ void d3dApp::OnResize()
 
 	//create shadow viewport
 	ZeroMemory(&m_ShadowViewport, sizeof(D3D11_VIEWPORT));
-	m_ShadowViewport.Width = 8192.0f;
-	m_ShadowViewport.Height = 8192.0f;
+	m_ShadowViewport.Width = m_WindowWidth;
+	m_ShadowViewport.Height = m_WindowHeight;
 	m_ShadowViewport.MinDepth = 0.0f;
 	m_ShadowViewport.MaxDepth = 1.0f;
 	m_ShadowViewport.TopLeftX = 0.0f;

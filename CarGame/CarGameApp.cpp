@@ -66,13 +66,15 @@ void CarGameApp::RenderScene() {
 		}
 	}
 
-	//set normal depthstencil render target
-	m_d3dImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_Normal_DepthStencilView.Get());
-	//bind shadow texture after setting up normal depthstencil render target
-	m_d3dImmediateContext->PSSetShaderResources(1, 1, m_ShadowSRV.GetAddressOf());
 	//set normal screen viewport
 	m_d3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
-
+	//set normal depthstencil render target
+	m_d3dImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_Normal_DepthStencilView.Get());
+	
+	if(isRenderingShadow)
+		//bind shadow texture after setting up normal depthstencil render target
+		m_d3dImmediateContext->PSSetShaderResources(1, 1, m_ShadowSRV.GetAddressOf());
+	
 	//Render the scene objects.
 	if(renderObjects() )
 		//Present scene if succeeded
