@@ -5,6 +5,7 @@
 
 #define FIRST_PERSON_MOUSE_SENSITIVITY 60
 #define THIRD_PERSON_MOUSE_SENSITIVITY 40
+#define SCROLLWHEEL_SENSITIVITY 12
 
 namespace CarGame {
 	enum camera_mode{FirstPerson,ThirdPerson};

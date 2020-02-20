@@ -129,15 +129,8 @@ void Camera::updateLookingAngle(float X_angleVelocity, float Y_angleVelocity) {
 
 void Camera::updateLookingDistance(float scrollWheelValue) {
 	if (mode == ThirdPerson) {
-		if (scrolling_counter == 0) {
-			scrolling_counter = 10;
-		}
-		else {
-			distant_to_object += scrollWheelValue/10 * 0.0001f;
-			//scrollWheelValue = scrollWheelValue / 3;
-			scrolling_counter--;
-			
-		}
+		distant_to_object += scrollWheelValue * SCROLLWHEEL_SENSITIVITY / 200;
+		scrolling_counter--;
 		if (distant_to_object < 1.5) { distant_to_object = 1.5; }
 		if (distant_to_object > 10) { distant_to_object = 10; }
 		updateTranslation();

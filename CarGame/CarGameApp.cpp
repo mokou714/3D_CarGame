@@ -80,7 +80,9 @@ void CarGameApp::RenderScene() {
 		//Present scene if succeeded
 		CheckIfFailed(m_SwapChain->Present(0, 0));
 
-
+	//unbind shadow texture after shadow mapping
+	//ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	//m_d3dImmediateContext->PSSetShaderResources(1, 1, nullSRV);
 	
 }
 
@@ -106,7 +108,7 @@ void CarGameApp::updateMouseControl(){
 	//horizontal movement rotates camera around y axis
 	//vertical movement rotates camera around x axis
 	cam->updateLookingAngle(m_pMouse->xPos * 0.01f * dt, m_pMouse->yPos * 0.01f * dt);
-	cam->updateLookingDistance(-m_pMouse->scrollWheelValue * 1000 * dt);
+	cam->updateLookingDistance(-m_pMouse->scrollWheelValue * dt);
 	m_pMouse->scrollWheelValue /= (1 + 12*dt);
 
 	m_pMouse->reset();

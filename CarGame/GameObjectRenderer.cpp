@@ -161,6 +161,8 @@ void GameObjectRenderer::LoadResources() {
 	comparisonSamplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 	comparisonSamplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 
+	//comparisonSamplerDesc.Filter = D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+
 	CheckIfFailed(m_d3dDevice->CreateSamplerState(&comparisonSamplerDesc,m_ClampStyleSampler.GetAddressOf()));
 
 	//init rasterization state
@@ -269,7 +271,7 @@ void GameObjectRenderer::UpdateOrthoConstantBuffer() {
 			XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		)
 	);
-	m_OrthoConstantBufferData.orthoProjMatrix = XMMatrixTranspose(XMMatrixOrthographicLH(800.0f, 600.0f, 0.01f, 1000.0f));
+	m_OrthoConstantBufferData.orthoProjMatrix = XMMatrixTranspose(XMMatrixOrthographicLH(600.0f, 500.0f, 0.01f, 300.0f));
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[2].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));

@@ -146,6 +146,8 @@ void GameObjectRendererWithTex::LoadResources(){
 	comparisonSamplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 	comparisonSamplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 
+	//comparisonSamplerDesc.Filter = D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+
 	CheckIfFailed(m_d3dDevice->CreateSamplerState(&comparisonSamplerDesc, m_ClampStyleSampler.GetAddressOf()));
 
 
