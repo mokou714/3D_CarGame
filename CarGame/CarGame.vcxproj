@@ -230,30 +230,24 @@
     <None Include="Shaders\Structures.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="Models\apple_tree_01.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="Models\apple_tree_02.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="Models\apple_tree_03.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="Models\apple_tree_04.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="Models\apple_tree_05.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="Models\fat_tree.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
+    <None Include="Models\apple_tree_01.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Models\apple_tree_02.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Models\apple_tree_03.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Models\apple_tree_04.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Models\apple_tree_05.obj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Models\fat_tree.obj">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
