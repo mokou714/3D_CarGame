@@ -1,38 +1,20 @@
 struct DirectionalLight
 {
-	float4 ambient;
-	float4 diffuse;
-	float4 specular;
+	float ambient;
+	float diffuse;
+	float specular;
+	float padding1;
 	float3 direction;
+	float padding2;
 };
 
 struct Material
 {
-	float4 ambient;
-	float4 diffuse;
-	float4 specular;
-	float4 reflect;
+	float ambient;
+	float diffuse;
+	float specular;
+	float padding;
 };
-
-cbuffer VSConstantBuffer : register(b0) {
-	matrix world;
-	matrix view;
-	matrix projection;
-	matrix inv_world_view; //for normal calculation
-};
-
-cbuffer PSConstantBuffer : register(b1) {
-	DirectionalLight dirLight;
-	Material material;
-	float3 eyePos;
-};
-
-cbuffer OrthoConstantBuffer : register(b2) {
-	matrix orthoWorld;
-	matrix orthoView;
-	matrix orthoProjection;
-};
-
 
 struct ColorVertexInput {
 	float3 pos : POSITION;

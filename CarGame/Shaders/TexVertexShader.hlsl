@@ -1,4 +1,19 @@
 #include "Structures.hlsli"
+//vs cbuffer slot 0
+cbuffer VSConstantBuffer : register(b0) {
+	matrix world;
+	matrix view;
+	matrix projection;
+	matrix inv_world_view; //for normal calculation
+};
+
+
+//vs cbuffer slot1
+cbuffer OrthoConstantBuffer : register(b1) {
+	matrix orthoWorld;
+	matrix orthoView;
+	matrix orthoProjection;
+};
 
 TexVertexOutput main(TexVertexInput vertexInput) {
 	TexVertexOutput output;
@@ -20,7 +35,7 @@ TexVertexOutput main(TexVertexInput vertexInput) {
 	output.lightViewPosition = light_pos_H;
 
 	//transform normal
-	output.normal_world = normalize(mul(vertexInput.normal_local, inv_world_view));
+	output.normal_world = normalize(mul(inv_world_view, vertexInput.normal_local));
 
 	//pass texcoord
 	output.tex = vertexInput.tex;

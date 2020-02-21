@@ -101,90 +101,7 @@ bool d3dApp::Init()
 	return true;
 }
 
-void d3dApp::OnResize()
-{
-	assert(m_d3dImmediateContext);
-	assert(m_d3dDevice);
-	assert(m_SwapChain);
 
-	// reset rendering resource
-	m_RenderTargetView.Reset();
-	m_Normal_DepthStencilView.Reset();
-	m_Shadow_DepthStencilView.Reset();
-	m_DepthStencilBuffer.Reset();
-
-	// reset swap chain and render target view
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-	CheckIfFailed(m_SwapChain->ResizeBuffers(1, m_WindowWidth, m_WindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
-	CheckIfFailed(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf())));
-	CheckIfFailed(m_d3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, m_RenderTargetView.GetAddressOf()));
-	backBuffer.Reset();
-
-	//init depth test here
-	D3D11_TEXTURE2D_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	depthStencilDesc.Width = m_WindowWidth;
-	depthStencilDesc.Height = m_WindowHeight;
-	depthStencilDesc.MipLevels = 1;
-	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilDesc.SampleDesc.Count = 1;
-	depthStencilDesc.SampleDesc.Quality = 0;
-	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	depthStencilDesc.CPUAccessFlags = 0;
-	depthStencilDesc.MiscFlags = 0;
-	//create normal depthstencil buffer
-	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_DepthStencilBuffer.GetAddressOf()));
-	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), nullptr, m_Normal_DepthStencilView.GetAddressOf()));
-	
-	//create shadow depthstencil buffer
-	depthStencilDesc.Width = 8000;
-	depthStencilDesc.Height = 8000;
-	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_ShadowTextureBuffer.GetAddressOf()));
-
-	//create shadow depthstencil view
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
-	ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	dsvDesc.Texture2D.MipSlice = 0;
-	//create shadow depthstencil view
-	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_ShadowTextureBuffer.Get(), &dsvDesc, m_Shadow_DepthStencilView.GetAddressOf()));
-
-	//create shadow viewport
-	ZeroMemory(&m_ShadowViewport, sizeof(D3D11_VIEWPORT));
-	m_ShadowViewport.Width = 8000;
-	m_ShadowViewport.Height = 8000;
-	m_ShadowViewport.MinDepth = 0.0f;
-	m_ShadowViewport.MaxDepth = 1.0f;
-	m_ShadowViewport.TopLeftX = 0.0f;
-	m_ShadowViewport.TopLeftY = 0.0f;
-
-	//shadow texture resource, used for depth test in pixel shader
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	CheckIfFailed(m_d3dDevice->CreateShaderResourceView(m_ShadowTextureBuffer.Get(), &srvDesc, m_ShadowSRV.GetAddressOf()));
-
-	//set viewpost
-	m_ScreenViewport.TopLeftX = 0;
-	m_ScreenViewport.TopLeftY = 0;
-	m_ScreenViewport.Width = static_cast<float>(m_WindowWidth);
-	m_ScreenViewport.Height = static_cast<float>(m_WindowHeight);
-	m_ScreenViewport.MinDepth = 0.0f;
-	m_ScreenViewport.MaxDepth = 1.0f;
-	m_d3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
-
-	//keep cursor on the window
-	RECT ClipWindowRect;
-	GetWindowRect(m_MainWindow, &ClipWindowRect);
-	ClipCursor(&ClipWindowRect);
-}
 
 
 /*
@@ -392,7 +309,6 @@ bool d3dApp::InitD3D()
 	D3D_DRIVER_TYPE driverTypes[] =
 	{
 		D3D_DRIVER_TYPE_HARDWARE,
-		D3D_DRIVER_TYPE_REFERENCE,
 		D3D_DRIVER_TYPE_WARP,
 	};
 	UINT numDriverTypes = ARRAYSIZE(driverTypes);
@@ -426,6 +342,10 @@ bool d3dApp::InitD3D()
 		return false;
 	}
 
+	m_d3dDevice->CheckMultisampleQualityLevels(
+		DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m_MSAAQuality);
+	assert(m_MSAAQuality > 0);
+
 	//only use DX11.0 for Win7+ OS
 	Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
@@ -445,9 +365,8 @@ bool d3dApp::InitD3D()
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	//disable 4xMsaa
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
+	sd.SampleDesc.Count = 4;
+	sd.SampleDesc.Quality = m_MSAAQuality-1;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = 1;
 	sd.OutputWindow = m_MainWindow;
@@ -460,6 +379,93 @@ bool d3dApp::InitD3D()
 	OnResize();
 
 	return true;
+}
+
+void d3dApp::OnResize()
+{
+	assert(m_d3dImmediateContext);
+	assert(m_d3dDevice);
+	assert(m_SwapChain);
+
+	// reset rendering resource
+	m_RenderTargetView.Reset();
+	m_Normal_DepthStencilView.Reset();
+	m_Shadow_DepthStencilView.Reset();
+	m_DepthStencilBuffer.Reset();
+
+	// reset swap chain and render target view
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+	CheckIfFailed(m_SwapChain->ResizeBuffers(1, m_WindowWidth, m_WindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
+	CheckIfFailed(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf())));
+	CheckIfFailed(m_d3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, m_RenderTargetView.GetAddressOf()));
+	backBuffer.Reset();
+
+	//init depth test here
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	depthStencilDesc.Width = m_WindowWidth;
+	depthStencilDesc.Height = m_WindowHeight;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.SampleDesc.Count = 4;
+	depthStencilDesc.SampleDesc.Quality = m_MSAAQuality-1;
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+	//create normal depthstencil buffer
+	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_DepthStencilBuffer.GetAddressOf()));
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), nullptr, m_Normal_DepthStencilView.GetAddressOf()));
+
+	//create shadow depthstencil buffer
+	depthStencilDesc.Width = 8000;
+	depthStencilDesc.Height = 8000;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
+	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_ShadowTextureBuffer.GetAddressOf()));
+
+	//create shadow depthstencil view
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+	ZeroMemory(&dsvDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	dsvDesc.Texture2D.MipSlice = 0;
+	//create shadow depthstencil view
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_ShadowTextureBuffer.Get(), &dsvDesc, m_Shadow_DepthStencilView.GetAddressOf()));
+
+	//create shadow viewport
+	ZeroMemory(&m_ShadowViewport, sizeof(D3D11_VIEWPORT));
+	m_ShadowViewport.Width = 8000;
+	m_ShadowViewport.Height = 8000;
+	m_ShadowViewport.MinDepth = 0.0f;
+	m_ShadowViewport.MaxDepth = 1.0f;
+	m_ShadowViewport.TopLeftX = 0.0f;
+	m_ShadowViewport.TopLeftY = 0.0f;
+
+	//shadow texture resource, used for depth test in pixel shader
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	CheckIfFailed(m_d3dDevice->CreateShaderResourceView(m_ShadowTextureBuffer.Get(), &srvDesc, m_ShadowSRV.GetAddressOf()));
+
+	//set viewpost
+	m_ScreenViewport.TopLeftX = 0;
+	m_ScreenViewport.TopLeftY = 0;
+	m_ScreenViewport.Width = static_cast<float>(m_WindowWidth);
+	m_ScreenViewport.Height = static_cast<float>(m_WindowHeight);
+	m_ScreenViewport.MinDepth = 0.0f;
+	m_ScreenViewport.MaxDepth = 1.0f;
+	m_d3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
+
+	//keep cursor on the window
+	RECT ClipWindowRect;
+	GetWindowRect(m_MainWindow, &ClipWindowRect);
+	ClipCursor(&ClipWindowRect);
 }
 
 bool d3dApp::RegisterDevicesForInput() {

@@ -14,16 +14,14 @@ void GameObjectRenderer::init() {
 	LoadResources();
 	UpdateVertexShaderConstantBuffer();
 	//init light and material
-	m_DirLight.ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_DirLight.diffuse = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	m_DirLight.specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_DirLight.ambient = 1.0f;
+	m_DirLight.diffuse = 1.0f;
+	m_DirLight.specular = 1.0f;
 	m_DirLight.direction = XMFLOAT3(0.75f, -0.6f, -0.50f); //match the sun position on skybox
 
-
-	m_PSConstantBufferData.material.ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBufferData.material.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PSConstantBufferData.material.specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	
+	m_PSConstantBufferData.material.ambient = 0.5f;
+	m_PSConstantBufferData.material.diffuse = 0.75f;
+	m_PSConstantBufferData.material.specular = 0.3f;
 
 	m_PSConstantBufferData.dirLight = m_DirLight;
 	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
@@ -212,8 +210,10 @@ void GameObjectRenderer::UpdateVertexShaderConstantBuffer() {
 }
 
 void GameObjectRenderer::UpdatePixelShaderConstantBuffer() {
-	//update eyePos
+	//update eye position
+	m_PSConstantBufferData.dirLight = m_DirLight;
 	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
+
 	//use map() to update pixel buffer
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	CheckIfFailed(m_d3dImmediateContext->Map(m_ConstantBuffer[1].Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData));
@@ -253,9 +253,9 @@ bool GameObjectRenderer::Render() {
 	//bind vertex shader buffer
 	m_d3dImmediateContext->VSSetConstantBuffers(0, 1, m_ConstantBuffer[0].GetAddressOf());
 	//bind pixel shader buffer
-	m_d3dImmediateContext->PSSetConstantBuffers(1, 1, m_ConstantBuffer[1].GetAddressOf());
+	m_d3dImmediateContext->PSSetConstantBuffers(0, 1, m_ConstantBuffer[1].GetAddressOf());
 	//bind light view buffer
-	m_d3dImmediateContext->VSSetConstantBuffers(2, 1, m_ConstantBuffer[2].GetAddressOf());
+	m_d3dImmediateContext->VSSetConstantBuffers(1, 1, m_ConstantBuffer[2].GetAddressOf());
 
 	//draw
 	m_d3dImmediateContext->DrawIndexed(m_IndexCount, 0, 0);
@@ -291,7 +291,7 @@ void GameObjectRenderer::RenderDepth() {
 	m_d3dImmediateContext->PSSetShader(m_ShadowPixelShader.Get(), nullptr, 0);
 
 	//bind vertex shader buffer (bind light view matrix)
-	m_d3dImmediateContext->VSSetConstantBuffers(2, 1, m_ConstantBuffer[2].GetAddressOf());
+	m_d3dImmediateContext->VSSetConstantBuffers(1, 1, m_ConstantBuffer[2].GetAddressOf());
 
 	//bind rasterization state for depth rendering
 	m_d3dImmediateContext->RSSetState(m_ShadowRenderState.Get());

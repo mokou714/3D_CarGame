@@ -120,6 +120,9 @@
     <Filter Include="Textures">
       <UniqueIdentifier>{3a265c0b-140c-450c-9ffc-eba1c4bff3ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{dde4b9d1-bfbb-43d0-bc5f-2d8e1928ca97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\Ground.jpg">
@@ -174,5 +177,25 @@
     <None Include="Shaders\Structures.hlsli">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Models\apple_tree_01.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Models\apple_tree_02.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Models\apple_tree_03.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Models\apple_tree_04.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Models\apple_tree_05.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Models\fat_tree.obj">
+      <Filter>Models</Filter>
+    </Object>
   </ItemGroup>
 </Project>

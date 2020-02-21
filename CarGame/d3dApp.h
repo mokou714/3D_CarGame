@@ -1,6 +1,6 @@
 #pragma once
 
-#include <d3d11.h> //including Windows.h
+#include <d3d11_1.h> //including Windows.h
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <d3dcompiler.h> //to compile HLSL
@@ -41,11 +41,12 @@ protected:
 
 protected:
 	HINSTANCE m_AppInstance;        
-	HWND      m_MainWindow;        
-	bool      m_AppPaused;       
-	bool      m_Minimized;      
-	bool      m_Maximized;      
-	bool      m_Resizing;
+	HWND m_MainWindow;        
+	bool m_AppPaused;       
+	bool m_Minimized;      
+	bool m_Maximized;      
+	bool m_Resizing;
+	UINT m_MSAAQuality;
 
 	timer m_timer;
 

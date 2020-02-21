@@ -8,18 +8,20 @@ using namespace DirectX;
 //parallel light
 struct DirectionalLight {
 	DirectionalLight() = default;
-	XMFLOAT4 ambient;
-	XMFLOAT4 diffuse;
-	XMFLOAT4 specular;
+	float ambient;
+	float diffuse;
+	float specular;
+	float padding1;
 	XMFLOAT3 direction;
+	float padding2;
 };
 
 struct Material {
 	Material() = default;
-	XMFLOAT4 ambient;
-	XMFLOAT4 diffuse;
-	XMFLOAT4 specular;
-	XMFLOAT3 reflect;
+	float ambient;
+	float diffuse;
+	float specular;
+	float padding;
 };
 
 

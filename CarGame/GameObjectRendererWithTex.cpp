@@ -128,7 +128,6 @@ void GameObjectRendererWithTex::LoadResources(){
 	//sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	//sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
-
 	//from MS doc
 	D3D11_SAMPLER_DESC comparisonSamplerDesc;
 	ZeroMemory(&comparisonSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -206,9 +205,9 @@ bool GameObjectRendererWithTex::Render() {
 	//bind vertex shader buffer
 	m_d3dImmediateContext->VSSetConstantBuffers(0, 1, m_ConstantBuffer[0].GetAddressOf());
 	//bind pixel shader buffer
-	m_d3dImmediateContext->PSSetConstantBuffers(1, 1, m_ConstantBuffer[1].GetAddressOf());
+	m_d3dImmediateContext->PSSetConstantBuffers(0, 1, m_ConstantBuffer[1].GetAddressOf());
 	//bind light view buffer
-	m_d3dImmediateContext->VSSetConstantBuffers(2, 1, m_ConstantBuffer[2].GetAddressOf());
+	m_d3dImmediateContext->VSSetConstantBuffers(1, 1, m_ConstantBuffer[2].GetAddressOf());
 	//draw
 	m_d3dImmediateContext->DrawIndexed(m_IndexCount, 0, 0);
 	return true;
@@ -226,7 +225,7 @@ void GameObjectRendererWithTex::RenderDepth() {
 	m_d3dImmediateContext->PSSetShader(m_ShadowPixelShader.Get(), nullptr, 0);
 
 	//bind vertex shader buffer(bind light view matrix)
-	m_d3dImmediateContext->VSSetConstantBuffers(2, 1, m_ConstantBuffer[2].GetAddressOf());
+	m_d3dImmediateContext->VSSetConstantBuffers(1, 1, m_ConstantBuffer[2].GetAddressOf());
 
 	//bind rasterization state for depth rendering
 	m_d3dImmediateContext->RSSetState(m_ShadowRenderState.Get());

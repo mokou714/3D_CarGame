@@ -1,5 +1,21 @@
 #include "Structures.hlsli"
 
+//vs cbuffer slot 0
+cbuffer VSConstantBuffer : register(b0) {
+	matrix world;
+	matrix view;
+	matrix projection;
+	matrix inv_world_view; //for normal calculation
+};
+
+
+//vs cbuffer slot1
+cbuffer OrthoConstantBuffer : register(b1) {
+	matrix orthoWorld;
+	matrix orthoView;
+	matrix orthoProjection;
+};
+
 TexVertexOutput main(TexVertexInput vertexInput) {
 	TexVertexOutput output;
 	float4 pos_H = float4(vertexInput.pos, 1.0f);

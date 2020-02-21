@@ -30,7 +30,6 @@ namespace CarGame {
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_VertexLayout;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_VertexBuffer; //vertices
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_IndexBuffer;  //indeces
-		Microsoft::WRL::ComPtr<ID3D11Buffer> m_OrthoBuffer; //orthographic projection for shadow rendering
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer[3]; //0 vertex(WVP) buffer, 1 pixel(lighting) buffer, 2 ortho buffer
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_ResterizerState; //rasteriztion
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_DepthStencilState; //depthstencil state for normal rendering
