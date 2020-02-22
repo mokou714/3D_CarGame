@@ -310,12 +310,14 @@ bool d3dApp::InitD3D()
 	{
 		D3D_DRIVER_TYPE_HARDWARE,
 		D3D_DRIVER_TYPE_WARP,
+		D3D_DRIVER_TYPE_SOFTWARE,
 	};
 	UINT numDriverTypes = ARRAYSIZE(driverTypes);
 
-	// feature levels, do DX11.0 only
+	// feature levels
 	D3D_FEATURE_LEVEL featureLevels[] =
 	{
+		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0,
 	};
 
@@ -329,8 +331,15 @@ bool d3dApp::InitD3D()
 	{
 		d3dDriverType = driverTypes[driverTypeIndex];
 
+		//try 11.1
 		hr = D3D11CreateDevice(nullptr, d3dDriverType, nullptr, createDeviceFlags, &featureLevels[0], numFeatureLevels,
 			D3D11_SDK_VERSION, m_d3dDevice.GetAddressOf(), &featureLevel, m_d3dImmediateContext.GetAddressOf());
+
+		//try 11.0
+		if (hr == E_INVALIDARG) {
+			hr = D3D11CreateDevice(nullptr, d3dDriverType, nullptr, createDeviceFlags, &featureLevels[1], numFeatureLevels - 1,
+				D3D11_SDK_VERSION, m_d3dDevice.GetAddressOf(), &featureLevel, m_d3dImmediateContext.GetAddressOf());
+		}
 		
 		if (SUCCEEDED(hr))
 			break;
@@ -346,36 +355,69 @@ bool d3dApp::InitD3D()
 		DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m_MSAAQuality);
 	assert(m_MSAAQuality > 0);
 
-	//only use DX11.0 for Win7+ OS
 	Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
-	Microsoft::WRL::ComPtr<IDXGIFactory1> dxgiFactory = nullptr;	
+	Microsoft::WRL::ComPtr<IDXGIFactory1> dxgiFactory1 = nullptr;	
+	Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory2 = nullptr;
 	
 	CheckIfFailed(m_d3dDevice.As(&dxgiDevice));
 	CheckIfFailed(dxgiDevice->GetAdapter(dxgiAdapter.GetAddressOf()));
-	CheckIfFailed(dxgiAdapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(dxgiFactory.GetAddressOf())));
+	CheckIfFailed(dxgiAdapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(dxgiFactory1.GetAddressOf())));
 
-	//swap chain desc
-	DXGI_SWAP_CHAIN_DESC sd;
-	ZeroMemory(&sd, sizeof(sd));
-	sd.BufferDesc.Width = m_WindowWidth;
-	sd.BufferDesc.Height = m_WindowHeight;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	sd.SampleDesc.Count = 4;
-	sd.SampleDesc.Quality = m_MSAAQuality-1;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount = 1;
-	sd.OutputWindow = m_MainWindow;
-	sd.Windowed = TRUE;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	sd.Flags = 0;
-	//create swap chain
-	CheckIfFailed(dxgiFactory->CreateSwapChain(m_d3dDevice.Get(), &sd, m_SwapChain.GetAddressOf()));
+	//try dx11.1
+	hr = dxgiFactory1.As(&dxgiFactory2);
+
+	//init 11.1 sawp chain
+	if (dxgiFactory2 != nullptr) {
+		CheckIfFailed(m_d3dDevice.As(&m_d3dDevice1));
+		CheckIfFailed(m_d3dImmediateContext.As(&m_d3dImmediateContext1));
+
+		DXGI_SWAP_CHAIN_DESC1 desc;
+		ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC1));
+		desc.Width = m_WindowWidth;
+		desc.Height = m_WindowHeight;
+		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		desc.SampleDesc.Count = 4;
+		desc.SampleDesc.Quality = m_MSAAQuality - 1;
+		desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		desc.BufferCount = 1;
+		desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		desc.Flags = 0;
+
+		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fDesc;
+		fDesc.RefreshRate.Numerator = 60;
+		fDesc.RefreshRate.Denominator = 1;
+		fDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		fDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+
+		CheckIfFailed(dxgiFactory2->CreateSwapChainForHwnd(m_d3dDevice.Get(), m_MainWindow, &desc, &fDesc, nullptr, m_SwapChain1.GetAddressOf()));
+		CheckIfFailed(m_SwapChain1.As(&m_SwapChain));
+	}
+	//init 11.1 swap chain
+	else {
+		//swap chain desc
+		DXGI_SWAP_CHAIN_DESC sd;
+		ZeroMemory(&sd, sizeof(sd));
+		sd.BufferDesc.Width = m_WindowWidth;
+		sd.BufferDesc.Height = m_WindowHeight;
+		sd.BufferDesc.RefreshRate.Numerator = 60;
+		sd.BufferDesc.RefreshRate.Denominator = 1;
+		sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		sd.SampleDesc.Count = 4;
+		sd.SampleDesc.Quality = m_MSAAQuality - 1;
+		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		sd.BufferCount = 1;
+		sd.OutputWindow = m_MainWindow;
+		sd.Windowed = TRUE;
+		sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		sd.Flags = 0;
+		//create swap chain
+		CheckIfFailed(dxgiFactory1->CreateSwapChain(m_d3dDevice.Get(), &sd, m_SwapChain.GetAddressOf()));
+	}
 	
+	//screen size dependent things. viewport, depthstencil...
 	OnResize();
 
 	return true;
@@ -418,14 +460,23 @@ void d3dApp::OnResize()
 	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_DepthStencilBuffer.GetAddressOf()));
 	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), nullptr, m_Normal_DepthStencilView.GetAddressOf()));
 
-	//create shadow depthstencil buffer
-	depthStencilDesc.Width = 8000;
-	depthStencilDesc.Height = 8000;
+	//create shadow map
+	depthStencilDesc.Width = m_WindowWidth;
+	depthStencilDesc.Height = m_WindowHeight;
 	depthStencilDesc.SampleDesc.Count = 1;
 	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_ShadowTextureBuffer.GetAddressOf()));
+
+	CheckIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_ShadowMap.GetAddressOf()));
+
+	//shadow texture resource view
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	CheckIfFailed(m_d3dDevice->CreateShaderResourceView(m_ShadowMap.Get(), &srvDesc, m_ShadowMapSRV.GetAddressOf()));
 
 	//create shadow depthstencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
@@ -434,24 +485,17 @@ void d3dApp::OnResize()
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Texture2D.MipSlice = 0;
 	//create shadow depthstencil view
-	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_ShadowTextureBuffer.Get(), &dsvDesc, m_Shadow_DepthStencilView.GetAddressOf()));
+	CheckIfFailed(m_d3dDevice->CreateDepthStencilView(m_ShadowMap.Get(), &dsvDesc, m_Shadow_DepthStencilView.GetAddressOf()));
+
 
 	//create shadow viewport
 	ZeroMemory(&m_ShadowViewport, sizeof(D3D11_VIEWPORT));
-	m_ShadowViewport.Width = 8000;
-	m_ShadowViewport.Height = 8000;
+	m_ShadowViewport.Width = m_WindowWidth;
+	m_ShadowViewport.Height = m_WindowHeight;
 	m_ShadowViewport.MinDepth = 0.0f;
 	m_ShadowViewport.MaxDepth = 1.0f;
 	m_ShadowViewport.TopLeftX = 0.0f;
 	m_ShadowViewport.TopLeftY = 0.0f;
-
-	//shadow texture resource, used for depth test in pixel shader
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	CheckIfFailed(m_d3dDevice->CreateShaderResourceView(m_ShadowTextureBuffer.Get(), &srvDesc, m_ShadowSRV.GetAddressOf()));
 
 	//set viewpost
 	m_ScreenViewport.TopLeftX = 0;

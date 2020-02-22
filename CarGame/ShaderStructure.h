@@ -33,10 +33,10 @@ struct VSConstantBuffer {
 };
 
 struct PSConstantBuffer {
-	DirectionalLight dirLight; //24bytes
-	Material material; //12bytes
+	DirectionalLight dirLight; //32bytes
+	Material material; //16bytes
 	DirectX::XMFLOAT3 eyePos; //12bytes
-	float padding;
+	float padding; //4bytes
 };
 
 struct OrthoConstantBuffer {

@@ -2,6 +2,8 @@
 
 using namespace CarGame;
 
+DirectionalLight GameObjectRenderer::m_DirLight = { 1.0f,1.0f,1.0f, 0.0f,XMFLOAT3(0.75f, -0.8f, -0.60f), 0.0f };
+
 GameObjectRenderer::GameObjectRenderer(std::shared_ptr<GameObject> gameObject, Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice,
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext, std::shared_ptr<Camera> cam) :
 	gameObject(gameObject), m_d3dDevice(m_d3dDevice), m_d3dImmediateContext(m_d3dImmediateContext), m_Camera(cam),
@@ -13,20 +15,7 @@ GameObjectRenderer::GameObjectRenderer(std::shared_ptr<GameObject> gameObject, M
 void GameObjectRenderer::init() {
 	LoadResources();
 	UpdateVertexShaderConstantBuffer();
-	//init light and material
-	m_DirLight.ambient = 1.0f;
-	m_DirLight.diffuse = 1.0f;
-	m_DirLight.specular = 1.0f;
-	m_DirLight.direction = XMFLOAT3(0.75f, -0.6f, -0.50f); //match the sun position on skybox
-
-	m_PSConstantBufferData.material.ambient = 0.5f;
-	m_PSConstantBufferData.material.diffuse = 0.75f;
-	m_PSConstantBufferData.material.specular = 0.3f;
-
-	m_PSConstantBufferData.dirLight = m_DirLight;
-	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
 	UpdatePixelShaderConstantBuffer();
-
 }
 
 
@@ -210,9 +199,17 @@ void GameObjectRenderer::UpdateVertexShaderConstantBuffer() {
 }
 
 void GameObjectRenderer::UpdatePixelShaderConstantBuffer() {
-	//update eye position
+	//init light and material
 	m_PSConstantBufferData.dirLight = m_DirLight;
-	XMStoreFloat3(&m_PSConstantBufferData.eyePos, m_Camera->getPosition());
+	m_PSConstantBufferData.material.ambient = 0.7f;
+	m_PSConstantBufferData.material.diffuse = 0.6f;
+	m_PSConstantBufferData.material.specular = 0.4f;
+	m_PSConstantBufferData.padding = 0.0;
+	XMFLOAT3 camPos;
+	XMStoreFloat3(&camPos, m_Camera->getPosition());
+	m_PSConstantBufferData.eyePos.x = camPos.x;
+	m_PSConstantBufferData.eyePos.y = camPos.y;
+	m_PSConstantBufferData.eyePos.z = camPos.z;
 
 	//use map() to update pixel buffer
 	D3D11_MAPPED_SUBRESOURCE mappedData;

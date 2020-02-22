@@ -54,6 +54,10 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_d3dImmediateContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
+	//D3D11.1 resources
+	Microsoft::WRL::ComPtr<ID3D11Device1> m_d3dDevice1;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dImmediateContext1;
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> m_SwapChain1;
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_DepthStencilBuffer;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RenderTargetView;   
@@ -63,8 +67,8 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_Shadow_DepthStencilView;
 	D3D11_VIEWPORT m_ShadowViewport;
 	//shadow texture
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ShadowSRV;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_ShadowTextureBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_ShadowMap;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ShadowMapSRV;
 
 	D3D11_VIEWPORT m_ScreenViewport;
 

@@ -22,6 +22,7 @@ namespace CarGame {
 		void ReleaseResources();
 		void RenderDepth();
 		void UpdateOrthoConstantBuffer();
+		static DirectionalLight m_DirLight; //only one light
 	protected:
 		//app resources
 		Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice;
@@ -34,9 +35,7 @@ namespace CarGame {
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_ResterizerState; //rasteriztion
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_DepthStencilState; //depthstencil state for normal rendering
 
-		//to do
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_ShadowRenderState; //depthstencil state for normal rendering
-
 
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> m_ClampStyleSampler; // //sample shadow depth texture
 		VSConstantBuffer m_VSConstantBufferData;
@@ -47,7 +46,6 @@ namespace CarGame {
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_ShadowVertexShader;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ShadowPixelShader;
 		unsigned int m_IndexCount; //draw
-		DirectionalLight m_DirLight; //light
 		
 	};
 }

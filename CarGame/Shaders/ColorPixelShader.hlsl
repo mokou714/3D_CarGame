@@ -44,18 +44,14 @@ float4 main(ColorPixelInput input) : SV_TARGET{
 	// A = A
 	float _ambient_factor = K_a * L_a;
 	// D = (N.L)
-	float dir = dot(input.normal_world, _lightDir);
+	float _diffuse_factor = max(dot(input.normal_world, _lightDir), 0.0) * K_d * L_d;;
 
-	float _diffuse_factor = 0.0;
-	float _specular_factor = 0.0;
-	if (dir > 0.0f) {
-		_diffuse_factor = dot(input.normal_world, _lightDir) * K_d * L_d;
-		// R = 2 * (N.L) * N - L
-		float3 R = normalize(2 * dot(input.normal_world, _lightDir) * input.normal_world - _lightDir);
-		// Spec = (R.V)^n
-		_specular_factor = pow(dot(R, _viewDir), 10.0) * K_s * L_s;
-	}
-
+	// R = 2 * (N.L) * N - L
+	float3 R = normalize(2 * max(dot(input.normal_world, _lightDir),0) * input.normal_world - _lightDir);
+	
+	// Spec = (R.V)^n
+	float _specular_factor = pow(max(dot(R, _viewDir),0), 8.0) * K_s * L_s;
+	
 	// I = A + D * N.L + (R.V)^n
 	float4 I = input.color * (_ambient_factor + _diffuse_factor + _specular_factor);
 	I.a = 1.0;

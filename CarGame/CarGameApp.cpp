@@ -42,10 +42,10 @@ void CarGameApp::RenderScene() {
 	m_d3dImmediateContext->ClearRenderTargetView(m_RenderTargetView.Get(), black);
 
 	//clear shadow depth
-	m_d3dImmediateContext->ClearDepthStencilView(m_Shadow_DepthStencilView.Get(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_d3dImmediateContext->ClearDepthStencilView(m_Shadow_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	//clear depth buffer
-	m_d3dImmediateContext->ClearDepthStencilView(m_Normal_DepthStencilView.Get(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_d3dImmediateContext->ClearDepthStencilView(m_Normal_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	if (isRenderingShadow) {
 		//set shadow viewport
@@ -54,12 +54,11 @@ void CarGameApp::RenderScene() {
 		//set shadow depthstencil render target
 		m_d3dImmediateContext->OMSetRenderTargets(0, nullptr, m_Shadow_DepthStencilView.Get());
 
-		//render depth of all objects
+		//render depth of dynamic objects
 		for (auto& renderer : Renderers) {
-			//not render wheel, window shadow
 			if (renderer->gameObject->getName() == "Wheel"
-				|| renderer->gameObject->getName() == "Window"
-				|| renderer->gameObject->getName() == "CarLight")
+				|| renderer->gameObject->getName() == "CarLight"
+				|| renderer->gameObject->getName() == "Window")
 				continue;
 			if (renderer->gameObject->getVisible())
 				renderer->RenderDepth();
@@ -70,22 +69,21 @@ void CarGameApp::RenderScene() {
 	m_d3dImmediateContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_Normal_DepthStencilView.Get());
 	//set normal screen viewport
 	m_d3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
-	
-	if(isRenderingShadow)
+
+	if (isRenderingShadow)
 		//bind shadow texture after setting up normal depthstencil render target
-		m_d3dImmediateContext->PSSetShaderResources(1, 1, m_ShadowSRV.GetAddressOf());
-	
+		m_d3dImmediateContext->PSSetShaderResources(1, 1, m_ShadowMapSRV.GetAddressOf());
+
 	//Render the scene objects.
-	if(renderObjects() )
+	if (renderObjects())
 		//Present scene if succeeded
 		CheckIfFailed(m_SwapChain->Present(0, 0));
 
 	//unbind shadow texture after shadow mapping
 	//ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
 	//m_d3dImmediateContext->PSSetShaderResources(1, 1, nullSRV);
-	
-}
 
+}
 //private
 //render each object individually
 bool CarGameApp::renderObjects() {

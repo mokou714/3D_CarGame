@@ -4,6 +4,6 @@ struct ShadowPixelInput {
 	float3 pos_W : POSITION;
 };
 
-float4 main(ShadowPixelInput input) :SV_TARGET{
-	return float4(1.0,1.0,1.0,1.0);
+void main(ShadowPixelInput input){
+	return ;
 }
